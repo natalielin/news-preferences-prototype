@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Newsletters and Alerts — Preference Center</title>
+  <title>Preference Center — Full Product Portfolio</title>
   <style>
     /* ── Design tokens ───────────────────────────────────────────── */
     :root {
@@ -392,16 +392,6 @@
       .profile-spotlight .summary-pills {
         grid-template-columns: repeat(6, 1fr);
       }
-    }
-
-    .profile-spotlight__badges-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: .75rem;
-      padding-top: .85rem;
-      margin-top: .85rem;
-      border-top: 1px solid var(--border);
     }
 
     .profile-spotlight__footer {
@@ -807,49 +797,6 @@
       letter-spacing: .04em;
     }
 
-    .achievement-board {
-      margin-bottom: .85rem;
-    }
-
-    .achievement-board__title {
-      font-size: .7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      color: var(--text-muted);
-      margin: 0 0 .5rem;
-    }
-
-    .achievement-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .4rem;
-    }
-
-    .achievement {
-      display: inline-flex;
-      align-items: center;
-      gap: .3rem;
-      font-size: .7rem;
-      font-weight: 600;
-      padding: .3rem .55rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-secondary);
-    }
-
-    .achievement.is-earned {
-      border-color: var(--accent);
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
-    .achievement.is-locked {
-      opacity: .45;
-      filter: grayscale(.4);
-    }
-
     .streak-card {
       display: flex;
       align-items: center;
@@ -881,13 +828,6 @@
       background: var(--muted-bg);
       border-radius: var(--radius-sm);
       border-left: 3px solid var(--accent);
-    }
-
-    .profile-next-hint {
-      font-size: .75rem;
-      color: var(--text-muted);
-      margin: .65rem 0 0;
-      font-style: italic;
     }
 
     /* ── Breaking alerts (prominent) ───────────────────────────── */
@@ -2256,34 +2196,204 @@
       border-top: 1px solid var(--border);
       flex-shrink: 0;
     }
+
+    /* ── Portfolio navigation & product blocks ───────────────────── */
+    .portfolio-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      padding: .5rem 0 1rem;
+      margin: 0 0 .25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .portfolio-nav__label {
+      font-size: .65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      margin: 0 0 .45rem;
+    }
+
+    .portfolio-nav__chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+
+    .portfolio-chip {
+      font-family: inherit;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: .4rem .7rem;
+      min-height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .portfolio-chip.is-active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .portfolio-chip:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .portfolio-overview {
+      display: grid;
+      gap: .65rem;
+      margin-bottom: .5rem;
+    }
+
+    @media (min-width: 640px) {
+      .portfolio-overview { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 960px) {
+      .portfolio-overview { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .portfolio-card {
+      display: flex;
+      align-items: flex-start;
+      gap: .65rem;
+      padding: .85rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      color: inherit;
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .portfolio-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow-md);
+    }
+
+    .portfolio-card:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .portfolio-card__icon {
+      font-size: 1.35rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .portfolio-card__title {
+      font-size: .85rem;
+      font-weight: 700;
+      margin: 0 0 .15rem;
+    }
+
+    .portfolio-card__desc {
+      font-size: .72rem;
+      color: var(--text-secondary);
+      margin: 0 0 .35rem;
+      line-height: 1.35;
+    }
+
+    .portfolio-card__stat {
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .global-settings-block {
+      margin-bottom: 1.25rem;
+    }
+
+    .global-settings-block__header {
+      margin-bottom: 1rem;
+    }
+
+    .global-settings-block__title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 .25rem;
+    }
+
+    .global-settings-block__desc {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .product-block {
+      margin-bottom: 2rem;
+      scroll-margin-top: 5rem;
+    }
+
+    .product-block__header {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      padding: .85rem 1rem;
+      margin-bottom: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius);
+    }
+
+    .product-block__icon {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .product-block__title {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0 0 .2rem;
+    }
+
+    .product-block__desc {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .product-block__body .section:first-child {
+      margin-top: 0;
+    }
   </style>
 </head>
 <body>
   <!--
     PAGE STRUCTURE & INTERACTION MODEL (stakeholder reference)
     ─────────────────────────────────────────────────────────
-    1. Header: compact title + Contact + dark mode; "How this works" in collapsible details
-    2. Your reader profile (Newsroom passport): badges, streak, activity — collapsible
-    3. Recommended for you: first content section (discovery surface)
-    4. Breaking alerts (prominent): intensity radio + channel routing
-    5. Newsletter products: card grid with subscribe toggle, cadence, status badge
-    6. Coverage interests: beat cards + searchable drawer for large sub-categories (Travel, World)
-    7. Recommended coverage: derived quick-add cards from followed beats
-    8. Delivery timing: timezone, quiet hours, consolidation bundles + exceptions
-    9. Frequency tuning: global High/Balanced/Light + per-beat cadence
-    10. Selective opt-out: modal with opt-down paths before full unsubscribe
-    11. Essential notices: informational — never affected by editorial toggles
-    12. Beta NLP prompt: natural language → preview → apply (interests, frequency, timing)
-    13. Sticky save bar: appears on dirty; Save updates timestamp + summary; Discard reverts
-    14. Single in-memory state object; no localStorage/backend
-    15. Global intensity cascades defaults to beats/newsletters on change
-    16. Pause 7/30 overrides cadence with visible paused badges
+    1. Header: unified Preference Center title + Contact + dark mode
+    2. Your preference profile: streak, portfolio activity — collapsible
+    3. Portfolio nav: filter/jump across product lines (Core News, Audio, Games, etc.)
+    4. Portfolio overview: at-a-glance cards per product line (when viewing All)
+    5. Recommended for you: cross-portfolio discovery surface
+    6. Global settings: delivery timing, channels, frequency — apply across products
+    7. Product blocks: Core News, Audio, Games, Lifestyle, Membership — each with programs + interests
+    8. Selective opt-out + essential notices + beta NLP
+    9. Sticky save bar: single save applies everywhere
   -->
 
   <header class="page-header">
     <div class="page-header__inner">
       <div class="page-header__top">
-        <h1>Newsletters and alerts</h1>
+        <h1>Preference Center</h1>
         <div class="page-header__meta">
           <span class="last-updated" id="lastUpdatedDisplay" aria-live="polite">Last updated: —</span>
           <button type="button" class="btn btn--secondary btn--sm" id="openContactDrawerBtn">Contact</button>
@@ -2292,7 +2402,7 @@
       </div>
       <details class="page-header__details">
         <summary>How this works</summary>
-        <p class="page-header__subhead">Choose topics, newsletters, breaking alerts, and timing. Reduce volume anytime — you never have to unsubscribe entirely. Preferences sync across your active channels.</p>
+        <p class="page-header__subhead">One place to manage communication across our full product portfolio — news, audio, games, lifestyle, and membership. Tune each product, set global delivery rules, and reduce volume anytime without losing your account.</p>
       </details>
     </div>
   </header>
@@ -2304,9 +2414,9 @@
       <div class="profile-glance" id="profileGlance"></div>
       <div class="profile-spotlight__header" id="profileHeader">
         <div>
-          <p class="profile-brand">Newsroom passport</p>
-          <h2 class="profile-spotlight__headline" id="profileHeadline">Your reader profile</h2>
-          <p class="profile-spotlight__tagline" id="profileTagline">Badges and activity update as you tune preferences.</p>
+          <p class="profile-brand">Preference passport</p>
+          <h2 class="profile-spotlight__headline" id="profileHeadline">Your preference profile</h2>
+          <p class="profile-spotlight__tagline" id="profileTagline">Activity across your portfolio updates as you tune products and channels.</p>
         </div>
         <button type="button" class="profile-expand-btn" id="profileExpandBtn" aria-expanded="true">Collapse</button>
       </div>
@@ -2316,13 +2426,11 @@
             <div id="profileHero"></div>
             <div class="profile-spotlight__footer">
               <p class="summary-sentence" id="summarySentence"></p>
-              <p class="profile-next-hint" id="profileNextHint"></p>
             </div>
             <div class="streak-card" id="streakCard"></div>
           </div>
-          <p class="stats-label">Preference activity</p>
+          <p class="stats-label">Portfolio activity</p>
           <div class="summary-pills" id="summaryPills" style="margin-bottom:0"></div>
-          <div class="profile-spotlight__badges-row" id="achievementBoard"></div>
         </div>
       </div>
     </section>
@@ -2335,7 +2443,7 @@
   </div>
 
   <div class="save-bar" id="saveBar" role="region" aria-label="Unsaved changes">
-    <p class="save-bar__text">You have unsaved changes to your news preferences.</p>
+    <p class="save-bar__text">You have unsaved changes to your preferences.</p>
     <div class="save-bar__actions">
       <button type="button" class="btn btn--secondary" id="discardBtn">Discard</button>
       <button type="button" class="btn btn--primary" id="saveBtn">Save changes</button>
@@ -2481,56 +2589,139 @@
       ]
     };
 
+    const PRODUCT_PORTFOLIO = {
+      coreNews: { label: 'Core News', icon: '📰', desc: 'Breaking alerts, coverage interests, and editorial newsletters' },
+      audio: { label: 'Audio & Podcasts', icon: '🎧', desc: 'Episode drops, listen recommendations, and live show alerts' },
+      games: { label: 'Games', icon: '🧩', desc: 'Daily puzzle reminders and optional game tips' },
+      lifestyle: { label: 'Lifestyle', icon: '🍳', desc: 'Cooking, wellness, travel, and culture programs' },
+      membership: { label: 'Membership', icon: '⭐', desc: 'Member events, exclusives, and partner perks' }
+    };
+
+    const PRODUCT_ORDER = ['coreNews', 'audio', 'games', 'lifestyle', 'membership'];
+
     const NEWSLETTER_META = {
       morningBriefing: {
+        product: 'coreNews',
         label: 'Morning Briefing',
         desc: 'Start your day with the top stories, analysis, and what to watch — delivered by 6:30 a.m.',
         sample: { type: 'email', subject: 'Morning Briefing — Friday, July 10', headline: 'What to know before markets open', stories: ['Fed signals patience on rate cuts amid mixed jobs data', 'City council advances housing reform package', 'What our tech team is watching this week'] }
       },
       eveningDigest: {
+        product: 'coreNews',
         label: 'Evening Digest',
         desc: 'A concise wrap-up of the day\'s most important reporting, ready when you leave work.',
         sample: { type: 'email', subject: 'Evening Digest — The day in 6 minutes', headline: 'Today\'s essential reporting', stories: ['White House announces new climate initiative', 'Stocks close mixed; tech leads gainers', 'In depth: Inside the transit funding fight'] }
       },
       politicsDaily: {
+        product: 'coreNews',
         label: 'Politics Daily',
         desc: 'White House, Congress, and campaign coverage from our politics desk.',
         sample: { type: 'email', subject: 'Politics Daily — Congress returns to budget standoff', headline: 'The levers that matter this week', stories: ['Speaker sets timeline for spending votes', 'Campaign tracker: Key Senate races tighten', 'Policy watch: Health care subsidy debate'] }
       },
       marketsMinute: {
+        product: 'coreNews',
         label: 'Markets Minute',
         desc: 'Opening moves, closing context, and the business stories moving markets.',
         sample: { type: 'email', subject: 'Markets Minute — S&P 500 opens flat', headline: 'Pre-market moves', stories: ['Treasury yields tick higher ahead of auction', 'Earnings: Retailers beat on margins', 'Oil steady as OPEC+ meeting nears'] }
       },
       techBriefing: {
+        product: 'coreNews',
         label: 'Tech Briefing',
         desc: 'AI, platforms, startups, and the people reshaping technology.',
         sample: { type: 'email', subject: 'Tech Briefing — AI regulation watch', headline: 'Platforms & policy', stories: ['Major cloud provider unveils new model tier', 'Startup funding cools in enterprise SaaS', 'Interview: The engineer behind the latest chip push'] }
       },
       localEdition: {
+        product: 'coreNews',
         label: 'Local Edition',
         desc: 'Neighborhood news, transit, schools, and city hall — for your metro area.',
         sample: { type: 'email', subject: 'Local Edition — Your NYC Wednesday', headline: 'Metro briefing', stories: ['Subway delays ease on A/C lines after repairs', 'School board votes on new literacy program', 'Weekend: Free concerts in the parks'] }
       },
       weekendReads: {
+        product: 'coreNews',
         label: 'Weekend Reads',
         desc: 'Longer features, culture picks, and stories worth your Saturday morning.',
         sample: { type: 'email', subject: 'Weekend Reads — 5 stories for slow mornings', headline: 'Editor\'s picks', stories: ['Longread: The reinvention of a rust-belt city', 'Culture: 12 albums our critics loved this month', 'Recipe: A summer pasta worth the wait'] }
       },
       investigationsDigest: {
+        product: 'coreNews',
         label: 'Investigations Digest',
         desc: 'Deep dives and accountability reporting from our investigative team.',
         sample: { type: 'email', subject: 'Investigations Digest — New series launch', headline: 'Accountability reporting', stories: ['Part 1: How oversight gaps enabled fraud', 'Documents reveal years of missed warnings', 'Q&A with the reporting team'] }
       },
       podcastAlerts: {
+        product: 'audio',
         label: 'Podcast Release Alerts',
         desc: 'Be first to know when new episodes drop from our audio team.',
         sample: { type: 'push', title: 'New episode: The Daily Brief', body: 'Congress returns — we break down the budget fight in 25 minutes.' }
       },
       subscriberExclusives: {
+        product: 'membership',
         label: 'Subscriber Exclusives',
         desc: 'Member-only newsletters, Q&As, and behind-the-scenes reporting.',
         sample: { type: 'email', subject: 'Subscriber Exclusive — Inside the newsroom', headline: 'For members only', stories: ['Q&A: Our politics editor on 2026 outlook', 'Early access: Weekend feature draft', 'Member event: Virtual newsroom tour'] }
+      }
+    };
+
+    const PRODUCT_COMMS_META = {
+      audioRecommendations: {
+        product: 'audio',
+        label: 'Listen recommendations',
+        desc: 'Personalized picks based on what you read and play.',
+        defaultChannel: 'email'
+      },
+      audioLiveAlerts: {
+        product: 'audio',
+        label: 'Live event alerts',
+        desc: 'When shows go live or special episodes drop.',
+        defaultChannel: 'push'
+      },
+      gamesWordReminder: {
+        product: 'games',
+        label: 'Word of the Day reminder',
+        desc: 'A gentle nudge to keep your puzzle streak going.',
+        defaultChannel: 'push'
+      },
+      gamesConnections: {
+        product: 'games',
+        label: 'Connections daily note',
+        desc: 'Reminder when today\'s puzzle is ready.',
+        defaultChannel: 'push'
+      },
+      gamesCrossword: {
+        product: 'games',
+        label: 'Crossword highlights',
+        desc: 'Weekly puzzle tips and completion milestones — optional.',
+        defaultChannel: 'email'
+      },
+      lifestyleCooking: {
+        product: 'lifestyle',
+        label: 'Cooking newsletter',
+        desc: 'Seasonal recipes and technique guides from our kitchen team.',
+        defaultChannel: 'email'
+      },
+      lifestyleWellness: {
+        product: 'lifestyle',
+        label: 'Wellness brief',
+        desc: 'Movement, sleep, and mindfulness — weekly, opt-in.',
+        defaultChannel: 'email'
+      },
+      lifestyleTravel: {
+        product: 'lifestyle',
+        label: 'Travel inspiration',
+        desc: 'Destinations and deals aligned to places you follow.',
+        defaultChannel: 'email'
+      },
+      memberEvents: {
+        product: 'membership',
+        label: 'Member events',
+        desc: 'Virtual tours, Q&As, and exclusive invitations.',
+        defaultChannel: 'email'
+      },
+      memberPerks: {
+        product: 'membership',
+        label: 'Partner perks & offers',
+        desc: 'Subscriber-only discounts and partner access.',
+        defaultChannel: 'email'
       }
     };
 
@@ -2648,6 +2839,18 @@
           podcastAlerts: { subscribed: false, cadence: 'asPublished', channel: 'push' },
           subscriberExclusives: { subscribed: true, cadence: 'weekly', channel: 'email' }
         },
+        productComms: {
+          audioRecommendations: { enabled: true, cadence: 'weekly', channel: 'email' },
+          audioLiveAlerts: { enabled: false, cadence: 'asPublished', channel: 'push' },
+          gamesWordReminder: { enabled: true, cadence: 'daily', channel: 'push' },
+          gamesConnections: { enabled: true, cadence: 'daily', channel: 'push' },
+          gamesCrossword: { enabled: false, cadence: 'weekly', channel: 'email' },
+          lifestyleCooking: { enabled: true, cadence: 'weekly', channel: 'email' },
+          lifestyleWellness: { enabled: false, cadence: 'weekly', channel: 'email' },
+          lifestyleTravel: { enabled: true, cadence: 'weekly', channel: 'email' },
+          memberEvents: { enabled: true, cadence: 'asPublished', channel: 'email' },
+          memberPerks: { enabled: false, cadence: 'monthly', channel: 'email' }
+        },
         channels: { email: true, push: true, sms: true, inApp: true, browser: false },
         deliveryTiming: {
           timezone: 'America/New_York',
@@ -2673,7 +2876,7 @@
         lastUpdated: '2026-07-10T08:59:00',
         expandedBeats: {},
         nlp: { input: '', preview: null },
-        ui: { profileExpanded: true, interestDrawer: { beat: null, query: '', region: 'europe' } }
+        ui: { profileExpanded: true, productFilter: 'all', interestDrawer: { beat: null, query: '', region: 'europe' } }
       };
     }
 
@@ -2723,6 +2926,53 @@
       return Object.values(state.newsletters).filter(n => n.subscribed).length;
     }
 
+    function countActiveProductComms() {
+      return Object.values(state.productComms || {}).filter(p => p.enabled).length;
+    }
+
+    function countActivePrograms() {
+      return countActiveNewsletters() + countActiveProductComms();
+    }
+
+    function countActiveInProduct(productId) {
+      let count = 0;
+      Object.entries(NEWSLETTER_META).forEach(([key, meta]) => {
+        if (meta.product === productId && state.newsletters[key].subscribed) count++;
+      });
+      Object.entries(PRODUCT_COMMS_META).forEach(([key, meta]) => {
+        if (meta.product === productId && state.productComms[key]?.enabled) count++;
+      });
+      if (productId === 'coreNews') {
+        if (state.breakingAlerts.level !== 'off') count++;
+        count += countFollowedBeats();
+      }
+      return count;
+    }
+
+    function countActiveProductLines() {
+      return PRODUCT_ORDER.filter(id => countActiveInProduct(id) > 0).length;
+    }
+
+    function isProductVisible(productId) {
+      return state.ui.productFilter === 'all' || state.ui.productFilter === productId;
+    }
+
+    function getProductProgramSummary(productId) {
+      const active = countActiveInProduct(productId);
+      if (!active) return 'Nothing active yet';
+      if (productId === 'coreNews') {
+        const programs = Object.entries(NEWSLETTER_META).filter(([k, m]) => m.product === productId && state.newsletters[k].subscribed).length;
+        return `${programs} newsletter${programs === 1 ? '' : 's'} · ${countFollowedBeats()} beats · ${breakingLevelLabel()}`;
+      }
+      return `${active} program${active === 1 ? '' : 's'} active`;
+    }
+
+    function getProductCommStatus(item) {
+      if (!item.enabled) return { label: 'Off', cls: 'off' };
+      if (isPaused(item.cadence)) return { label: item.cadence === 'pause7' ? 'Paused 7 days' : 'Paused 30 days', cls: 'paused' };
+      return { label: 'Active', cls: 'active' };
+    }
+
     function countPausedItems() {
       let n = 0;
       Object.values(state.beats).forEach(b => {
@@ -2730,6 +2980,9 @@
       });
       Object.values(state.newsletters).forEach(nl => {
         if (isPaused(nl.cadence) && nl.subscribed) n++;
+      });
+      Object.values(state.productComms || {}).forEach(pc => {
+        if (isPaused(pc.cadence) && pc.enabled) n++;
       });
       return n;
     }
@@ -2743,45 +2996,8 @@
       return map[state.breakingAlerts.level] || '—';
     }
 
-    const READER_TITLES = [
-      { minBadges: 5, title: 'Front Page Regular' },
-      { minBadges: 3, title: 'Newsroom Insider' },
-      { minBadges: 1, title: 'Informed Subscriber' },
-      { minBadges: 0, title: 'Curious Reader' }
-    ];
-
-    const BADGE_DEFS = [
-      { id: 'explorer', icon: '🗺', label: 'Beat Explorer', test: () => countFollowedBeats() >= 5 },
-      { id: 'multichannel', icon: '📡', label: 'Multi-channel', test: () => countActiveChannels() >= 3 },
-      { id: 'smartdown', icon: '🎯', label: 'Smart Opt-down', test: () => state.breakingAlerts.level === 'major' },
-      { id: 'local', icon: '📍', label: 'Local Lens', test: () => state.beats.localNews?.status === 'followed' },
-      { id: 'deepdive', icon: '🔍', label: 'Deep Dive', test: () => countActiveNewsletters() >= 4 || state.beats.investigations?.status === 'followed' },
-      { id: 'quiet', icon: '🌙', label: 'Quiet Hours', test: () => state.deliveryTiming?.quietHours?.enabled }
-    ];
-
-    function getEarnedBadges() {
-      return BADGE_DEFS.map(b => ({ ...b, earned: b.test() }));
-    }
-
-    function countEarnedBadges() {
-      return getEarnedBadges().filter(b => b.earned).length;
-    }
-
-    function getReaderTitle() {
-      const earned = countEarnedBadges();
-      return READER_TITLES.find(t => earned >= t.minBadges)?.title || READER_TITLES.at(-1).title;
-    }
-
     function getReaderInitials(name) {
       return name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
-    }
-
-    function getProfileNextHint() {
-      const unearned = getEarnedBadges().filter(b => !b.earned);
-      if (countFollowedBeats() < 5) return 'Follow 2 more beats to unlock Beat Explorer.';
-      if (!state.channels.browser) return 'Connect browser push to earn the Multi-channel badge.';
-      if (unearned.length) return `Next up: ${unearned[0].label} badge.`;
-      return 'All badges unlocked — nice tuning.';
     }
 
     function formatMemberSince(iso) {
@@ -2853,9 +3069,9 @@
     function buildProfileSentence() {
       const parts = [];
       const intensity = state.globalIntensity;
-      if (intensity === 'light') parts.push('a lighter news diet');
-      else if (intensity === 'high') parts.push('frequent updates');
-      else parts.push('weekday briefings');
+      if (intensity === 'light') parts.push('a lighter portfolio diet');
+      else if (intensity === 'high') parts.push('frequent updates across products');
+      else parts.push('balanced weekday delivery');
 
       const breaking = state.breakingAlerts.level;
       if (breaking === 'major') parts.push('fewer breaking interruptions');
@@ -2866,7 +3082,7 @@
         parts.push(`quiet hours ${formatTime12h(state.deliveryTiming.quietHours.start)}–${formatTime12h(state.deliveryTiming.quietHours.end)}`);
       }
 
-      return `${state.reader.preferredName || state.reader.name} — ${getReaderTitle()} with ${parts.join(' and ')}.`;
+      return `${state.reader.preferredName || state.reader.name} prefers ${parts.join(' and ')}.`;
     }
 
     function getRecommendations() {
@@ -2895,7 +3111,22 @@
         recs.push({ id: 'investigationsDigest', label: 'Investigations Digest', reason: 'Deep-dive reporting', type: 'newsletter' });
       }
       if (followed.includes('technology') && !state.newsletters.techBriefing.subscribed) {
-        recs.push({ id: 'techBriefing', label: 'Tech Briefing', reason: 'Because you follow Technology', type: 'newsletter' });
+        recs.push({ id: 'techBriefing', label: 'Tech Briefing', reason: 'Core News · because you follow Technology', type: 'newsletter' });
+      }
+      if (!state.newsletters.podcastAlerts.subscribed) {
+        recs.push({ id: 'podcastAlerts', label: 'Podcast Release Alerts', reason: 'Audio · new episodes as they drop', type: 'newsletter' });
+      }
+      if (!state.productComms.gamesWordReminder.enabled) {
+        recs.push({ id: 'gamesWordReminder', label: 'Word of the Day reminder', reason: 'Games · keep your streak', type: 'productComm' });
+      }
+      if ((followed.includes('travel') || followed.includes('food')) && !state.productComms.lifestyleCooking.enabled) {
+        recs.push({ id: 'lifestyleCooking', label: 'Cooking newsletter', reason: 'Lifestyle · matches your interests', type: 'productComm' });
+      }
+      if (followed.includes('travel') && !state.productComms.lifestyleTravel.enabled) {
+        recs.push({ id: 'lifestyleTravel', label: 'Travel inspiration', reason: 'Lifestyle · aligned to your destinations', type: 'productComm' });
+      }
+      if (!state.productComms.memberEvents.enabled) {
+        recs.push({ id: 'memberEvents', label: 'Member events', reason: 'Membership · virtual tours and Q&As', type: 'productComm' });
       }
 
       return recs.slice(0, 6);
@@ -2919,6 +3150,13 @@
         }
       });
 
+      Object.keys(state.productComms || {}).forEach(key => {
+        const pc = state.productComms[key];
+        if (pc.enabled && !isPaused(pc.cadence) && ['daily', 'weekdays', 'weekly'].includes(pc.cadence)) {
+          pc.cadence = cfg.defaultCadence;
+        }
+      });
+
       if (intensity === 'light' && state.breakingAlerts.level === 'all') {
         state.breakingAlerts.level = 'major';
       } else if (intensity === 'high' && state.breakingAlerts.level === 'off') {
@@ -2932,6 +3170,9 @@
       if (rec.type === 'newsletter') {
         state.newsletters[rec.id].subscribed = true;
         markDirty(`Subscribed to ${NEWSLETTER_META[rec.id].label}`);
+      } else if (rec.type === 'productComm') {
+        state.productComms[rec.id].enabled = true;
+        markDirty(`Enabled ${PRODUCT_COMMS_META[rec.id].label}`);
       } else if (rec.type === 'subbeat') {
         state.beats[rec.beat].subbeats[rec.subbeat] = true;
         if (state.beats[rec.beat].status !== 'followed') {
@@ -2940,12 +3181,6 @@
         markDirty(`Added ${BEAT_META[rec.beat].subbeats[rec.subbeat]} to your coverage`);
       }
       render();
-    }
-
-    function getNewsletterStatus(nl) {
-      if (!nl.subscribed) return { label: 'Not subscribed', cls: 'off' };
-      if (isPaused(nl.cadence)) return { label: nl.cadence === 'pause7' ? 'Paused 7 days' : 'Paused 30 days', cls: 'paused' };
-      return { label: 'Active', cls: 'active' };
     }
 
     function getNewsletterStatus(nl) {
@@ -3039,8 +3274,15 @@
         actions.push({ id: 'topicFeed', label: `Explore ${topBeat} coverage`, hint: 'Personalized topic feed', route: `/topics/${followed[0]}` });
       }
 
+      if (state.productComms?.gamesWordReminder?.enabled) {
+        actions.push({ id: 'gamesHub', label: 'Play today\'s puzzles', hint: 'Games · Word, Connections, and more', route: '/games' });
+      }
+      if (state.newsletters.podcastAlerts?.subscribed || state.productComms?.audioRecommendations?.enabled) {
+        actions.push({ id: 'audioHub', label: 'Open your listen queue', hint: 'Audio · podcasts and recommendations', route: '/audio' });
+      }
+
       if (state.breakingAlerts.level !== 'off') {
-        actions.push({ id: 'liveCoverage', label: 'See live developing stories', hint: 'Core newsroom experience', route: '/live' });
+        actions.push({ id: 'liveCoverage', label: 'See live developing stories', hint: 'Core News experience', route: '/live' });
       }
 
       if (followed.includes('localNews') || state.newsletters.localEdition?.subscribed) {
@@ -3057,7 +3299,7 @@
       return `
         <div class="next-actions">
           <p class="next-actions__title">What's next?</p>
-          <p class="next-actions__desc">Your preferences are set — continue into the newsroom experience.</p>
+          <p class="next-actions__desc">Your preferences are set — continue into the product experience.</p>
           <div class="next-actions__grid">
             ${actions.map(a => `
               <button type="button" class="next-action-card" data-next-action="${a.id}" data-route="${a.route}">
@@ -3121,8 +3363,8 @@
       { id: 'morningOnly', title: 'Keep only Morning Briefing', desc: 'Unsubscribe from other newsletters; keep major story alerts' },
       { id: 'majorAlerts', title: 'Keep only major story alerts', desc: 'Turn off newsletters; retain breaking news for big stories' },
       { id: 'weeklyDigest', title: 'Switch everything to weekly digest', desc: 'Opt-down: one email per week per product' },
-      { id: 'pause30', title: 'Pause non-essential updates for 30 days', desc: 'Silence editorial sends temporarily' },
-      { id: 'fullUnsub', title: 'Unsubscribe from all non-essential updates', desc: 'Stop newsletters and promotional/editorial messages. Account notices remain.', danger: true }
+      { id: 'pause30', title: 'Pause non-essential updates for 30 days', desc: 'Silence product sends temporarily across the portfolio' },
+      { id: 'fullUnsub', title: 'Unsubscribe from all non-essential updates', desc: 'Stop newsletters, alerts, and promotional messages. Account notices remain.', danger: true }
     ];
 
     function applyOptOut(actionId) {
@@ -3205,7 +3447,7 @@
             <div class="contact-endpoint__body">
               <span class="contact-endpoint__channel">${c.label}</span>
               <span class="contact-endpoint__value">${c.value}${c.verified ? '<span class="verified-badge">Verified</span>' : ''}</span>
-              <span class="contact-endpoint__status">${active ? c.detail : 'Channel off for editorial'}</span>
+              <span class="contact-endpoint__status">${active ? c.detail : 'Channel off for product updates'}</span>
             </div>
           </div>
         `;
@@ -3225,7 +3467,7 @@
         <p class="drawer__section-title">Reachable endpoints</p>
         <div class="contact-grid" role="list" aria-label="Reachable contact endpoints">${renderContactEndpoints()}</div>
         <p class="drawer__section-title">Delivery notes</p>
-        <p class="reader-card__detail" style="margin:0;font-size:.8rem">Preferences sync across active channels. Essential notices (billing, security, password resets) always reach <strong>${r.email}</strong> regardless of editorial toggles.</p>
+        <p class="reader-card__detail" style="margin:0;font-size:.8rem">Preferences sync across active channels and product lines. Essential notices (billing, security, password resets) always reach <strong>${r.email}</strong> regardless of product toggles.</p>
       `;
     }
 
@@ -3250,8 +3492,6 @@
     }
 
     function renderSummary() {
-      const earnedCount = countEarnedBadges();
-      const readerTitle = getReaderTitle();
       const r = state.reader;
       const expanded = state.ui.profileExpanded;
 
@@ -3259,18 +3499,18 @@
 
       document.getElementById('profileGlance').innerHTML = `
         <div class="profile-glance__left">
-          <p class="profile-glance__identity"><strong>${r.name}</strong> · ${r.tier} · ${readerTitle}</p>
+          <p class="profile-glance__identity"><strong>${r.name}</strong> · ${r.tier}</p>
           <div class="profile-glance__stats">
-            <span class="glance-stat glance-stat--accent">${earnedCount}/${BADGE_DEFS.length} badges</span>
+            <span class="glance-stat glance-stat--accent">${countActivePrograms()} programs</span>
             <span class="glance-stat">${r.readingStreakDays}-day streak</span>
           </div>
         </div>
-        <button type="button" class="profile-expand-btn" id="profileExpandBtnCollapsed" aria-expanded="false">Expand reader profile</button>
+        <button type="button" class="profile-expand-btn" id="profileExpandBtnCollapsed" aria-expanded="false">Expand profile</button>
       `;
 
       const expandBtn = document.getElementById('profileExpandBtn');
       if (expandBtn) {
-        expandBtn.textContent = expanded ? 'Collapse' : 'Expand reader profile';
+        expandBtn.textContent = expanded ? 'Collapse' : 'Expand profile';
         expandBtn.setAttribute('aria-expanded', String(expanded));
       }
 
@@ -3278,8 +3518,8 @@
         <div class="profile-hero">
           <div class="profile-avatar" aria-hidden="true">${getReaderInitials(r.name)}</div>
           <div class="profile-hero__text">
-            <span class="profile-level">${readerTitle}</span>
-            <p class="profile-tagline">${earnedCount} of ${BADGE_DEFS.length} badges earned · Member since ${formatMemberSince(r.memberSince)}</p>
+            <span class="profile-level">${r.tier}</span>
+            <p class="profile-tagline">Member since ${formatMemberSince(r.memberSince)} · ${countActivePrograms()} active programs</p>
           </div>
         </div>
       `;
@@ -3290,28 +3530,132 @@
       `;
 
       document.getElementById('summaryPills').innerHTML = `
+        <div class="summary-pill"><span class="summary-pill__value">${countActiveProductLines()}</span><span class="summary-pill__label">Products</span></div>
+        <div class="summary-pill"><span class="summary-pill__value">${countActivePrograms()}</span><span class="summary-pill__label">Programs</span></div>
         <div class="summary-pill"><span class="summary-pill__value">${countFollowedBeats()}</span><span class="summary-pill__label">Beats</span></div>
-        <div class="summary-pill"><span class="summary-pill__value">${countActiveNewsletters()}</span><span class="summary-pill__label">Newsletters</span></div>
         <div class="summary-pill"><span class="summary-pill__value">${breakingLevelLabel()}</span><span class="summary-pill__label">Breaking</span></div>
         <div class="summary-pill"><span class="summary-pill__value">${countActiveChannels()}</span><span class="summary-pill__label">Channels</span></div>
         <div class="summary-pill"><span class="summary-pill__value">${countPausedItems()}</span><span class="summary-pill__label">Paused</span></div>
-        <div class="summary-pill"><span class="summary-pill__value">${Object.values(state.contacts).filter(c => c.verified).length}</span><span class="summary-pill__label">Verified</span></div>
-      `;
-
-      const badges = getEarnedBadges();
-      document.getElementById('achievementBoard').innerHTML = `
-        <p class="achievement-board__title" style="margin:0">Achievements</p>
-        <div class="achievement-list" role="list" aria-label="Earned and available achievements">
-          ${badges.map(b => `
-            <span class="achievement ${b.earned ? 'is-earned' : 'is-locked'}" role="listitem" title="${b.earned ? 'Earned' : 'Not yet earned'}">
-              <span aria-hidden="true">${b.icon}</span> ${b.label}
-            </span>
-          `).join('')}
-        </div>
       `;
 
       document.getElementById('summarySentence').textContent = buildProfileSentence();
-      document.getElementById('profileNextHint').textContent = getProfileNextHint();
+    }
+
+    function renderPortfolioNav() {
+      const filter = state.ui.productFilter;
+      const chips = [
+        { id: 'all', label: 'All products' },
+        ...PRODUCT_ORDER.map(id => ({ id, label: PRODUCT_PORTFOLIO[id].label }))
+      ];
+      return `
+        <nav class="portfolio-nav" aria-label="Product portfolio">
+          <p class="portfolio-nav__label">Browse by product</p>
+          <div class="portfolio-nav__chips" role="tablist">
+            ${chips.map(c => `
+              <button type="button" class="portfolio-chip ${filter === c.id ? 'is-active' : ''}" data-product-filter="${c.id}" role="tab" aria-selected="${filter === c.id}">${c.label}</button>
+            `).join('')}
+          </div>
+        </nav>
+      `;
+    }
+
+    function renderPortfolioOverview() {
+      if (state.ui.productFilter !== 'all') return '';
+      return `
+        <section class="section" aria-labelledby="portfolioOverviewTitle" style="margin-top:0">
+          <div class="section__header">
+            <h2 class="section__title" id="portfolioOverviewTitle">Your portfolio at a glance</h2>
+            <p class="section__desc">One account, every product — jump into a line to manage its programs and interests.</p>
+          </div>
+          <div class="portfolio-overview">
+            ${PRODUCT_ORDER.map(id => {
+              const meta = PRODUCT_PORTFOLIO[id];
+              return `
+                <button type="button" class="portfolio-card" data-product-filter="${id}" data-product-jump="${id}">
+                  <span class="portfolio-card__icon" aria-hidden="true">${meta.icon}</span>
+                  <span>
+                    <span class="portfolio-card__title">${meta.label}</span>
+                    <span class="portfolio-card__desc">${meta.desc}</span>
+                    <span class="portfolio-card__stat">${getProductProgramSummary(id)}</span>
+                  </span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderProductBlock(productId, innerHtml) {
+      if (!isProductVisible(productId) || !innerHtml.trim()) return '';
+      const meta = PRODUCT_PORTFOLIO[productId];
+      return `
+        <div class="product-block" data-product-section="${productId}" id="product-${productId}">
+          <div class="product-block__header">
+            <span class="product-block__icon" aria-hidden="true">${meta.icon}</span>
+            <div>
+              <h2 class="product-block__title">${meta.label}</h2>
+              <p class="product-block__desc">${meta.desc}</p>
+            </div>
+          </div>
+          <div class="product-block__body">${innerHtml}</div>
+        </div>
+      `;
+    }
+
+    function renderGlobalSettingsBlock() {
+      if (state.ui.productFilter !== 'all') return '';
+      return `
+        <div class="global-settings-block" id="global-settings">
+          <div class="global-settings-block__header">
+            <h2 class="global-settings-block__title">Across all products</h2>
+            <p class="global-settings-block__desc">Delivery timing, channels, and overall intensity apply portfolio-wide — with per-product exceptions where you set them.</p>
+          </div>
+          ${renderDeliveryTimingSection() +
+            renderChannelsSection() +
+            renderFrequencySection()}
+        </div>
+      `;
+    }
+
+    function renderProductCommsSection(productId, sectionTitle, sectionDesc) {
+      const entries = Object.entries(PRODUCT_COMMS_META).filter(([, meta]) => meta.product === productId);
+      if (!entries.length) return '';
+
+      const cards = entries.map(([key, meta]) => {
+        const pc = state.productComms[key];
+        const status = getProductCommStatus(pc);
+        const cadenceOpts = CADENCE_OPTIONS.map(o =>
+          `<option value="${o.value}" ${pc.cadence === o.value ? 'selected' : ''}>${o.label}</option>`
+        ).join('');
+        return `
+          <article class="product-card" data-product-comm="${key}">
+            <div class="product-card__header">
+              <h3 class="product-card__title">${meta.label}</h3>
+              <label class="toggle" aria-label="Enable ${meta.label}">
+                <input type="checkbox" data-pc-enable="${key}" ${pc.enabled ? 'checked' : ''}>
+                <span class="toggle__track"></span><span class="toggle__thumb"></span>
+              </label>
+            </div>
+            <p class="product-card__desc">${meta.desc}</p>
+            <div class="product-card__footer">
+              <span class="status-badge status-badge--${status.cls}">${status.label}</span>
+              <span class="channel-indicator">via ${pc.channel}</span>
+              <select class="select-sm" data-pc-cadence="${key}" aria-label="Cadence for ${meta.label}" ${!pc.enabled ? 'disabled' : ''}>${cadenceOpts}</select>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      return `
+        <section class="section" aria-labelledby="pcTitle-${productId}">
+          <div class="section__header">
+            <h3 class="section__title" id="pcTitle-${productId}" style="font-size:1rem">${sectionTitle}</h3>
+            <p class="section__desc">${sectionDesc}</p>
+          </div>
+          <div class="product-grid">${cards}</div>
+        </section>
+      `;
     }
 
     function renderBreakingSection() {
@@ -3331,7 +3675,7 @@
         <section class="section breaking-section" aria-labelledby="breakingTitle">
           <div class="section__header">
             <h2 class="section__title" id="breakingTitle">Breaking news alerts</h2>
-            <p class="section__desc">Separate from newsletters — these are urgent notifications when major stories develop. Choose how much interruption you're willing to accept.</p>
+            <p class="section__desc">Urgent notifications when major stories develop — separate from newsletters and other product updates.</p>
             <button type="button" class="btn btn--link" data-preview="breaking" style="margin-top:.35rem">Preview a breaking alert</button>
             <p class="ux-note">UX: "Major stories only" is visually distinct from "Off" to surface smart opt-down.</p>
           </div>
@@ -3363,8 +3707,11 @@
       `;
     }
 
-    function renderNewslettersSection() {
-      const cards = Object.entries(NEWSLETTER_META).map(([key, meta]) => {
+    function renderNewslettersSection(productId, sectionTitle, sectionDesc) {
+      const entries = Object.entries(NEWSLETTER_META).filter(([, meta]) => meta.product === productId);
+      if (!entries.length) return '';
+
+      const cards = entries.map(([key, meta]) => {
         const nl = state.newsletters[key];
         const status = getNewsletterStatus(nl);
         const cadenceOpts = CADENCE_OPTIONS.map(o =>
@@ -3391,10 +3738,10 @@
       }).join('');
 
       return `
-        <section class="section" aria-labelledby="nlTitle">
+        <section class="section" aria-labelledby="nlTitle-${productId}">
           <div class="section__header">
-            <h2 class="section__title" id="nlTitle">Newsletter products</h2>
-            <p class="section__desc">Independent of topic follows — subscribe only to the editorial products you want in your inbox or feed.</p>
+            <h3 class="section__title" id="nlTitle-${productId}" style="font-size:1rem">${sectionTitle}</h3>
+            <p class="section__desc">${sectionDesc}</p>
           </div>
           <div class="product-grid">${cards}</div>
         </section>
@@ -3660,8 +4007,8 @@
       return `
         <section class="section" aria-labelledby="beatsTitle">
           <div class="section__header">
-            <h2 class="section__title" id="beatsTitle">Coverage interests</h2>
-            <p class="section__desc">Follow beats to shape your feed, alerts, and recommendations. Large topics like Travel open a searchable drawer for countries and regions.</p>
+            <h3 class="section__title" id="beatsTitle" style="font-size:1rem">Coverage interests</h3>
+            <p class="section__desc">Follow beats to shape your feed, alerts, and recommendations across Core News. Large topics like Travel open a searchable drawer for countries and regions.</p>
             <p class="ux-note">UX: Explicit interest capture doubles as a discovery surface for editorial tailoring.</p>
           </div>
           <div class="beats-grid">${cards}</div>
@@ -3686,8 +4033,8 @@
       return `
         <section class="section rec-section--prominent" aria-labelledby="recTitle">
           <div class="section__header">
-            <h2 class="section__title" id="recTitle">Recommended for you</h2>
-            <p class="section__desc">Quick adds based on your interests — no digging required.</p>
+            <h2 class="section__title" id="recTitle">Recommended across your portfolio</h2>
+            <p class="section__desc">Quick adds from any product line — based on what you already follow and use.</p>
           </div>
           <div class="rec-grid">${cards}</div>
         </section>
@@ -3819,16 +4166,16 @@
         <section class="section" aria-labelledby="freqTitle">
           <div class="section__header">
             <h2 class="section__title" id="freqTitle">Frequency tuning</h2>
-            <p class="section__desc">Set a global pace, then fine-tune individual beats and newsletters above.</p>
+            <p class="section__desc">Set a global pace for Core News, then fine-tune individual beats and programs above.</p>
           </div>
           <div class="global-intensity-block">
-            <p style="font-size:.85rem;font-weight:600;margin:0 0 .5rem">Overall newsroom intensity</p>
+            <p style="font-size:.85rem;font-weight:600;margin:0 0 .5rem">Overall portfolio intensity</p>
             <div class="segmented" role="group" aria-label="Global intensity">${intensities}</div>
             <p class="cadence-hint">${GLOBAL_INTENSITY_MAP[state.globalIntensity].desc}</p>
-            <p class="ux-note">Changing intensity updates cadence defaults for followed beats and active newsletters.</p>
+            <p class="ux-note">Changing intensity updates cadence defaults for followed beats and active Core News programs.</p>
           </div>
           <div class="card" style="background:var(--muted-bg)">
-            <p style="font-size:.85rem;margin:0 0 .5rem"><strong>Cadence options</strong> (available per beat and newsletter)</p>
+            <p style="font-size:.85rem;margin:0 0 .5rem"><strong>Cadence options</strong> (available per beat and program)</p>
             <ul style="margin:0;padding-left:1.25rem;font-size:.8rem;color:var(--text-secondary)">
               ${CADENCE_OPTIONS.map(o => `<li><strong>${o.label}</strong> — ${o.hint}</li>`).join('')}
             </ul>
@@ -3843,15 +4190,15 @@
         <section class="section" aria-labelledby="channelsTitle">
           <div class="section__header">
             <h2 class="section__title" id="channelsTitle">Delivery channels</h2>
-            <p class="section__desc">Turn off channels to reduce reach. Account and security messages are unaffected.</p>
+            <p class="section__desc">Turn off channels to reduce reach across the portfolio. Account and security messages are unaffected.</p>
           </div>
           <div class="channel-grid">
             <div class="channel-row">
-              <div class="channel-row__info"><strong>Email</strong><span>Newsletters and digests</span></div>
+              <div class="channel-row__info"><strong>Email</strong><span>Newsletters, digests, and lifestyle programs</span></div>
               <label class="toggle"><input type="checkbox" data-channel="email" ${ch.email ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
             </div>
             <div class="channel-row">
-              <div class="channel-row__info"><strong>Push</strong><span>Mobile alerts and podcast notices</span></div>
+              <div class="channel-row__info"><strong>Push</strong><span>Breaking alerts, games, and podcast notices</span></div>
               <label class="toggle"><input type="checkbox" data-channel="push" ${ch.push ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
             </div>
             <div class="channel-row">
@@ -3874,8 +4221,8 @@
     function renderOptOutSection() {
       return `
         <section class="section opt-out-section" aria-labelledby="optOutSectionTitle">
-          <h2 class="section__title" id="optOutSectionTitle" style="font-size:1rem">Need fewer emails?</h2>
-          <p>Before unsubscribing, try reducing volume or pausing updates. Account messages always continue.</p>
+          <h2 class="section__title" id="optOutSectionTitle" style="font-size:1rem">Need fewer messages?</h2>
+          <p>Before opting out entirely, try reducing volume or pausing updates across any product line. Account messages always continue.</p>
           <button type="button" class="btn btn--ghost" id="openOptOutBtn">Stop non-essential updates</button>
           <p class="ux-note" style="text-align:left;margin-top:.75rem">Legal: Full unsubscribe is explicit and one click away inside the flow.</p>
         </section>
@@ -3887,7 +4234,7 @@
         <section class="section" aria-labelledby="essentialTitle">
           <div class="section__header">
             <h2 class="section__title" id="essentialTitle">Essential notices</h2>
-            <p class="section__desc">These service messages are managed separately from editorial preferences and cannot be turned off here.</p>
+            <p class="section__desc">These service messages are managed separately from product preferences and cannot be turned off here.</p>
           </div>
           <ul class="essential-list">
             <li>Password resets and login verification</li>
@@ -3902,8 +4249,8 @@
     const NLP_SUGGESTIONS = [
       'Politics and local news on weekdays, major breaking only',
       'Quiet after 10pm, combine emails into one morning bundle at 7am',
-      'Follow tech and business, weekly digest, light overall volume',
-      'Pause sports for 30 days, keep morning briefing separate'
+      'Enable Word reminders and podcast alerts, light overall volume',
+      'Pause sports for 30 days, keep cooking and morning briefing'
     ];
 
     const NLP_TOPIC_ALIASES = {
@@ -4049,6 +4396,17 @@
         });
       }
 
+      // Product programs
+      if (/word reminder|puzzle reminder|games reminder/.test(raw)) {
+        add('Enable Word of the Day reminder', () => { state.productComms.gamesWordReminder.enabled = true; });
+      }
+      if (/podcast alert|new episodes|episode drop/.test(raw)) {
+        add('Enable Podcast Release Alerts', () => { state.newsletters.podcastAlerts.subscribed = true; });
+      }
+      if (/cooking newsletter|cooking updates/.test(raw)) {
+        add('Enable Cooking newsletter', () => { state.productComms.lifestyleCooking.enabled = true; });
+      }
+
       // Breaking
       if (/major (?:breaking|stories|only)|major stories only/.test(raw)) {
         add('Breaking alerts: Major stories only', () => { state.breakingAlerts.level = 'major'; });
@@ -4164,12 +4522,12 @@
           <span class="nlp-beta__badge">Beta</span>
           <div class="section__header">
             <h2 class="section__title" id="nlpTitle">Tell us what you want</h2>
-            <p class="section__desc">Describe your ideal mix of topics, frequency, and timing in plain language. We'll translate it into preference changes you can preview before applying.</p>
+            <p class="section__desc">Describe your ideal mix of products, topics, frequency, and timing in plain language. We'll translate it into preference changes you can preview before applying.</p>
             <p class="ux-note">Beta NLP assistant: rule-based parser in this prototype; production would use guarded LLM → structured preview → confirm.</p>
           </div>
           <div class="nlp-beta__prompt-area">
-            <label for="nlpInput" class="visually-hidden">Describe your news preferences</label>
-            <textarea class="nlp-textarea" id="nlpInput" placeholder="Example: I only want politics and local news on weekdays, with major breaking alerts. Quiet after 10pm. Combine everything else into a morning bundle at 7am, but keep Morning Briefing separate.">${state.nlp.input}</textarea>
+            <label for="nlpInput" class="visually-hidden">Describe your preferences</label>
+            <textarea class="nlp-textarea" id="nlpInput" placeholder="Example: Core news on weekdays with major breaking only. Enable Word reminders and podcast alerts. Quiet after 10pm. Bundle lifestyle emails into one morning send at 7am.">${state.nlp.input}</textarea>
             <p style="font-size:.75rem;color:var(--text-muted);margin:0">Try a suggestion:</p>
             <div class="nlp-suggestions">${suggestions}</div>
             <div class="nlp-actions">
@@ -4193,17 +4551,38 @@
     function render() {
       document.getElementById('lastUpdatedDisplay').textContent = 'Last updated: ' + formatLastUpdated(state.lastUpdated);
 
-      document.getElementById('mainContent').innerHTML =
-        renderRecommendations() +
+      const coreNewsContent =
         renderBreakingSection() +
-        renderNewslettersSection() +
-        renderBeatsSection() +
-        renderDeliveryTimingSection() +
-        renderFrequencySection() +
-        renderChannelsSection() +
-        renderOptOutSection() +
-        renderEssentialSection() +
-        renderNlpBetaSection();
+        renderNewslettersSection('coreNews', 'Editorial newsletters', 'Subscribe to the news products you want — independent of topic follows.') +
+        renderBeatsSection();
+
+      const audioContent =
+        renderNewslettersSection('audio', 'Podcast programs', 'Episode drops and audio updates from our shows.') +
+        renderProductCommsSection('audio', 'Listen & live alerts', 'Recommendations and live event notifications.');
+
+      const gamesContent =
+        renderProductCommsSection('games', 'Game reminders', 'Daily puzzle nudges and optional tips — all opt-in.');
+
+      const lifestyleContent =
+        renderProductCommsSection('lifestyle', 'Lifestyle programs', 'Cooking, wellness, and travel inspiration aligned to your interests.');
+
+      const membershipContent =
+        renderNewslettersSection('membership', 'Member programs', 'Exclusive content and behind-the-scenes reporting for subscribers.') +
+        renderProductCommsSection('membership', 'Events & perks', 'Invitations, partner offers, and member-only access.');
+
+      document.getElementById('mainContent').innerHTML =
+        renderPortfolioNav() +
+        renderPortfolioOverview() +
+        renderRecommendations() +
+        renderGlobalSettingsBlock() +
+        renderProductBlock('coreNews', coreNewsContent) +
+        renderProductBlock('audio', audioContent) +
+        renderProductBlock('games', gamesContent) +
+        renderProductBlock('lifestyle', lifestyleContent) +
+        renderProductBlock('membership', membershipContent) +
+        (state.ui.productFilter === 'all' ? renderOptOutSection() : '') +
+        (state.ui.productFilter === 'all' ? renderEssentialSection() : '') +
+        (state.ui.productFilter === 'all' ? renderNlpBetaSection() : '');
 
       renderSummary();
       bindEvents();
@@ -4259,6 +4638,25 @@
           const key = e.target.dataset.nlCadence;
           state.newsletters[key].cadence = e.target.value;
           markDirty(`${NEWSLETTER_META[key].label} cadence: ${CADENCE_OPTIONS.find(o => o.value === e.target.value).label}`);
+          render();
+        });
+      });
+
+      // Product comms
+      document.querySelectorAll('[data-pc-enable]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.pcEnable;
+          state.productComms[key].enabled = e.target.checked;
+          markDirty(`${e.target.checked ? 'Enabled' : 'Disabled'} ${PRODUCT_COMMS_META[key].label}`);
+          render();
+        });
+      });
+
+      document.querySelectorAll('[data-pc-cadence]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.pcCadence;
+          state.productComms[key].cadence = e.target.value;
+          markDirty(`${PRODUCT_COMMS_META[key].label} cadence: ${CADENCE_OPTIONS.find(o => o.value === e.target.value).label}`);
           render();
         });
       });
@@ -4515,6 +4913,18 @@
       }
     });
     document.getElementById('mainContent').addEventListener('click', e => {
+      const filterBtn = e.target.closest('[data-product-filter]');
+      if (filterBtn) {
+        state.ui.productFilter = filterBtn.dataset.productFilter;
+        render();
+        if (state.ui.productFilter !== 'all') {
+          requestAnimationFrame(() => {
+            const el = document.getElementById(`product-${state.ui.productFilter}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        }
+        return;
+      }
       const interestBtn = e.target.closest('[data-open-interest-drawer]');
       if (interestBtn) {
         openInterestDrawer(interestBtn.dataset.openInterestDrawer);
