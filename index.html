@@ -1,0 +1,4739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newsletters and Alerts — Preference Center</title>
+  <style>
+    /* ── Design tokens ───────────────────────────────────────────── */
+    :root {
+      --font-serif: "Georgia", "Times New Roman", serif;
+      --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --accent: #1a4d7c;
+      --accent-hover: #153d63;
+      --accent-soft: #e8f1f8;
+      --bg: #f7f6f3;
+      --surface: #ffffff;
+      --surface-raised: #ffffff;
+      --border: #e2e0da;
+      --border-strong: #c8c4bb;
+      --text: #1a1a18;
+      --text-secondary: #5c5a54;
+      --text-muted: #8a877f;
+      --success: #1d6b3a;
+      --success-bg: #e8f5ec;
+      --warning: #8a5a00;
+      --warning-bg: #fdf6e8;
+      --danger: #9b2c2c;
+      --danger-bg: #fceaea;
+      --muted-bg: #f0eeea;
+      --paused-bg: #fff8e6;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+      --radius: 10px;
+      --radius-sm: 6px;
+      --focus-ring: 0 0 0 3px rgba(26,77,124,.35);
+      --tap-min: 44px;
+      --transition: 180ms ease;
+    }
+
+    [data-theme="dark"] {
+      --accent: #6ba3d4;
+      --accent-hover: #8ab8e0;
+      --accent-soft: #1e3347;
+      --bg: #121110;
+      --surface: #1c1b19;
+      --surface-raised: #252422;
+      --border: #3a3834;
+      --border-strong: #4f4c47;
+      --text: #f0eeea;
+      --text-secondary: #b8b5ad;
+      --text-muted: #8a877f;
+      --success: #5cb87a;
+      --success-bg: #1a2e22;
+      --warning: #e0b04a;
+      --warning-bg: #2e2618;
+      --danger: #e07070;
+      --danger-bg: #2e1a1a;
+      --muted-bg: #2a2826;
+      --paused-bg: #2e2818;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.25);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.35);
+      --focus-ring: 0 0 0 3px rgba(107,163,212,.4);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ──────────────────────────────────────────────────── */
+    .page-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: .85rem 1.25rem;
+    }
+
+    .page-header__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-header__top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: .65rem 1rem;
+    }
+
+    .page-header h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -.02em;
+    }
+
+    .page-header__details {
+      margin-top: .5rem;
+    }
+
+    .page-header__details summary {
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      list-style: none;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+    }
+
+    .page-header__details summary::-webkit-details-marker { display: none; }
+
+    .page-header__details summary::before {
+      content: "›";
+      display: inline-block;
+      transition: transform var(--transition);
+    }
+
+    .page-header__details[open] summary::before { transform: rotate(90deg); }
+
+    .page-header__details summary:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: var(--radius-sm);
+    }
+
+    .page-header__subhead {
+      color: var(--text-secondary);
+      margin: .4rem 0 0;
+      max-width: 52ch;
+      font-size: .8rem;
+      line-height: 1.45;
+    }
+
+    .page-header__meta {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .last-updated {
+      font-size: .7rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 599px) {
+      .last-updated { display: none; }
+    }
+
+    .layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.25rem;
+    }
+
+    @media (min-width: 960px) {
+      .layout {
+        padding: 1.25rem 1.25rem 6rem;
+      }
+    }
+
+    /* ── Profile spotlight (glance + expandable) ─────────────────── */
+    .profile-spotlight-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: .65rem 1.25rem 0;
+    }
+
+    .profile-spotlight {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .75rem 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .profile-spotlight.is-expanded {
+      border: 2px solid var(--accent);
+      padding: 1.15rem 1.15rem 1.1rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .profile-spotlight.is-expanded .profile-glance {
+      display: none;
+    }
+
+    .profile-spotlight:not(.is-expanded) .profile-spotlight__header {
+      display: none;
+    }
+
+    .profile-spotlight__header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .75rem 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-brand {
+      font-size: .7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--accent);
+      margin: 0 0 .2rem;
+    }
+
+    .profile-spotlight__headline {
+      font-family: var(--font-serif);
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -.02em;
+    }
+
+    .profile-spotlight__tagline {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      margin: .25rem 0 0;
+    }
+
+    .profile-spotlight__details {
+      display: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-spotlight.is-expanded .profile-spotlight__details {
+      display: block;
+    }
+
+    .profile-spotlight.is-expanded .profile-spotlight__details {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .profile-spotlight.is-expanded::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), #3d7a5e, #c4a035, var(--accent));
+    }
+
+    .profile-glance {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .65rem 1rem;
+      justify-content: space-between;
+    }
+
+    .profile-glance__left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .65rem 1rem;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .profile-glance__identity {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .profile-glance__identity strong {
+      font-family: var(--font-serif);
+      color: var(--text);
+      font-size: .9rem;
+    }
+
+    .profile-ring--sm {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    .profile-ring--sm .profile-ring__score {
+      font-size: .75rem;
+    }
+
+    .profile-ring--sm .profile-ring__score span {
+      font-size: .45rem;
+    }
+
+    .profile-glance__stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+    }
+
+    .glance-stat {
+      font-size: .7rem;
+      font-weight: 600;
+      padding: .25rem .5rem;
+      border-radius: 999px;
+      background: var(--muted-bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .glance-stat--accent {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .profile-expand-btn {
+      font-family: inherit;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: .4rem .7rem;
+      min-height: 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--accent);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .profile-expand-btn:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .profile-spotlight.is-expanded::after {
+      content: "";
+      position: absolute;
+      top: -40%;
+      right: -10%;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: .5;
+    }
+
+    .profile-spotlight__inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-spotlight__core {
+      display: grid;
+      gap: 1rem;
+    }
+
+    @media (min-width: 720px) {
+      .profile-spotlight__core {
+        grid-template-columns: auto 1fr;
+        align-items: center;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .profile-spotlight__core {
+        grid-template-columns: auto 1fr auto;
+        gap: 1.5rem;
+      }
+    }
+
+    .profile-spotlight .profile-ring {
+      width: 96px;
+      height: 96px;
+    }
+
+    .profile-spotlight .profile-ring__score {
+      font-size: 1.45rem;
+    }
+
+    .stats-label {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-muted);
+      margin: 1rem 0 .5rem;
+    }
+
+    .profile-spotlight .summary-pills {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 600px) {
+      .profile-spotlight .summary-pills {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+
+    .profile-spotlight__badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .75rem;
+      padding-top: .85rem;
+      margin-top: .85rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .profile-spotlight__footer {
+      flex: 1;
+      min-width: 12rem;
+    }
+
+    .profile-spotlight .streak-card {
+      margin-bottom: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .profile-spotlight .streak-card {
+        max-width: 220px;
+      }
+    }
+
+    /* ── Contact drawer ──────────────────────────────────────────── */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 400;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition), visibility var(--transition);
+    }
+
+    .drawer-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(420px, 100vw);
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      box-shadow: -8px 0 32px rgba(0,0,0,.12);
+      z-index: 401;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 280ms ease;
+    }
+
+    .drawer-overlay.is-open .drawer {
+      transform: translateX(0);
+    }
+
+    .drawer__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.25rem 1.25rem .75rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .drawer__title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      margin: 0 0 .2rem;
+    }
+
+    .drawer__desc {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .drawer__close {
+      font-family: inherit;
+      font-size: 1.25rem;
+      line-height: 1;
+      width: var(--tap-min);
+      height: var(--tap-min);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .drawer__close:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .drawer__body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .drawer__section-title {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-muted);
+      margin: 0 0 .65rem;
+    }
+
+    .drawer__section-title + .drawer__section-title {
+      margin-top: 1.25rem;
+    }
+
+    .drawer-account-facts {
+      display: grid;
+      gap: .4rem;
+      margin-bottom: 1.25rem;
+      font-size: .85rem;
+    }
+
+    .drawer-account-facts dt {
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .drawer-account-facts dd {
+      margin: 0 0 .5rem;
+      color: var(--text);
+    }
+
+    /* ── Cards & sections ────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card + .card { margin-top: 1rem; }
+
+    .section {
+      margin-bottom: 1.5rem;
+    }
+
+    .section__header {
+      margin-bottom: 1rem;
+    }
+
+    .section__title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 .25rem;
+    }
+
+    .section__desc {
+      color: var(--text-secondary);
+      font-size: .875rem;
+      margin: 0;
+    }
+
+    .ux-note {
+      font-size: .75rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin: .5rem 0 0;
+      padding-left: .75rem;
+      border-left: 2px solid var(--border);
+    }
+
+    /* ── Reader identity (drawer contents) ───────────────────────── */
+    .reader-card {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .reader-card__header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+
+    .reader-card__name {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 .25rem;
+    }
+
+    .reader-card__meta-line {
+      font-size: .8rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .reader-card__detail {
+      font-size: .875rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      font-size: .7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: .2rem .55rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .contact-grid {
+      display: grid;
+      gap: .5rem;
+    }
+
+    @media (min-width: 640px) {
+      .contact-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .contact-endpoint {
+      display: flex;
+      align-items: flex-start;
+      gap: .65rem;
+      padding: .65rem .75rem;
+      background: var(--muted-bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      min-height: var(--tap-min);
+    }
+
+    .contact-endpoint__icon {
+      font-size: 1rem;
+      line-height: 1.4;
+      flex-shrink: 0;
+      width: 1.25rem;
+      text-align: center;
+    }
+
+    .contact-endpoint__body { min-width: 0; flex: 1; }
+
+    .contact-endpoint__channel {
+      font-size: .65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .contact-endpoint__value {
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--text);
+      display: block;
+      word-break: break-word;
+    }
+
+    .contact-endpoint__status {
+      font-size: .7rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: .1rem;
+    }
+
+    .contact-endpoint--active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .contact-endpoint--inactive {
+      opacity: .72;
+    }
+
+    .verified-badge {
+      display: inline-block;
+      font-size: .6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      padding: .1rem .35rem;
+      border-radius: 999px;
+      background: var(--success-bg);
+      color: var(--success);
+      margin-left: .25rem;
+      vertical-align: middle;
+    }
+
+    .reader-card__footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem 1rem;
+      padding-top: .25rem;
+      border-top: 1px solid var(--border);
+      font-size: .8rem;
+      color: var(--text-secondary);
+    }
+
+    /* ── Summary panel (gamified profile — spotlight) ─────────────── */
+    .summary-panel {
+      overflow: hidden;
+      position: relative;
+      padding: 0;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    .summary-panel::before { display: none; }
+
+    .profile-hero {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .profile-ring {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+    }
+
+    .profile-ring svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .profile-ring__track {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 6;
+    }
+
+    .profile-ring__fill {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 6;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 600ms ease;
+    }
+
+    .profile-ring__score {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .profile-ring__score span {
+      font-size: .55rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-top: .15rem;
+    }
+
+    .profile-hero__text h2 {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      margin: 0 0 .2rem;
+    }
+
+    .profile-level {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: .25rem .55rem;
+      border-radius: 999px;
+      margin-bottom: .35rem;
+    }
+
+    .profile-level__num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.1rem;
+      height: 1.1rem;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: .65rem;
+    }
+
+    .profile-tagline {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .xp-bar {
+      margin-bottom: 1rem;
+    }
+
+    .xp-bar__labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: .65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: .3rem;
+    }
+
+    .xp-bar__track {
+      height: 8px;
+      background: var(--muted-bg);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .xp-bar__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #3d7a5e);
+      border-radius: 999px;
+      transition: width 600ms ease;
+      min-width: 4px;
+    }
+
+    .summary-pills {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .5rem;
+      margin-bottom: .85rem;
+    }
+
+    .summary-pill {
+      display: flex;
+      flex-direction: column;
+      padding: .55rem .65rem;
+      background: var(--muted-bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      transition: transform 200ms ease, border-color 200ms ease;
+    }
+
+    .summary-pill:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .summary-pill__value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--accent);
+    }
+
+    .summary-pill__label {
+      font-size: .65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .achievement-board {
+      margin-bottom: .85rem;
+    }
+
+    .achievement-board__title {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-muted);
+      margin: 0 0 .5rem;
+    }
+
+    .achievement-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+
+    .achievement {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .7rem;
+      font-weight: 600;
+      padding: .3rem .55rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+    }
+
+    .achievement.is-earned {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .achievement.is-locked {
+      opacity: .45;
+      filter: grayscale(.4);
+    }
+
+    .streak-card {
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+      padding: .65rem .75rem;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning);
+      border-radius: var(--radius-sm);
+      margin-bottom: .85rem;
+    }
+
+    .streak-card__icon { font-size: 1.25rem; }
+
+    .streak-card__text {
+      font-size: .8rem;
+      color: var(--text);
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    .streak-card__text strong { color: var(--warning); }
+
+    .summary-sentence {
+      font-size: .85rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.45;
+      padding: .65rem .75rem;
+      background: var(--muted-bg);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
+    }
+
+    .profile-next-hint {
+      font-size: .75rem;
+      color: var(--text-muted);
+      margin: .65rem 0 0;
+      font-style: italic;
+    }
+
+    /* ── Breaking alerts (prominent) ───────────────────────────── */
+    .breaking-section {
+      border: 2px solid var(--accent);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .breaking-section .section__title {
+      color: var(--accent);
+    }
+
+    .intensity-options {
+      display: grid;
+      gap: .5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (min-width: 600px) {
+      .intensity-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .intensity-options {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .intensity-option {
+      position: relative;
+    }
+
+    .intensity-option input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .intensity-option__label {
+      display: block;
+      padding: .85rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: var(--tap-min);
+      transition: border-color var(--transition), background var(--transition);
+    }
+
+    .intensity-option input:focus-visible + .intensity-option__label {
+      box-shadow: var(--focus-ring);
+    }
+
+    .intensity-option input:checked + .intensity-option__label {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .intensity-option--major input:checked + .intensity-option__label {
+      border-color: var(--warning);
+      background: var(--warning-bg);
+    }
+
+    .intensity-option__title {
+      font-weight: 600;
+      font-size: .9rem;
+      display: block;
+    }
+
+    .intensity-option__hint {
+      font-size: .75rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: .15rem;
+    }
+
+    /* ── Channel toggles ─────────────────────────────────────────── */
+    .channel-grid {
+      display: grid;
+      gap: .65rem;
+    }
+
+    @media (min-width: 500px) {
+      .channel-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .channel-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      padding: .5rem 0;
+      min-height: var(--tap-min);
+    }
+
+    .channel-row__info strong {
+      display: block;
+      font-size: .9rem;
+    }
+
+    .channel-row__info span {
+      font-size: .75rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Toggle switch ───────────────────────────────────────────── */
+    .toggle {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .toggle__track {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: var(--border-strong);
+      border-radius: 999px;
+      transition: background var(--transition);
+    }
+
+    .toggle__thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform var(--transition);
+      pointer-events: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+
+    .toggle input:checked ~ .toggle__track { background: var(--accent); }
+    .toggle input:checked ~ .toggle__thumb { transform: translateX(20px); }
+    .toggle input:focus-visible ~ .toggle__track { box-shadow: var(--focus-ring); }
+
+    /* ── Newsletter cards ────────────────────────────────────────── */
+    .product-grid {
+      display: grid;
+      gap: .75rem;
+    }
+
+    @media (min-width: 600px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .product-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .65rem;
+      background: var(--surface-raised);
+    }
+
+    .product-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: .5rem;
+    }
+
+    .product-card__title {
+      font-weight: 600;
+      font-size: .95rem;
+      margin: 0;
+    }
+
+    .product-card__desc {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      margin: 0;
+      flex: 1;
+    }
+
+    .product-card__footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .5rem;
+      margin-top: auto;
+    }
+
+    .status-badge {
+      font-size: .65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: .2rem .45rem;
+      border-radius: 999px;
+    }
+
+    .status-badge--active { background: var(--success-bg); color: var(--success); }
+    .status-badge--paused { background: var(--paused-bg); color: var(--warning); }
+    .status-badge--off { background: var(--muted-bg); color: var(--text-muted); }
+
+    .channel-indicator {
+      font-size: .7rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Beats / chips ───────────────────────────────────────────── */
+    .beats-grid {
+      display: grid;
+      gap: .65rem;
+    }
+
+    .beat-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .beat-card__main {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .5rem;
+      padding: .75rem 1rem;
+    }
+
+    .beat-card__name {
+      font-weight: 600;
+      font-size: .9rem;
+      flex: 1;
+      min-width: 8rem;
+    }
+
+    .beat-actions {
+      display: flex;
+      gap: .35rem;
+      flex-wrap: wrap;
+    }
+
+    .chip-btn {
+      font-family: inherit;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: .4rem .7rem;
+      min-height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .chip-btn:hover { border-color: var(--border-strong); }
+    .chip-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+    .chip-btn--active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .chip-btn--muted-active {
+      background: var(--muted-bg);
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+    .chip-btn--paused-active {
+      background: var(--warning-bg);
+      border-color: var(--warning);
+      color: var(--warning);
+    }
+
+    .beat-card__expand {
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      font-size: .75rem;
+      color: var(--accent);
+      background: var(--muted-bg);
+      border: none;
+      border-top: 1px solid var(--border);
+      padding: .5rem 1rem;
+      cursor: pointer;
+      min-height: var(--tap-min);
+    }
+
+    .beat-card__expand:focus-visible { outline: none; box-shadow: inset var(--focus-ring); }
+
+    .subbeats {
+      padding: .75rem 1rem 1rem;
+      background: var(--muted-bg);
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+
+    .subbeats.is-open { display: block; }
+
+    .subbeats__grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-bottom: .75rem;
+    }
+
+    .subbeat-chip {
+      font-family: inherit;
+      font-size: .75rem;
+      padding: .35rem .65rem;
+      min-height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .subbeat-chip.is-on {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .subbeat-chip:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    .cadence-select {
+      font-family: inherit;
+      font-size: .8rem;
+      padding: .4rem .6rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      min-height: 36px;
+      width: 100%;
+      max-width: 220px;
+    }
+
+    .cadence-select:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    .cadence-hint {
+      font-size: .7rem;
+      color: var(--text-muted);
+      margin: .25rem 0 0;
+    }
+
+    /* ── Segmented control ───────────────────────────────────────── */
+    .segmented {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .segmented__btn {
+      font-family: inherit;
+      font-size: .8rem;
+      font-weight: 600;
+      padding: .55rem 1rem;
+      min-height: var(--tap-min);
+      border: none;
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      flex: 1;
+      transition: background var(--transition);
+      white-space: nowrap;
+    }
+
+    .segmented__btn + .segmented__btn {
+      border-left: 1px solid var(--border);
+    }
+
+    .segmented__btn.is-active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .segmented__btn:focus-visible {
+      outline: none;
+      box-shadow: inset var(--focus-ring);
+      z-index: 1;
+    }
+
+    /* ── Recommendations ─────────────────────────────────────────── */
+    .rec-grid {
+      display: grid;
+      gap: .65rem;
+    }
+
+    @media (min-width: 600px) {
+      .rec-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .rec-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      padding: .85rem 1rem;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--accent-soft);
+    }
+
+    .rec-card__text {
+      font-size: .85rem;
+    }
+
+    .rec-card__reason {
+      font-size: .7rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: .15rem;
+    }
+
+    .rec-section--prominent {
+      margin-top: .5rem;
+    }
+
+    .rec-section--prominent .section__title {
+      font-size: 1.35rem;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-size: .85rem;
+      font-weight: 600;
+      padding: .55rem 1rem;
+      min-height: var(--tap-min);
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    .btn--primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn--primary:hover { background: var(--accent-hover); }
+
+    .btn--secondary {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .btn--secondary:hover { border-color: var(--border-strong); }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+
+    .btn--danger {
+      background: transparent;
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .btn--sm {
+      font-size: .75rem;
+      padding: .4rem .75rem;
+      min-height: 36px;
+    }
+
+    /* ── Opt-out section ─────────────────────────────────────────── */
+    .opt-out-section {
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .opt-out-section p {
+      font-size: .85rem;
+      color: var(--text-secondary);
+      margin: 0 0 .75rem;
+    }
+
+    /* ── Essential notices ───────────────────────────────────────── */
+    .essential-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: .5rem;
+    }
+
+    .essential-list li {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .85rem;
+      color: var(--text-secondary);
+    }
+
+    .essential-list li::before {
+      content: "✓";
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    /* ── Sticky save bar ─────────────────────────────────────────── */
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 20px rgba(0,0,0,.1);
+      padding: .85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      transform: translateY(100%);
+      transition: transform var(--transition);
+      z-index: 100;
+    }
+
+    .save-bar.is-visible { transform: translateY(0); }
+
+    .save-bar__text {
+      font-size: .875rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .save-bar__actions {
+      display: flex;
+      gap: .5rem;
+    }
+
+    /* ── Toast / banner ──────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(-120%);
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid var(--success);
+      border-radius: var(--radius-sm);
+      padding: .85rem 1.25rem;
+      max-width: 90vw;
+      font-size: .875rem;
+      font-weight: 600;
+      z-index: 200;
+      transition: transform var(--transition);
+      box-shadow: var(--shadow-md);
+    }
+
+    .toast.is-visible { transform: translateX(-50%) translateY(0); }
+
+    .save-summary {
+      background: var(--success-bg);
+      border: 1px solid var(--success);
+      border-radius: var(--radius-sm);
+      padding: .85rem 1rem;
+      margin-bottom: 1rem;
+      font-size: .85rem;
+      display: none;
+    }
+
+    .save-summary.is-visible { display: block; }
+
+    .save-summary ul {
+      margin: .35rem 0 0;
+      padding-left: 1.25rem;
+    }
+
+    /* ── Modal ───────────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 300;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition), visibility var(--transition);
+    }
+
+    .modal-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius);
+      max-width: 480px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+    }
+
+    .modal__header {
+      padding: 1.25rem 1.25rem .5rem;
+    }
+
+    .modal__title {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      margin: 0 0 .35rem;
+    }
+
+    .modal__desc {
+      font-size: .85rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .modal__body {
+      padding: .75rem 1.25rem;
+    }
+
+    .modal__options {
+      display: grid;
+      gap: .5rem;
+    }
+
+    .modal-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      font-size: .875rem;
+      padding: .85rem 1rem;
+      min-height: var(--tap-min);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      cursor: pointer;
+      transition: border-color var(--transition);
+    }
+
+    .modal-option:hover { border-color: var(--accent); }
+    .modal-option:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    .modal-option strong { display: block; }
+    .modal-option span {
+      font-size: .75rem;
+      color: var(--text-muted);
+    }
+
+    .modal-option--danger {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .modal__footer {
+      padding: .75rem 1.25rem 1.25rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* ── Dark mode toggle ────────────────────────────────────────── */
+    .theme-toggle {
+      font-family: inherit;
+      font-size: .8rem;
+      font-weight: 600;
+      padding: .45rem .85rem;
+      min-height: var(--tap-min);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .theme-toggle:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+
+    .select-sm {
+      font-family: inherit;
+      font-size: .75rem;
+      padding: .3rem .5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      min-height: 32px;
+    }
+
+    .select-sm:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    .global-intensity-block {
+      margin-bottom: 1.25rem;
+    }
+
+    .global-intensity-block .cadence-hint {
+      margin-top: .5rem;
+    }
+
+    /* ── Delivery timing & consolidation ─────────────────────────── */
+    .timing-section {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .timing-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    @media (min-width: 700px) {
+      .timing-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .timing-block {
+      padding: 1rem;
+      background: var(--muted-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .timing-block__title {
+      font-size: .85rem;
+      font-weight: 700;
+      margin: 0 0 .5rem;
+    }
+
+    .timing-block__desc {
+      font-size: .75rem;
+      color: var(--text-muted);
+      margin: 0 0 .75rem;
+    }
+
+    .time-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: .5rem;
+    }
+
+    .time-row label {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      min-width: 4.5rem;
+    }
+
+    .time-input, .timing-select {
+      font-family: inherit;
+      font-size: .85rem;
+      padding: .45rem .6rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      min-height: 36px;
+    }
+
+    .time-input:focus-visible, .timing-select:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .consolidation-options {
+      display: grid;
+      gap: .5rem;
+      margin-bottom: .75rem;
+    }
+
+    .consolidation-option {
+      position: relative;
+    }
+
+    .consolidation-option input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .consolidation-option__label {
+      display: block;
+      padding: .75rem .85rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: var(--tap-min);
+      transition: border-color var(--transition), background var(--transition);
+    }
+
+    .consolidation-option input:focus-visible + .consolidation-option__label {
+      box-shadow: var(--focus-ring);
+    }
+
+    .consolidation-option input:checked + .consolidation-option__label {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .consolidation-option__title {
+      font-weight: 600;
+      font-size: .85rem;
+      display: block;
+    }
+
+    .consolidation-option__hint {
+      font-size: .75rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: .1rem;
+    }
+
+    .consolidation-preview {
+      padding: .85rem 1rem;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      font-size: .8rem;
+      color: var(--text);
+      margin-top: .75rem;
+    }
+
+    .consolidation-preview strong {
+      display: block;
+      margin-bottom: .25rem;
+      color: var(--accent);
+    }
+
+    .exception-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-top: .5rem;
+    }
+
+    .quiet-channel-toggles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-top: .5rem;
+    }
+
+    .quiet-channel-toggles label {
+      font-size: .75rem;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      cursor: pointer;
+      min-height: 36px;
+    }
+
+    /* ── Beta NLP assistant ──────────────────────────────────────── */
+    .nlp-beta {
+      border: 2px dashed var(--accent);
+      border-radius: var(--radius);
+      padding: 1.35rem 1.25rem;
+      background: linear-gradient(135deg, var(--accent-soft) 0%, var(--surface) 55%);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nlp-beta__badge {
+      display: inline-block;
+      font-size: .65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: .25rem .5rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      margin-bottom: .5rem;
+    }
+
+    .nlp-beta__prompt-area {
+      display: grid;
+      gap: .75rem;
+    }
+
+    .nlp-textarea {
+      font-family: inherit;
+      font-size: .9rem;
+      line-height: 1.5;
+      width: 100%;
+      min-height: 100px;
+      padding: .85rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      resize: vertical;
+    }
+
+    .nlp-textarea:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-color: var(--accent);
+    }
+
+    .nlp-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+
+    .nlp-suggestion {
+      font-family: inherit;
+      font-size: .72rem;
+      padding: .35rem .6rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      min-height: 32px;
+      transition: border-color var(--transition), color var(--transition);
+    }
+
+    .nlp-suggestion:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .nlp-suggestion:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .nlp-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      align-items: center;
+    }
+
+    .nlp-preview {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+
+    .nlp-preview.is-visible { display: block; }
+
+    .nlp-preview__title {
+      font-size: .8rem;
+      font-weight: 700;
+      margin: 0 0 .5rem;
+      color: var(--accent);
+    }
+
+    .nlp-preview__list {
+      margin: 0 0 .75rem;
+      padding-left: 1.2rem;
+      font-size: .85rem;
+      color: var(--text-secondary);
+    }
+
+    .nlp-preview__list li { margin-bottom: .25rem; }
+
+    .nlp-preview__empty {
+      font-size: .85rem;
+      color: var(--text-muted);
+      margin: 0 0 .75rem;
+      font-style: italic;
+    }
+
+    .nlp-preview__note {
+      font-size: .75rem;
+      color: var(--text-muted);
+      margin: .65rem 0 0;
+    }
+
+    /* ── Content preview modal ───────────────────────────────────── */
+    .preview-sample {
+      background: var(--muted-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .preview-sample__email-header {
+      padding: .75rem 1rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: .75rem;
+      color: var(--text-muted);
+    }
+
+    .preview-sample__email-header strong {
+      display: block;
+      font-size: .9rem;
+      color: var(--text);
+      margin-bottom: .2rem;
+    }
+
+    .preview-sample__body {
+      padding: 1rem;
+      font-size: .85rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+
+    .preview-sample__body h3 {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--text);
+      margin: 0 0 .5rem;
+    }
+
+    .preview-sample__body ul {
+      margin: .5rem 0 0;
+      padding-left: 1.2rem;
+    }
+
+    .preview-sample__body li { margin-bottom: .35rem; }
+
+    .preview-push {
+      max-width: 280px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: .85rem 1rem;
+      box-shadow: var(--shadow-md);
+      font-size: .8rem;
+    }
+
+    .preview-push__app {
+      font-size: .65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: .35rem;
+    }
+
+    .preview-push__title {
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: .2rem;
+    }
+
+    .btn--link {
+      background: none;
+      border: none;
+      color: var(--accent);
+      padding: 0;
+      min-height: 36px;
+      font-size: .75rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .btn--link:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 2px;
+    }
+
+    /* ── Post-save next actions ──────────────────────────────────── */
+    .next-actions {
+      margin-top: 1rem;
+      padding: 1rem 1.15rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .next-actions__title {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      margin: 0 0 .35rem;
+    }
+
+    .next-actions__desc {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      margin: 0 0 .85rem;
+    }
+
+    .next-actions__grid {
+      display: grid;
+      gap: .5rem;
+    }
+
+    @media (min-width: 600px) {
+      .next-actions__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .next-action-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      padding: .75rem .85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--muted-bg);
+      text-align: left;
+      font-family: inherit;
+      cursor: pointer;
+      min-height: var(--tap-min);
+      transition: border-color var(--transition);
+      width: 100%;
+    }
+
+    .next-action-card:hover { border-color: var(--accent); }
+
+    .next-action-card:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .next-action-card__label {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text);
+      display: block;
+    }
+
+    .next-action-card__hint {
+      font-size: .7rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: .1rem;
+    }
+
+    .next-action-card__arrow {
+      color: var(--accent);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .save-summary .next-actions {
+      margin-top: .85rem;
+      background: var(--accent-soft);
+      border-style: dashed;
+    }
+
+    /* ── Interest sub-category drawer ────────────────────────────── */
+    .beat-refine-btn {
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      font-size: .8rem;
+      font-weight: 600;
+      padding: .6rem .85rem;
+      min-height: var(--tap-min);
+      border: 1px dashed var(--accent);
+      border-radius: var(--radius-sm);
+      background: var(--accent-soft);
+      color: var(--accent);
+      cursor: pointer;
+      margin-top: .5rem;
+    }
+
+    .beat-refine-btn:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .beat-selected-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+      margin-top: .5rem;
+    }
+
+    .interest-search-wrap {
+      position: relative;
+      margin-bottom: .85rem;
+    }
+
+    .interest-search {
+      font-family: inherit;
+      font-size: .9rem;
+      width: 100%;
+      padding: .65rem .85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      min-height: var(--tap-min);
+    }
+
+    .interest-search:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-color: var(--accent);
+    }
+
+    .interest-suggestions {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 4px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 10;
+      display: none;
+    }
+
+    .interest-suggestions.is-open { display: block; }
+
+    .interest-suggestion {
+      display: block;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      font-size: .85rem;
+      padding: .6rem .85rem;
+      min-height: var(--tap-min);
+      border: none;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+    }
+
+    .interest-suggestion:last-child { border-bottom: none; }
+
+    .interest-suggestion:hover,
+    .interest-suggestion:focus-visible {
+      background: var(--accent-soft);
+      outline: none;
+    }
+
+    .interest-suggestion__meta {
+      font-size: .7rem;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .interest-region-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-bottom: .85rem;
+    }
+
+    .interest-region-btn {
+      font-family: inherit;
+      font-size: .72rem;
+      font-weight: 600;
+      padding: .35rem .6rem;
+      min-height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .interest-region-btn.is-active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .interest-region-btn:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .interest-selected-block {
+      margin-bottom: .85rem;
+    }
+
+    .interest-selected-block__label {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-muted);
+      margin: 0 0 .4rem;
+    }
+
+    .interest-item-grid {
+      display: grid;
+      gap: .4rem;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .interest-item {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .55rem .7rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      cursor: pointer;
+      min-height: var(--tap-min);
+      font-size: .85rem;
+    }
+
+    .interest-item.is-selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .interest-item input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .drawer__footer-actions {
+      display: flex;
+      gap: .5rem;
+      padding: .85rem 1.25rem 1.25rem;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <!--
+    PAGE STRUCTURE & INTERACTION MODEL (stakeholder reference)
+    ─────────────────────────────────────────────────────────
+    1. Header: compact title + Contact + dark mode; "How this works" in collapsible details
+    2. Your reader profile (Newsroom passport): gamified score, XP, streak, activity, achievements — collapsible
+    3. Recommended for you: first content section (discovery surface)
+    4. Breaking alerts (prominent): intensity radio + channel routing
+    5. Newsletter products: card grid with subscribe toggle, cadence, status badge
+    6. Coverage interests: beat cards + searchable drawer for large sub-categories (Travel, World)
+    7. Recommended coverage: derived quick-add cards from followed beats
+    8. Delivery timing: timezone, quiet hours, consolidation bundles + exceptions
+    9. Frequency tuning: global High/Balanced/Light + per-beat cadence
+    10. Selective opt-out: modal with opt-down paths before full unsubscribe
+    11. Essential notices: informational — never affected by editorial toggles
+    12. Beta NLP prompt: natural language → preview → apply (interests, frequency, timing)
+    13. Sticky save bar: appears on dirty; Save updates timestamp + summary; Discard reverts
+    14. Single in-memory state object; no localStorage/backend
+    15. Global intensity cascades defaults to beats/newsletters on change
+    16. Pause 7/30 overrides cadence with visible paused badges
+  -->
+
+  <header class="page-header">
+    <div class="page-header__inner">
+      <div class="page-header__top">
+        <h1>Newsletters and alerts</h1>
+        <div class="page-header__meta">
+          <span class="last-updated" id="lastUpdatedDisplay" aria-live="polite">Last updated: —</span>
+          <button type="button" class="btn btn--secondary btn--sm" id="openContactDrawerBtn">Contact</button>
+          <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">Dark mode</button>
+        </div>
+      </div>
+      <details class="page-header__details">
+        <summary>How this works</summary>
+        <p class="page-header__subhead">Choose topics, newsletters, breaking alerts, and timing. Reduce volume anytime — you never have to unsubscribe entirely. Preferences sync across your active channels.</p>
+      </details>
+    </div>
+  </header>
+
+  <div id="saveSummary" class="save-summary" role="status" aria-live="polite"></div>
+
+  <div class="profile-spotlight-wrap">
+    <section class="profile-spotlight is-expanded" id="profileSpotlight" aria-labelledby="profileHeadline">
+      <div class="profile-glance" id="profileGlance"></div>
+      <div class="profile-spotlight__header" id="profileHeader">
+        <div>
+          <p class="profile-brand">Newsroom passport</p>
+          <h2 class="profile-spotlight__headline" id="profileHeadline">Your reader profile</h2>
+          <p class="profile-spotlight__tagline" id="profileTagline">Score, streaks, and achievements update as you tune preferences.</p>
+        </div>
+        <button type="button" class="profile-expand-btn" id="profileExpandBtn" aria-expanded="true">Collapse</button>
+      </div>
+      <div class="profile-spotlight__details">
+        <div class="profile-spotlight__inner summary-panel" id="summaryPanel">
+          <div class="profile-spotlight__core">
+            <div id="profileHero"></div>
+            <div class="profile-spotlight__footer">
+              <div class="xp-bar" id="xpBar"></div>
+              <p class="summary-sentence" id="summarySentence" style="margin-top:.75rem"></p>
+              <p class="profile-next-hint" id="profileNextHint"></p>
+            </div>
+            <div class="streak-card" id="streakCard"></div>
+          </div>
+          <p class="stats-label">Preference activity</p>
+          <div class="summary-pills" id="summaryPills" style="margin-bottom:0"></div>
+          <div class="profile-spotlight__badges-row" id="achievementBoard"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="layout">
+    <main class="layout__main" id="mainContent">
+      <!-- Sections rendered by JS -->
+    </main>
+  </div>
+
+  <div class="save-bar" id="saveBar" role="region" aria-label="Unsaved changes">
+    <p class="save-bar__text">You have unsaved changes to your news preferences.</p>
+    <div class="save-bar__actions">
+      <button type="button" class="btn btn--secondary" id="discardBtn">Discard</button>
+      <button type="button" class="btn btn--primary" id="saveBtn">Save changes</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="assertive"></div>
+
+  <div class="drawer-overlay" id="interestDrawer" role="dialog" aria-modal="true" aria-labelledby="interestDrawerTitle" hidden>
+    <div class="drawer" style="width:min(480px,100vw)">
+      <div class="drawer__header">
+        <div>
+          <h2 class="drawer__title" id="interestDrawerTitle">Refine interests</h2>
+          <p class="drawer__desc" id="interestDrawerDesc"></p>
+        </div>
+        <button type="button" class="drawer__close" id="interestDrawerCloseBtn" aria-label="Close interest selector">×</button>
+      </div>
+      <div class="drawer__body" id="interestDrawerBody"></div>
+      <div class="drawer__footer-actions">
+        <button type="button" class="btn btn--primary" id="interestDrawerDoneBtn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-overlay" id="contactDrawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" hidden>
+    <div class="drawer">
+      <div class="drawer__header">
+        <div>
+          <h2 class="drawer__title" id="drawerTitle">Contact & account</h2>
+          <p class="drawer__desc">All endpoints where we can reach you across channels.</p>
+        </div>
+        <button type="button" class="drawer__close" id="drawerCloseBtn" aria-label="Close contact details">×</button>
+      </div>
+      <div class="drawer__body" id="drawerBody"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="previewModal" role="dialog" aria-modal="true" aria-labelledby="previewTitle" hidden>
+    <div class="modal" style="max-width:520px">
+      <div class="modal__header">
+        <h2 class="modal__title" id="previewTitle">Sample preview</h2>
+        <p class="modal__desc" id="previewDesc"></p>
+      </div>
+      <div class="modal__body" id="previewBody"></div>
+      <div class="modal__footer" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+        <button type="button" class="btn btn--link" id="previewSubscribeBtn" style="display:none">Subscribe from preview</button>
+        <button type="button" class="btn btn--secondary" id="previewCloseBtn">Close preview</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="optOutModal" role="dialog" aria-modal="true" aria-labelledby="optOutTitle" hidden>
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="optOutTitle">Reduce or stop non-essential updates</h2>
+        <p class="modal__desc">We'd rather help you tune down than lose you. Choose an option below — account and billing messages are never affected.</p>
+      </div>
+      <div class="modal__body">
+        <div class="modal__options" id="optOutOptions"></div>
+      </div>
+      <div class="modal__footer">
+        <button type="button" class="btn btn--secondary" id="modalCloseBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    // STATE SCHEMA & METADATA
+    // ═══════════════════════════════════════════════════════════════
+
+    const BEAT_META = {
+      usNews: { label: 'U.S. News', subbeats: null },
+      politics: { label: 'Politics', subbeats: { whiteHouse: 'White House', congress: 'Congress', campaigns: 'Campaigns', policy: 'Policy' } },
+      world: { label: 'World', subbeats: null, drawerCatalog: 'destinations', drawerLabel: 'Regions & countries' },
+      business: { label: 'Business', subbeats: { economy: 'Economy', markets: 'Markets', careers: 'Careers', media: 'Media' } },
+      markets: { label: 'Markets', subbeats: null },
+      technology: { label: 'Technology', subbeats: { ai: 'AI', startups: 'Startups', gadgets: 'Gadgets', platforms: 'Platforms' } },
+      media: { label: 'Media', subbeats: null },
+      climate: { label: 'Climate', subbeats: null },
+      health: { label: 'Health', subbeats: null },
+      sports: { label: 'Sports', subbeats: { nfl: 'NFL', nba: 'NBA', womensSports: "Women's sports", localTeams: 'Local teams' } },
+      artsCulture: { label: 'Arts & Culture', subbeats: null },
+      food: { label: 'Food', subbeats: null },
+      travel: { label: 'Travel', subbeats: null, drawerCatalog: 'destinations', drawerLabel: 'Destinations' },
+      opinion: { label: 'Opinion', subbeats: null },
+      localNews: { label: 'Local News', subbeats: { transit: 'Transit', housing: 'Housing', schools: 'Schools', weather: 'Weather' } },
+      investigations: { label: 'Investigations', subbeats: null }
+    };
+
+    const DRAWER_REGIONS = [
+      { id: 'all', label: 'All regions' },
+      { id: 'europe', label: 'Europe' },
+      { id: 'americas', label: 'Americas' },
+      { id: 'asiaPacific', label: 'Asia-Pacific' },
+      { id: 'africaMiddleEast', label: 'Africa & Middle East' }
+    ];
+
+    const DRAWER_CATALOGS = {
+      destinations: [
+        { id: 'france', label: 'France', region: 'europe', synonyms: ['paris', 'french', 'lyon'] },
+        { id: 'germany', label: 'Germany', region: 'europe', synonyms: ['berlin', 'munich', 'german'] },
+        { id: 'italy', label: 'Italy', region: 'europe', synonyms: ['rome', 'milan', 'italian', 'florence'] },
+        { id: 'spain', label: 'Spain', region: 'europe', synonyms: ['madrid', 'barcelona', 'spanish'] },
+        { id: 'portugal', label: 'Portugal', region: 'europe', synonyms: ['lisbon', 'porto'] },
+        { id: 'unitedKingdom', label: 'United Kingdom', region: 'europe', synonyms: ['uk', 'britain', 'england', 'london', 'scotland'] },
+        { id: 'ireland', label: 'Ireland', region: 'europe', synonyms: ['dublin', 'irish'] },
+        { id: 'netherlands', label: 'Netherlands', region: 'europe', synonyms: ['amsterdam', 'dutch', 'holland'] },
+        { id: 'belgium', label: 'Belgium', region: 'europe', synonyms: ['brussels'] },
+        { id: 'switzerland', label: 'Switzerland', region: 'europe', synonyms: ['swiss', 'zurich', 'geneva'] },
+        { id: 'austria', label: 'Austria', region: 'europe', synonyms: ['vienna'] },
+        { id: 'greece', label: 'Greece', region: 'europe', synonyms: ['athens', 'greek'] },
+        { id: 'poland', label: 'Poland', region: 'europe', synonyms: ['warsaw', 'krakow'] },
+        { id: 'czechRepublic', label: 'Czech Republic', region: 'europe', synonyms: ['prague', 'czech'] },
+        { id: 'croatia', label: 'Croatia', region: 'europe', synonyms: ['dubrovnik', 'zagreb'] },
+        { id: 'denmark', label: 'Denmark', region: 'europe', synonyms: ['copenhagen', 'danish'] },
+        { id: 'sweden', label: 'Sweden', region: 'europe', synonyms: ['stockholm', 'swedish'] },
+        { id: 'norway', label: 'Norway', region: 'europe', synonyms: ['oslo', 'norwegian'] },
+        { id: 'finland', label: 'Finland', region: 'europe', synonyms: ['helsinki'] },
+        { id: 'iceland', label: 'Iceland', region: 'europe', synonyms: ['reykjavik'] },
+        { id: 'hungary', label: 'Hungary', region: 'europe', synonyms: ['budapest'] },
+        { id: 'romania', label: 'Romania', region: 'europe', synonyms: ['bucharest'] },
+        { id: 'unitedStates', label: 'United States', region: 'americas', synonyms: ['usa', 'us', 'america'] },
+        { id: 'canada', label: 'Canada', region: 'americas', synonyms: ['toronto', 'vancouver'] },
+        { id: 'mexico', label: 'Mexico', region: 'americas', synonyms: ['mexico city', 'cancun'] },
+        { id: 'brazil', label: 'Brazil', region: 'americas', synonyms: ['rio', 'sao paulo'] },
+        { id: 'argentina', label: 'Argentina', region: 'americas', synonyms: ['buenos aires'] },
+        { id: 'japan', label: 'Japan', region: 'asiaPacific', synonyms: ['tokyo', 'osaka', 'japanese'] },
+        { id: 'southKorea', label: 'South Korea', region: 'asiaPacific', synonyms: ['seoul', 'korean'] },
+        { id: 'china', label: 'China', region: 'asiaPacific', synonyms: ['beijing', 'shanghai'] },
+        { id: 'india', label: 'India', region: 'asiaPacific', synonyms: ['delhi', 'mumbai'] },
+        { id: 'australia', label: 'Australia', region: 'asiaPacific', synonyms: ['sydney', 'melbourne'] },
+        { id: 'newZealand', label: 'New Zealand', region: 'asiaPacific', synonyms: ['auckland'] },
+        { id: 'thailand', label: 'Thailand', region: 'asiaPacific', synonyms: ['bangkok'] },
+        { id: 'vietnam', label: 'Vietnam', region: 'asiaPacific', synonyms: ['hanoi', 'ho chi minh'] },
+        { id: 'singapore', label: 'Singapore', region: 'asiaPacific', synonyms: [] },
+        { id: 'egypt', label: 'Egypt', region: 'africaMiddleEast', synonyms: ['cairo'] },
+        { id: 'morocco', label: 'Morocco', region: 'africaMiddleEast', synonyms: ['marrakech'] },
+        { id: 'southAfrica', label: 'South Africa', region: 'africaMiddleEast', synonyms: ['cape town', 'johannesburg'] },
+        { id: 'uae', label: 'United Arab Emirates', region: 'africaMiddleEast', synonyms: ['dubai', 'abu dhabi'] },
+        { id: 'israel', label: 'Israel', region: 'africaMiddleEast', synonyms: ['tel aviv', 'jerusalem'] },
+        { id: 'turkey', label: 'Turkey', region: 'africaMiddleEast', synonyms: ['istanbul', 'turkish'] }
+      ]
+    };
+
+    const NEWSLETTER_META = {
+      morningBriefing: {
+        label: 'Morning Briefing',
+        desc: 'Start your day with the top stories, analysis, and what to watch — delivered by 6:30 a.m.',
+        sample: { type: 'email', subject: 'Morning Briefing — Friday, July 10', headline: 'What to know before markets open', stories: ['Fed signals patience on rate cuts amid mixed jobs data', 'City council advances housing reform package', 'What our tech team is watching this week'] }
+      },
+      eveningDigest: {
+        label: 'Evening Digest',
+        desc: 'A concise wrap-up of the day\'s most important reporting, ready when you leave work.',
+        sample: { type: 'email', subject: 'Evening Digest — The day in 6 minutes', headline: 'Today\'s essential reporting', stories: ['White House announces new climate initiative', 'Stocks close mixed; tech leads gainers', 'In depth: Inside the transit funding fight'] }
+      },
+      politicsDaily: {
+        label: 'Politics Daily',
+        desc: 'White House, Congress, and campaign coverage from our politics desk.',
+        sample: { type: 'email', subject: 'Politics Daily — Congress returns to budget standoff', headline: 'The levers that matter this week', stories: ['Speaker sets timeline for spending votes', 'Campaign tracker: Key Senate races tighten', 'Policy watch: Health care subsidy debate'] }
+      },
+      marketsMinute: {
+        label: 'Markets Minute',
+        desc: 'Opening moves, closing context, and the business stories moving markets.',
+        sample: { type: 'email', subject: 'Markets Minute — S&P 500 opens flat', headline: 'Pre-market moves', stories: ['Treasury yields tick higher ahead of auction', 'Earnings: Retailers beat on margins', 'Oil steady as OPEC+ meeting nears'] }
+      },
+      techBriefing: {
+        label: 'Tech Briefing',
+        desc: 'AI, platforms, startups, and the people reshaping technology.',
+        sample: { type: 'email', subject: 'Tech Briefing — AI regulation watch', headline: 'Platforms & policy', stories: ['Major cloud provider unveils new model tier', 'Startup funding cools in enterprise SaaS', 'Interview: The engineer behind the latest chip push'] }
+      },
+      localEdition: {
+        label: 'Local Edition',
+        desc: 'Neighborhood news, transit, schools, and city hall — for your metro area.',
+        sample: { type: 'email', subject: 'Local Edition — Your NYC Wednesday', headline: 'Metro briefing', stories: ['Subway delays ease on A/C lines after repairs', 'School board votes on new literacy program', 'Weekend: Free concerts in the parks'] }
+      },
+      weekendReads: {
+        label: 'Weekend Reads',
+        desc: 'Longer features, culture picks, and stories worth your Saturday morning.',
+        sample: { type: 'email', subject: 'Weekend Reads — 5 stories for slow mornings', headline: 'Editor\'s picks', stories: ['Longread: The reinvention of a rust-belt city', 'Culture: 12 albums our critics loved this month', 'Recipe: A summer pasta worth the wait'] }
+      },
+      investigationsDigest: {
+        label: 'Investigations Digest',
+        desc: 'Deep dives and accountability reporting from our investigative team.',
+        sample: { type: 'email', subject: 'Investigations Digest — New series launch', headline: 'Accountability reporting', stories: ['Part 1: How oversight gaps enabled fraud', 'Documents reveal years of missed warnings', 'Q&A with the reporting team'] }
+      },
+      podcastAlerts: {
+        label: 'Podcast Release Alerts',
+        desc: 'Be first to know when new episodes drop from our audio team.',
+        sample: { type: 'push', title: 'New episode: The Daily Brief', body: 'Congress returns — we break down the budget fight in 25 minutes.' }
+      },
+      subscriberExclusives: {
+        label: 'Subscriber Exclusives',
+        desc: 'Member-only newsletters, Q&As, and behind-the-scenes reporting.',
+        sample: { type: 'email', subject: 'Subscriber Exclusive — Inside the newsroom', headline: 'For members only', stories: ['Q&A: Our politics editor on 2026 outlook', 'Early access: Weekend feature draft', 'Member event: Virtual newsroom tour'] }
+      }
+    };
+
+    const BREAKING_SAMPLE = {
+      type: 'push',
+      title: 'Major developing story',
+      body: 'Breaking: Federal agency announces emergency action — follow live coverage for updates.'
+    };
+
+    const CADENCE_OPTIONS = [
+      { value: 'asPublished', label: 'As published', hint: 'Each story as it goes live' },
+      { value: 'daily', label: 'Daily digest', hint: 'Once per day, bundled' },
+      { value: 'weekdays', label: 'Weekdays', hint: 'Monday–Friday only' },
+      { value: 'weekly', label: 'Weekly', hint: 'One curated send per week' },
+      { value: 'monthly', label: 'Monthly roundup', hint: 'Best-of monthly edition' },
+      { value: 'pause7', label: 'Pause 7 days', hint: 'Temporary silence, then resume' },
+      { value: 'pause30', label: 'Pause 30 days', hint: 'Longer break without unfollowing' }
+    ];
+
+    const CADENCE_HINTS = Object.fromEntries(CADENCE_OPTIONS.map(o => [o.value, o.hint]));
+
+    const BREAKING_LEVELS = [
+      { value: 'all', label: 'All breaking news', hint: 'Every developing story', distinct: false },
+      { value: 'major', label: 'Major stories only', hint: 'Opt-down: big news, less noise', distinct: true },
+      { value: 'followed', label: 'Only followed topics', hint: 'Alerts for beats you follow', distinct: false },
+      { value: 'off', label: 'Off', hint: 'No breaking alerts', distinct: false }
+    ];
+
+    const GLOBAL_INTENSITY_MAP = {
+      high: { defaultCadence: 'daily', breakingDefault: 'all', desc: 'More frequent updates and as-published delivery' },
+      balanced: { defaultCadence: 'weekdays', breakingDefault: 'major', desc: 'Weekday briefings with major-story alerts' },
+      light: { defaultCadence: 'weekly', breakingDefault: 'major', desc: 'Weekly digests and fewer interruptions' }
+    };
+
+    const TIMEZONE_OPTIONS = [
+      { value: 'America/New_York', label: 'Eastern (ET)' },
+      { value: 'America/Chicago', label: 'Central (CT)' },
+      { value: 'America/Denver', label: 'Mountain (MT)' },
+      { value: 'America/Los_Angeles', label: 'Pacific (PT)' },
+      { value: 'America/Anchorage', label: 'Alaska (AKT)' },
+      { value: 'Pacific/Honolulu', label: 'Hawaii (HT)' },
+      { value: 'Europe/London', label: 'London (GMT/BST)' }
+    ];
+
+    const CONSOLIDATION_MODES = [
+      { value: 'separate', label: 'Separate sends', hint: 'Each product keeps its own schedule — most control, most email' },
+      { value: 'dailyBundle', label: 'One daily bundle', hint: 'Combine all email digests into a single send per day' },
+      { value: 'morningEvening', label: 'Morning + evening buckets', hint: 'AM briefings in one send; PM digests in another — common pattern' },
+      { value: 'weeklyOnly', label: 'Weekly roundup only', hint: 'Maximum consolidation — one curated email per week' }
+    ];
+
+    const WEEKDAY_OPTIONS = [
+      { value: 'sunday', label: 'Sunday' },
+      { value: 'monday', label: 'Monday' },
+      { value: 'saturday', label: 'Saturday' }
+    ];
+
+    function createInitialState() {
+      return {
+        reader: {
+          name: 'Jordan Lee',
+          preferredName: 'Jordan',
+          email: 'jordan.lee@example.com',
+          emailVerified: true,
+          phone: '+1 (917) 555-0142',
+          phoneVerified: true,
+          city: 'New York',
+          region: 'New York Metro',
+          timezone: 'America/New_York',
+          postalCode: '10012',
+          tier: 'Subscriber',
+          memberSince: '2022-03-15',
+          accountId: 'RDR-48291',
+          readingStreakDays: 23
+        },
+        contacts: {
+          email: { label: 'Email', icon: '✉', value: 'jordan.lee@example.com', detail: 'Primary inbox', verified: true, channelKey: 'email' },
+          sms: { label: 'SMS', icon: '💬', value: '+1 (917) 555-0142', detail: 'Urgent alerts only', verified: true, channelKey: 'sms' },
+          push: { label: 'Push', icon: '🔔', value: 'iPhone 15 Pro', detail: 'Newsroom app installed', verified: true, channelKey: 'push' },
+          inApp: { label: 'In-app', icon: '📱', value: '2 signed-in devices', detail: 'iPhone + iPad', verified: true, channelKey: 'inApp' },
+          browser: { label: 'Browser', icon: '🖥', value: 'Not connected', detail: 'Enable web push on desktop', verified: false, channelKey: 'browser' }
+        },
+        globalIntensity: 'balanced',
+        breakingAlerts: {
+          level: 'major',
+          channels: { push: true, sms: true, inApp: true, browser: false }
+        },
+        beats: {
+          usNews: { status: 'unfollowed', subbeats: {}, cadence: 'weekdays' },
+          politics: { status: 'followed', subbeats: { whiteHouse: true, congress: true, campaigns: false, policy: true }, cadence: 'weekdays' },
+          world: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
+          business: { status: 'followed', subbeats: { economy: true, markets: true, careers: false, media: true }, cadence: 'daily' },
+          markets: { status: 'unfollowed', subbeats: {}, cadence: 'daily' },
+          technology: { status: 'followed', subbeats: { ai: true, startups: false, gadgets: false, platforms: true }, cadence: 'weekly' },
+          media: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
+          climate: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
+          health: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
+          sports: { status: 'muted', subbeats: {}, cadence: 'pause30' },
+          artsCulture: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
+          food: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
+          travel: { status: 'followed', subbeats: { france: true, italy: true, spain: true }, cadence: 'weekly' },
+          opinion: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
+          localNews: { status: 'followed', subbeats: { transit: true, housing: true, schools: false, weather: true }, cadence: 'weekly' },
+          investigations: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' }
+        },
+        newsletters: {
+          morningBriefing: { subscribed: true, cadence: 'weekdays', channel: 'email' },
+          eveningDigest: { subscribed: false, cadence: 'daily', channel: 'email' },
+          politicsDaily: { subscribed: true, cadence: 'weekdays', channel: 'email' },
+          marketsMinute: { subscribed: false, cadence: 'daily', channel: 'email' },
+          techBriefing: { subscribed: false, cadence: 'weekly', channel: 'email' },
+          localEdition: { subscribed: true, cadence: 'weekly', channel: 'email' },
+          weekendReads: { subscribed: true, cadence: 'weekly', channel: 'email' },
+          investigationsDigest: { subscribed: false, cadence: 'weekly', channel: 'email' },
+          podcastAlerts: { subscribed: false, cadence: 'asPublished', channel: 'push' },
+          subscriberExclusives: { subscribed: true, cadence: 'weekly', channel: 'email' }
+        },
+        channels: { email: true, push: true, sms: true, inApp: true, browser: false },
+        deliveryTiming: {
+          timezone: 'America/New_York',
+          timezoneAuto: true,
+          quietHours: {
+            enabled: true,
+            start: '22:00',
+            end: '07:00',
+            channels: { email: true, push: true, sms: false, inApp: true },
+            allowBreaking: true
+          },
+          consolidation: {
+            mode: 'morningEvening',
+            morningTime: '07:00',
+            eveningTime: '17:30',
+            weeklyDay: 'sunday',
+            weeklyTime: '08:00',
+            exceptions: ['morningBriefing', 'podcastAlerts']
+          }
+        },
+        nonEssentialOff: false,
+        dirty: false,
+        lastUpdated: '2026-07-10T08:59:00',
+        expandedBeats: {},
+        nlp: { input: '', preview: null },
+        ui: { profileExpanded: true, interestDrawer: { beat: null, query: '', region: 'europe' } }
+      };
+    }
+
+    let state = createInitialState();
+    let savedSnapshot = deepClone(state);
+    let pendingChanges = [];
+
+    // ═══════════════════════════════════════════════════════════════
+    // HELPER FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════
+
+    function deepClone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function markDirty(description) {
+      if (!state.dirty && description) pendingChanges.push(description);
+      state.dirty = true;
+      document.getElementById('saveBar').classList.add('is-visible');
+      renderSummary();
+    }
+
+    function formatLastUpdated(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric',
+        hour: 'numeric', minute: '2-digit', hour12: true
+      });
+    }
+
+    function isPaused(cadence) {
+      return cadence === 'pause7' || cadence === 'pause30';
+    }
+
+    function getBeatStatusLabel(beat) {
+      if (beat.status === 'paused' || isPaused(beat.cadence)) return 'paused';
+      if (beat.status === 'muted') return 'muted';
+      if (beat.status === 'followed') return 'followed';
+      return 'unfollowed';
+    }
+
+    function countFollowedBeats() {
+      return Object.values(state.beats).filter(b => b.status === 'followed').length;
+    }
+
+    function countActiveNewsletters() {
+      return Object.values(state.newsletters).filter(n => n.subscribed).length;
+    }
+
+    function countPausedItems() {
+      let n = 0;
+      Object.values(state.beats).forEach(b => {
+        if (b.status === 'paused' || isPaused(b.cadence)) n++;
+      });
+      Object.values(state.newsletters).forEach(nl => {
+        if (isPaused(nl.cadence) && nl.subscribed) n++;
+      });
+      return n;
+    }
+
+    function countActiveChannels() {
+      return Object.values(state.channels).filter(Boolean).length;
+    }
+
+    function breakingLevelLabel() {
+      const map = { all: 'All breaking', major: 'Major only', followed: 'Followed topics', off: 'Off' };
+      return map[state.breakingAlerts.level] || '—';
+    }
+
+    const LEVELS = [
+      { min: 0, max: 24, title: 'Curious Reader', level: 1 },
+      { min: 25, max: 49, title: 'Informed Subscriber', level: 2 },
+      { min: 50, max: 74, title: 'Newsroom Insider', level: 3 },
+      { min: 75, max: 100, title: 'Front Page Regular', level: 4 }
+    ];
+
+    const BADGE_DEFS = [
+      { id: 'explorer', icon: '🗺', label: 'Beat Explorer', test: () => countFollowedBeats() >= 5 },
+      { id: 'multichannel', icon: '📡', label: 'Multi-channel', test: () => countActiveChannels() >= 3 },
+      { id: 'smartdown', icon: '🎯', label: 'Smart Opt-down', test: () => state.breakingAlerts.level === 'major' },
+      { id: 'local', icon: '📍', label: 'Local Lens', test: () => state.beats.localNews?.status === 'followed' },
+      { id: 'deepdive', icon: '🔍', label: 'Deep Dive', test: () => countActiveNewsletters() >= 4 || state.beats.investigations?.status === 'followed' },
+      { id: 'quiet', icon: '🌙', label: 'Quiet Hours', test: () => state.deliveryTiming?.quietHours?.enabled }
+    ];
+
+    function computeReaderScore() {
+      const beatsPts = Math.min(countFollowedBeats() * 5, 40);
+      const nlPts = Math.min(countActiveNewsletters() * 4, 30);
+      const chPts = Math.min(countActiveChannels() * 5, 20);
+      const contactPts = Object.values(state.contacts).filter(c => state.channels[c.channelKey] && c.verified).length * 2;
+      const profilePts = Math.min(contactPts, 10);
+      return Math.min(beatsPts + nlPts + chPts + profilePts, 100);
+    }
+
+    function getReaderLevel(score) {
+      return LEVELS.find(l => score >= l.min && score <= l.max) || LEVELS[0];
+    }
+
+    function getXpProgress(score) {
+      const lvl = getReaderLevel(score);
+      const range = lvl.max - lvl.min + 1;
+      const progress = score - lvl.min;
+      return { pct: Math.round((progress / range) * 100), lvl, nextAt: lvl.max + 1 };
+    }
+
+    function getEarnedBadges() {
+      return BADGE_DEFS.map(b => ({ ...b, earned: b.test() }));
+    }
+
+    function getProfileNextHint(score) {
+      const unearned = getEarnedBadges().filter(b => !b.earned);
+      if (score < 75 && countFollowedBeats() < 5) return 'Follow 2 more beats to unlock Beat Explorer.';
+      if (!state.channels.browser) return 'Connect browser push to boost your reach score.';
+      if (unearned.length) return `Next up: ${unearned[0].label} badge.`;
+      return 'You\'ve maxed this week\'s profile milestones — nice tuning.';
+    }
+
+    function formatMemberSince(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    function formatTimezone(tz) {
+      try {
+        const short = new Date().toLocaleTimeString('en-US', { timeZone: tz, timeZoneName: 'short' }).split(' ').pop();
+        return (tz.split('/').pop() || tz).replace(/_/g, ' ') + (short ? ` (${short})` : '');
+      } catch {
+        return tz.replace(/_/g, ' ');
+      }
+    }
+
+    function maskPostal(code) {
+      return code ? code.slice(0, 3) + '••' : '';
+    }
+
+    function formatTime12h(time24) {
+      const [h, m] = time24.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
+      return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+    }
+
+    function getActiveEmailNewsletters() {
+      return Object.entries(state.newsletters)
+        .filter(([, nl]) => nl.subscribed && nl.channel === 'email')
+        .map(([k]) => k);
+    }
+
+    function getConsolidationPreview() {
+      const dt = state.deliveryTiming;
+      const active = getActiveEmailNewsletters();
+      const exceptions = dt.consolidation.exceptions.filter(id => active.includes(id));
+      const bundled = active.filter(id => !exceptions.includes(id));
+      const tzLabel = TIMEZONE_OPTIONS.find(t => t.value === dt.timezone)?.label || dt.timezone;
+      const mode = dt.consolidation.mode;
+
+      if (!active.length) return { title: 'No active email products', detail: 'Subscribe to newsletters to see bundle preview.' };
+
+      if (mode === 'separate') {
+        return {
+          title: `${active.length} separate sends`,
+          detail: `Each product delivers on its own cadence in ${tzLabel}. Exceptions: ${exceptions.length ? exceptions.map(k => NEWSLETTER_META[k].label).join(', ') : 'none'}.`
+        };
+      }
+      if (mode === 'dailyBundle') {
+        return {
+          title: `${bundled.length} products → 1 daily email`,
+          detail: `Bundled at ${formatTime12h(dt.consolidation.morningTime)} ${tzLabel}.${exceptions.length ? ' Sends separately: ' + exceptions.map(k => NEWSLETTER_META[k].label).join(', ') + '.' : ''}`
+        };
+      }
+      if (mode === 'morningEvening') {
+        const half = Math.ceil(bundled.length / 2);
+        return {
+          title: `${bundled.length} products → 2 daily sends`,
+          detail: `Morning bucket (${half}) at ${formatTime12h(dt.consolidation.morningTime)}; evening bucket (${bundled.length - half}) at ${formatTime12h(dt.consolidation.eveningTime)} ${tzLabel}.${exceptions.length ? ' Separate: ' + exceptions.map(k => NEWSLETTER_META[k].label).join(', ') + '.' : ''}`
+        };
+      }
+      return {
+        title: `${bundled.length} products → 1 weekly roundup`,
+        detail: `${WEEKDAY_OPTIONS.find(d => d.value === dt.consolidation.weeklyDay)?.label || 'Sunday'} at ${formatTime12h(dt.consolidation.weeklyTime)} ${tzLabel}.${exceptions.length ? ' Separate: ' + exceptions.map(k => NEWSLETTER_META[k].label).join(', ') + '.' : ''}`
+      };
+    }
+
+    function buildProfileSentence() {
+      const parts = [];
+      const intensity = state.globalIntensity;
+      if (intensity === 'light') parts.push('a lighter news diet');
+      else if (intensity === 'high') parts.push('frequent updates');
+      else parts.push('weekday briefings');
+
+      const breaking = state.breakingAlerts.level;
+      if (breaking === 'major') parts.push('fewer breaking interruptions');
+      else if (breaking === 'off') parts.push('no breaking alerts');
+      else if (breaking === 'followed') parts.push('alerts only for topics you follow');
+
+      if (state.deliveryTiming?.quietHours?.enabled) {
+        parts.push(`quiet hours ${formatTime12h(state.deliveryTiming.quietHours.start)}–${formatTime12h(state.deliveryTiming.quietHours.end)}`);
+      }
+
+      const score = computeReaderScore();
+      const lvl = getReaderLevel(score);
+      return `${state.reader.preferredName || state.reader.name} — ${lvl.title} with ${parts.join(' and ')}.`;
+    }
+
+    function getRecommendations() {
+      const recs = [];
+      const followed = Object.entries(state.beats).filter(([, b]) => b.status === 'followed').map(([k]) => k);
+
+      if (followed.includes('politics') && !state.newsletters.politicsDaily.subscribed) {
+        recs.push({ id: 'politicsDaily', label: 'Politics Daily', reason: 'Because you follow Politics', type: 'newsletter' });
+      }
+      if (followed.includes('politics') && !state.beats.politics.subbeats?.whiteHouse) {
+        recs.push({ id: 'whiteHouseAlerts', label: 'White House coverage', reason: 'Politics · recommended sub-topic', type: 'subbeat', beat: 'politics', subbeat: 'whiteHouse' });
+      }
+      if ((followed.includes('technology') || followed.includes('business')) && !state.newsletters.marketsMinute.subscribed) {
+        recs.push({ id: 'marketsMinute', label: 'Markets Minute', reason: 'Tech + Business interests', type: 'newsletter' });
+      }
+      if (followed.includes('technology') && !state.beats.technology.subbeats?.ai) {
+        recs.push({ id: 'aiSubbeat', label: 'AI coverage', reason: 'Expand your Technology follow', type: 'subbeat', beat: 'technology', subbeat: 'ai' });
+      }
+      if ((followed.includes('localNews') || followed.includes('food')) && !state.newsletters.weekendReads.subscribed) {
+        recs.push({ id: 'weekendReads', label: 'Weekend Reads', reason: 'Local + lifestyle picks', type: 'newsletter' });
+      }
+      if (followed.includes('localNews') && !state.newsletters.localEdition.subscribed) {
+        recs.push({ id: 'localEdition', label: 'Local Edition', reason: 'Because you follow Local News', type: 'newsletter' });
+      }
+      if (followed.includes('investigations') && !state.newsletters.investigationsDigest.subscribed) {
+        recs.push({ id: 'investigationsDigest', label: 'Investigations Digest', reason: 'Deep-dive reporting', type: 'newsletter' });
+      }
+      if (followed.includes('technology') && !state.newsletters.techBriefing.subscribed) {
+        recs.push({ id: 'techBriefing', label: 'Tech Briefing', reason: 'Because you follow Technology', type: 'newsletter' });
+      }
+
+      return recs.slice(0, 6);
+    }
+
+    function applyGlobalIntensity(intensity) {
+      const cfg = GLOBAL_INTENSITY_MAP[intensity];
+      state.globalIntensity = intensity;
+
+      Object.keys(state.beats).forEach(key => {
+        const beat = state.beats[key];
+        if (beat.status === 'followed' && !isPaused(beat.cadence) && beat.status !== 'paused') {
+          beat.cadence = cfg.defaultCadence;
+        }
+      });
+
+      Object.keys(state.newsletters).forEach(key => {
+        const nl = state.newsletters[key];
+        if (nl.subscribed && !isPaused(nl.cadence)) {
+          nl.cadence = cfg.defaultCadence;
+        }
+      });
+
+      if (intensity === 'light' && state.breakingAlerts.level === 'all') {
+        state.breakingAlerts.level = 'major';
+      } else if (intensity === 'high' && state.breakingAlerts.level === 'off') {
+        state.breakingAlerts.level = 'major';
+      }
+
+      markDirty(`Global intensity set to ${intensity}`);
+    }
+
+    function applyQuickAdd(rec) {
+      if (rec.type === 'newsletter') {
+        state.newsletters[rec.id].subscribed = true;
+        markDirty(`Subscribed to ${NEWSLETTER_META[rec.id].label}`);
+      } else if (rec.type === 'subbeat') {
+        state.beats[rec.beat].subbeats[rec.subbeat] = true;
+        if (state.beats[rec.beat].status !== 'followed') {
+          state.beats[rec.beat].status = 'followed';
+        }
+        markDirty(`Added ${BEAT_META[rec.beat].subbeats[rec.subbeat]} to your coverage`);
+      }
+      render();
+    }
+
+    function getNewsletterStatus(nl) {
+      if (!nl.subscribed) return { label: 'Not subscribed', cls: 'off' };
+      if (isPaused(nl.cadence)) return { label: nl.cadence === 'pause7' ? 'Paused 7 days' : 'Paused 30 days', cls: 'paused' };
+      return { label: 'Active', cls: 'active' };
+    }
+
+    function getNewsletterStatus(nl) {
+      if (!nl.subscribed) return { label: 'Not subscribed', cls: 'off' };
+      if (isPaused(nl.cadence)) return { label: nl.cadence === 'pause7' ? 'Paused 7 days' : 'Paused 30 days', cls: 'paused' };
+      return { label: 'Active', cls: 'active' };
+    }
+
+    let previewContext = null;
+
+    function renderSampleHtml(sample) {
+      if (sample.type === 'push') {
+        return `
+          <div class="preview-push">
+            <div class="preview-push__app">Newsroom · now</div>
+            <div class="preview-push__title">${sample.title}</div>
+            <div>${sample.body}</div>
+          </div>
+        `;
+      }
+      return `
+        <div class="preview-sample">
+          <div class="preview-sample__email-header">
+            <strong>${sample.subject}</strong>
+            From: Newsroom &lt;briefing@newsroom.example&gt;
+          </div>
+          <div class="preview-sample__body">
+            <h3>${sample.headline}</h3>
+            <ul>${sample.stories.map(s => `<li>${s}</li>`).join('')}</ul>
+          </div>
+        </div>
+      `;
+    }
+
+    function openPreview(type, id) {
+      previewContext = { type, id };
+      let title, desc, body, showSubscribe = false;
+
+      if (type === 'newsletter') {
+        const meta = NEWSLETTER_META[id];
+        title = `Sample: ${meta.label}`;
+        desc = 'A recent edition — subscribe without leaving this page.';
+        body = renderSampleHtml(meta.sample);
+        showSubscribe = !state.newsletters[id].subscribed;
+      } else if (type === 'breaking') {
+        title = 'Sample: Breaking alert';
+        desc = 'How a major-story push appears on your lock screen.';
+        body = renderSampleHtml(BREAKING_SAMPLE);
+      }
+
+      document.getElementById('previewTitle').textContent = title;
+      document.getElementById('previewDesc').textContent = desc;
+      document.getElementById('previewBody').innerHTML = body;
+      const subBtn = document.getElementById('previewSubscribeBtn');
+      subBtn.style.display = showSubscribe ? 'inline-block' : 'none';
+      if (showSubscribe) subBtn.textContent = `Subscribe to ${NEWSLETTER_META[id].label}`;
+
+      const modal = document.getElementById('previewModal');
+      modal.hidden = false;
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('previewCloseBtn').focus();
+    }
+
+    function closePreview() {
+      const modal = document.getElementById('previewModal');
+      modal.classList.remove('is-open');
+      modal.hidden = true;
+      previewContext = null;
+      if (!document.getElementById('contactDrawer').classList.contains('is-open') &&
+          !document.getElementById('optOutModal').classList.contains('is-open') &&
+          !document.getElementById('interestDrawer').classList.contains('is-open')) {
+        document.body.style.overflow = '';
+      }
+    }
+
+    function getNextBestActions() {
+      const actions = [];
+      const followed = Object.entries(state.beats).filter(([, b]) => b.status === 'followed').map(([k]) => k);
+      const activeNl = Object.entries(state.newsletters).filter(([, n]) => n.subscribed);
+
+      if (activeNl.some(([k]) => k === 'morningBriefing')) {
+        actions.push({ id: 'readBriefing', label: 'Read today\'s Morning Briefing', hint: 'Jump into your core feed', route: '/briefing/today' });
+      } else if (activeNl.length) {
+        const [key] = activeNl[0];
+        actions.push({ id: 'readProduct', label: `Read latest ${NEWSLETTER_META[key].label}`, hint: 'See what you just signed up for', route: `/newsletters/${key}/latest` });
+      }
+
+      if (followed.length) {
+        const topBeat = BEAT_META[followed[0]].label;
+        actions.push({ id: 'topicFeed', label: `Explore ${topBeat} coverage`, hint: 'Personalized topic feed', route: `/topics/${followed[0]}` });
+      }
+
+      if (state.breakingAlerts.level !== 'off') {
+        actions.push({ id: 'liveCoverage', label: 'See live developing stories', hint: 'Core newsroom experience', route: '/live' });
+      }
+
+      if (followed.includes('localNews') || state.newsletters.localEdition?.subscribed) {
+        actions.push({ id: 'localHub', label: 'Open your local news hub', hint: `${state.reader.city} metro coverage`, route: '/local' });
+      }
+
+      actions.push({ id: 'homeFeed', label: 'Return to your homepage feed', hint: 'Pick up where you left off', route: '/' });
+
+      return actions.slice(0, 4);
+    }
+
+    function renderNextActionsHtml() {
+      const actions = getNextBestActions();
+      return `
+        <div class="next-actions">
+          <p class="next-actions__title">What's next?</p>
+          <p class="next-actions__desc">Your preferences are set — continue into the newsroom experience.</p>
+          <div class="next-actions__grid">
+            ${actions.map(a => `
+              <button type="button" class="next-action-card" data-next-action="${a.id}" data-route="${a.route}">
+                <span>
+                  <span class="next-action-card__label">${a.label}</span>
+                  <span class="next-action-card__hint">${a.hint}</span>
+                </span>
+                <span class="next-action-card__arrow" aria-hidden="true">→</span>
+              </button>
+            `).join('')}
+          </div>
+          <p class="ux-note" style="margin-top:.65rem">Prototype: routes are simulated — in production these deep-link to app/web surfaces.</p>
+        </div>
+      `;
+    }
+
+    function handleNextAction(route, label) {
+      const toast = document.getElementById('toast');
+      toast.textContent = `Routing to ${label} (${route}) — core experience`;
+      toast.classList.add('is-visible');
+      setTimeout(() => toast.classList.remove('is-visible'), 3500);
+    }
+
+    function saveChanges() {
+      const changes = pendingChanges.length ? [...pendingChanges] : ['Preferences updated'];
+      state.dirty = false;
+      state.lastUpdated = new Date().toISOString();
+      savedSnapshot = deepClone(state);
+      pendingChanges = [];
+
+      document.getElementById('saveBar').classList.remove('is-visible');
+      document.getElementById('lastUpdatedDisplay').textContent = 'Last updated: ' + formatLastUpdated(state.lastUpdated);
+
+      const summaryEl = document.getElementById('saveSummary');
+      summaryEl.innerHTML = '<strong>Changes saved.</strong> Updates typically take effect within a few minutes across email, push, and in-app channels.<ul>' +
+        changes.map(c => `<li>${c}</li>`).join('') + '</ul>' + renderNextActionsHtml();
+      summaryEl.classList.add('is-visible');
+      summaryEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      const toast = document.getElementById('toast');
+      toast.textContent = 'Your preferences have been saved.';
+      toast.classList.add('is-visible');
+      setTimeout(() => toast.classList.remove('is-visible'), 4000);
+
+      renderSummary();
+    }
+
+    function discardChanges() {
+      state = deepClone(savedSnapshot);
+      pendingChanges = [];
+      document.getElementById('saveBar').classList.remove('is-visible');
+      document.getElementById('saveSummary').classList.remove('is-visible');
+      render();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // OPT-OUT FLOWS
+    // ═══════════════════════════════════════════════════════════════
+
+    const OPT_OUT_ACTIONS = [
+      { id: 'morningOnly', title: 'Keep only Morning Briefing', desc: 'Unsubscribe from other newsletters; keep major story alerts' },
+      { id: 'majorAlerts', title: 'Keep only major story alerts', desc: 'Turn off newsletters; retain breaking news for big stories' },
+      { id: 'weeklyDigest', title: 'Switch everything to weekly digest', desc: 'Opt-down: one email per week per product' },
+      { id: 'pause30', title: 'Pause non-essential updates for 30 days', desc: 'Silence editorial sends temporarily' },
+      { id: 'fullUnsub', title: 'Unsubscribe from all non-essential updates', desc: 'Stop newsletters and promotional/editorial messages. Account notices remain.', danger: true }
+    ];
+
+    function applyOptOut(actionId) {
+      closeModal();
+      switch (actionId) {
+        case 'morningOnly':
+          Object.keys(state.newsletters).forEach(k => {
+            state.newsletters[k].subscribed = k === 'morningBriefing';
+          });
+          state.breakingAlerts.level = 'major';
+          markDirty('Kept Morning Briefing only');
+          break;
+        case 'majorAlerts':
+          Object.keys(state.newsletters).forEach(k => { state.newsletters[k].subscribed = false; });
+          state.breakingAlerts.level = 'major';
+          markDirty('Kept major story alerts only');
+          break;
+        case 'weeklyDigest':
+          Object.keys(state.newsletters).forEach(k => {
+            if (state.newsletters[k].subscribed) state.newsletters[k].cadence = 'weekly';
+          });
+          Object.keys(state.beats).forEach(k => {
+            if (state.beats[k].status === 'followed') state.beats[k].cadence = 'weekly';
+          });
+          state.globalIntensity = 'light';
+          markDirty('Switched to weekly digest');
+          break;
+        case 'pause30':
+          Object.keys(state.newsletters).forEach(k => {
+            if (state.newsletters[k].subscribed) state.newsletters[k].cadence = 'pause30';
+          });
+          Object.keys(state.beats).forEach(k => {
+            if (state.beats[k].status === 'followed') {
+              state.beats[k].cadence = 'pause30';
+              state.beats[k].status = 'paused';
+            }
+          });
+          markDirty('Paused non-essential updates for 30 days');
+          break;
+        case 'fullUnsub':
+          Object.keys(state.newsletters).forEach(k => { state.newsletters[k].subscribed = false; });
+          state.breakingAlerts.level = 'off';
+          state.nonEssentialOff = true;
+          markDirty('Unsubscribed from all non-essential updates');
+          break;
+      }
+      render();
+    }
+
+    function openModal() {
+      const modal = document.getElementById('optOutModal');
+      modal.hidden = false;
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      const firstBtn = modal.querySelector('.modal-option');
+      if (firstBtn) firstBtn.focus();
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('optOutModal');
+      modal.classList.remove('is-open');
+      modal.hidden = true;
+      if (!document.getElementById('contactDrawer').classList.contains('is-open') &&
+          !document.getElementById('previewModal').classList.contains('is-open') &&
+          !document.getElementById('interestDrawer').classList.contains('is-open')) {
+        document.body.style.overflow = '';
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // RENDER FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════
+
+    function renderContactEndpoints() {
+      return Object.values(state.contacts).map(c => {
+        const active = state.channels[c.channelKey];
+        return `
+          <div class="contact-endpoint ${active ? 'contact-endpoint--active' : 'contact-endpoint--inactive'}" role="listitem">
+            <span class="contact-endpoint__icon" aria-hidden="true">${c.icon}</span>
+            <div class="contact-endpoint__body">
+              <span class="contact-endpoint__channel">${c.label}</span>
+              <span class="contact-endpoint__value">${c.value}${c.verified ? '<span class="verified-badge">Verified</span>' : ''}</span>
+              <span class="contact-endpoint__status">${active ? c.detail : 'Channel off for editorial'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderContactDrawer() {
+      const r = state.reader;
+      document.getElementById('drawerBody').innerHTML = `
+        <dl class="drawer-account-facts">
+          <dt>Full name</dt><dd>${r.name}</dd>
+          <dt>Account ID</dt><dd>${r.accountId}</dd>
+          <dt>Member since</dt><dd>${formatMemberSince(r.memberSince)}</dd>
+          <dt>Location</dt><dd>${r.region} · ${r.city} ${maskPostal(r.postalCode)}</dd>
+          <dt>Timezone</dt><dd>${formatTimezone(r.timezone)}</dd>
+        </dl>
+        <p class="drawer__section-title">Reachable endpoints</p>
+        <div class="contact-grid" role="list" aria-label="Reachable contact endpoints">${renderContactEndpoints()}</div>
+        <p class="drawer__section-title">Delivery notes</p>
+        <p class="reader-card__detail" style="margin:0;font-size:.8rem">Preferences sync across active channels. Essential notices (billing, security, password resets) always reach <strong>${r.email}</strong> regardless of editorial toggles.</p>
+      `;
+    }
+
+    function openContactDrawer() {
+      renderContactDrawer();
+      const drawer = document.getElementById('contactDrawer');
+      drawer.hidden = false;
+      drawer.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('drawerCloseBtn').focus();
+    }
+
+    function closeContactDrawer() {
+      const drawer = document.getElementById('contactDrawer');
+      drawer.classList.remove('is-open');
+      drawer.hidden = true;
+      if (!document.getElementById('optOutModal').classList.contains('is-open') &&
+          !document.getElementById('previewModal').classList.contains('is-open') &&
+          !document.getElementById('interestDrawer').classList.contains('is-open')) {
+        document.body.style.overflow = '';
+      }
+    }
+
+    function renderSummary() {
+      const score = computeReaderScore();
+      const xp = getXpProgress(score);
+      const lvl = xp.lvl;
+      const ringR = 38;
+      const ringRSm = 16;
+      const circumference = 2 * Math.PI * ringR;
+      const circumferenceSm = 2 * Math.PI * ringRSm;
+      const offset = circumference - (score / 100) * circumference;
+      const offsetSm = circumferenceSm - (score / 100) * circumferenceSm;
+      const earnedCount = getEarnedBadges().filter(b => b.earned).length;
+      const r = state.reader;
+      const expanded = state.ui.profileExpanded;
+
+      document.getElementById('profileSpotlight').classList.toggle('is-expanded', expanded);
+
+      document.getElementById('profileGlance').innerHTML = `
+        <div class="profile-glance__left">
+          <div class="profile-ring profile-ring--sm" aria-hidden="true">
+            <svg viewBox="0 0 44 44">
+              <circle class="profile-ring__track" cx="22" cy="22" r="${ringRSm}"></circle>
+              <circle class="profile-ring__fill" cx="22" cy="22" r="${ringRSm}"
+                stroke-width="4" stroke-dasharray="${circumferenceSm}" stroke-dashoffset="${offsetSm}"></circle>
+            </svg>
+            <div class="profile-ring__score">${score}<span>pts</span></div>
+          </div>
+          <p class="profile-glance__identity"><strong>${r.name}</strong> · ${r.tier} · Level ${lvl.level}</p>
+        </div>
+        <button type="button" class="profile-expand-btn" id="profileExpandBtnCollapsed" aria-expanded="false">Expand reader profile</button>
+      `;
+
+      const expandBtn = document.getElementById('profileExpandBtn');
+      if (expandBtn) {
+        expandBtn.textContent = expanded ? 'Collapse' : 'Expand reader profile';
+        expandBtn.setAttribute('aria-expanded', String(expanded));
+      }
+
+      document.getElementById('profileHero').innerHTML = `
+        <div class="profile-hero">
+          <div class="profile-ring" aria-hidden="true">
+            <svg viewBox="0 0 96 96">
+              <circle class="profile-ring__track" cx="48" cy="48" r="${ringR}"></circle>
+              <circle class="profile-ring__fill" cx="48" cy="48" r="${ringR}"
+                stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"></circle>
+            </svg>
+            <div class="profile-ring__score">${score}<span>score</span></div>
+          </div>
+          <div class="profile-hero__text">
+            <span class="profile-level"><span class="profile-level__num">${lvl.level}</span> ${lvl.title}</span>
+            <p class="profile-tagline">${earnedCount} of ${BADGE_DEFS.length} badges earned · Level ${lvl.level} reader</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('xpBar').innerHTML = `
+        <div class="xp-bar__labels"><span>Level ${lvl.level}</span><span>${xp.pct}% to next level</span></div>
+        <div class="xp-bar__track" role="progressbar" aria-valuenow="${xp.pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Progress to next reader level">
+          <div class="xp-bar__fill" style="width:${xp.pct}%"></div>
+        </div>
+      `;
+
+      document.getElementById('streakCard').innerHTML = `
+        <span class="streak-card__icon" aria-hidden="true">🔥</span>
+        <p class="streak-card__text"><strong>${state.reader.readingStreakDays}-day</strong> streak — top 18% of subscribers who customize alerts.</p>
+      `;
+
+      document.getElementById('summaryPills').innerHTML = `
+        <div class="summary-pill"><span class="summary-pill__value">${countFollowedBeats()}</span><span class="summary-pill__label">Beats</span></div>
+        <div class="summary-pill"><span class="summary-pill__value">${countActiveNewsletters()}</span><span class="summary-pill__label">Newsletters</span></div>
+        <div class="summary-pill"><span class="summary-pill__value">${breakingLevelLabel()}</span><span class="summary-pill__label">Breaking</span></div>
+        <div class="summary-pill"><span class="summary-pill__value">${countActiveChannels()}</span><span class="summary-pill__label">Channels</span></div>
+        <div class="summary-pill"><span class="summary-pill__value">${countPausedItems()}</span><span class="summary-pill__label">Paused</span></div>
+        <div class="summary-pill"><span class="summary-pill__value">${Object.values(state.contacts).filter(c => c.verified).length}</span><span class="summary-pill__label">Verified</span></div>
+      `;
+
+      const badges = getEarnedBadges();
+      document.getElementById('achievementBoard').innerHTML = `
+        <p class="achievement-board__title" style="margin:0">Achievements</p>
+        <div class="achievement-list" role="list" aria-label="Earned and available achievements">
+          ${badges.map(b => `
+            <span class="achievement ${b.earned ? 'is-earned' : 'is-locked'}" role="listitem" title="${b.earned ? 'Earned' : 'Not yet earned'}">
+              <span aria-hidden="true">${b.icon}</span> ${b.label}
+            </span>
+          `).join('')}
+        </div>
+      `;
+
+      document.getElementById('summarySentence').textContent = buildProfileSentence();
+      document.getElementById('profileNextHint').textContent = getProfileNextHint(score);
+    }
+
+    function renderBreakingSection() {
+      const ch = state.breakingAlerts.channels;
+      const levels = BREAKING_LEVELS.map(l => `
+        <div class="intensity-option ${l.distinct ? 'intensity-option--major' : ''}">
+          <input type="radio" name="breakingLevel" id="breaking-${l.value}" value="${l.value}"
+            ${state.breakingAlerts.level === l.value ? 'checked' : ''}>
+          <label class="intensity-option__label" for="breaking-${l.value}">
+            <span class="intensity-option__title">${l.label}</span>
+            <span class="intensity-option__hint">${l.hint}</span>
+          </label>
+        </div>
+      `).join('');
+
+      return `
+        <section class="section breaking-section" aria-labelledby="breakingTitle">
+          <div class="section__header">
+            <h2 class="section__title" id="breakingTitle">Breaking news alerts</h2>
+            <p class="section__desc">Separate from newsletters — these are urgent notifications when major stories develop. Choose how much interruption you're willing to accept.</p>
+            <button type="button" class="btn btn--link" data-preview="breaking" style="margin-top:.35rem">Preview a breaking alert</button>
+            <p class="ux-note">UX: "Major stories only" is visually distinct from "Off" to surface smart opt-down.</p>
+          </div>
+          <fieldset style="border:none;margin:0;padding:0">
+            <legend class="visually-hidden">Alert intensity</legend>
+            <div class="intensity-options">${levels}</div>
+          </fieldset>
+          <h3 style="font-size:.9rem;margin:0 0 .5rem">Where should alerts reach you?</h3>
+          <div class="channel-grid">
+            <div class="channel-row">
+              <div class="channel-row__info"><strong>Push notifications</strong><span>Fastest — appears on your lock screen</span></div>
+              <label class="toggle"><input type="checkbox" data-breaking-channel="push" ${ch.push ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+            </div>
+            <div class="channel-row">
+              <div class="channel-row__info"><strong>SMS</strong><span>Highest urgency only — carrier rates may apply</span></div>
+              <label class="toggle"><input type="checkbox" data-breaking-channel="sms" ${ch.sms ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+            </div>
+            <div class="channel-row">
+              <div class="channel-row__info"><strong>In-app</strong><span>Badge and feed alerts when you open the app</span></div>
+              <label class="toggle"><input type="checkbox" data-breaking-channel="inApp" ${ch.inApp ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+            </div>
+            <div class="channel-row">
+              <div class="channel-row__info"><strong>Browser</strong><span>Desktop notifications while browsing</span></div>
+              <label class="toggle"><input type="checkbox" data-breaking-channel="browser" ${ch.browser ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+            </div>
+          </div>
+          <p class="cadence-hint" style="margin-top:.75rem">More channels mean faster delivery but more interruption. SMS is reserved for the most urgent stories.</p>
+        </section>
+      `;
+    }
+
+    function renderNewslettersSection() {
+      const cards = Object.entries(NEWSLETTER_META).map(([key, meta]) => {
+        const nl = state.newsletters[key];
+        const status = getNewsletterStatus(nl);
+        const cadenceOpts = CADENCE_OPTIONS.map(o =>
+          `<option value="${o.value}" ${nl.cadence === o.value ? 'selected' : ''}>${o.label}</option>`
+        ).join('');
+        return `
+          <article class="product-card" data-newsletter="${key}">
+            <div class="product-card__header">
+              <h3 class="product-card__title">${meta.label}</h3>
+              <label class="toggle" aria-label="Subscribe to ${meta.label}">
+                <input type="checkbox" data-nl-sub="${key}" ${nl.subscribed ? 'checked' : ''}>
+                <span class="toggle__track"></span><span class="toggle__thumb"></span>
+              </label>
+            </div>
+            <p class="product-card__desc">${meta.desc}</p>
+            <div class="product-card__footer">
+              <button type="button" class="btn btn--link" data-preview="newsletter" data-preview-id="${key}">Preview sample</button>
+              <span class="status-badge status-badge--${status.cls}">${status.label}</span>
+              <span class="channel-indicator">via ${nl.channel}</span>
+              <select class="select-sm" data-nl-cadence="${key}" aria-label="Cadence for ${meta.label}" ${!nl.subscribed ? 'disabled' : ''}>${cadenceOpts}</select>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      return `
+        <section class="section" aria-labelledby="nlTitle">
+          <div class="section__header">
+            <h2 class="section__title" id="nlTitle">Newsletter products</h2>
+            <p class="section__desc">Independent of topic follows — subscribe only to the editorial products you want in your inbox or feed.</p>
+          </div>
+          <div class="product-grid">${cards}</div>
+        </section>
+      `;
+    }
+
+    function countDrawerSelections(beatKey) {
+      const beat = state.beats[beatKey];
+      if (!beat?.subbeats) return 0;
+      return Object.values(beat.subbeats).filter(Boolean).length;
+    }
+
+    function getDrawerCatalog(beatKey) {
+      const catalogId = BEAT_META[beatKey]?.drawerCatalog;
+      return catalogId ? DRAWER_CATALOGS[catalogId] || [] : [];
+    }
+
+    function getDrawerItemLabel(itemId) {
+      for (const catalog of Object.values(DRAWER_CATALOGS)) {
+        const item = catalog.find(i => i.id === itemId);
+        if (item) return item.label;
+      }
+      return itemId;
+    }
+
+    function searchDrawerItems(items, query) {
+      const q = (query || '').trim().toLowerCase();
+      if (!q) return [];
+      return items.filter(item => {
+        const hay = [item.label, item.id, ...(item.synonyms || [])].join(' ').toLowerCase();
+        return hay.includes(q) || item.label.toLowerCase().startsWith(q);
+      }).slice(0, 8);
+    }
+
+    function getFilteredDrawerItems(beatKey) {
+      const items = getDrawerCatalog(beatKey);
+      const { region, query } = state.ui.interestDrawer;
+      let filtered = region === 'all' ? items : items.filter(i => i.region === region);
+      if (query.trim()) {
+        const matches = searchDrawerItems(items, query);
+        const matchIds = new Set(matches.map(m => m.id));
+        filtered = filtered.filter(i => matchIds.has(i.id));
+        if (!filtered.length) filtered = matches;
+      }
+      return filtered.sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    function toggleDrawerItem(beatKey, itemId, on) {
+      const beat = state.beats[beatKey];
+      if (!beat.subbeats) beat.subbeats = {};
+      beat.subbeats[itemId] = on !== undefined ? on : !beat.subbeats[itemId];
+      if (beat.subbeats[itemId] && beat.status !== 'followed') beat.status = 'followed';
+      markDirty(`${getDrawerItemLabel(itemId)} ${beat.subbeats[itemId] ? 'added' : 'removed'} for ${BEAT_META[beatKey].label}`);
+      renderInterestDrawer();
+      renderSummary();
+    }
+
+    function renderInterestDrawer() {
+      const beatKey = state.ui.interestDrawer.beat;
+      if (!beatKey) return;
+      const meta = BEAT_META[beatKey];
+      const beat = state.beats[beatKey];
+      const { query, region } = state.ui.interestDrawer;
+      const selected = Object.entries(beat.subbeats || {}).filter(([, v]) => v).map(([k]) => k);
+      const suggestions = searchDrawerItems(getDrawerCatalog(beatKey), query);
+      const filtered = getFilteredDrawerItems(beatKey);
+
+      document.getElementById('interestDrawerTitle').textContent = `${meta.label} — ${meta.drawerLabel || 'Sub-categories'}`;
+      document.getElementById('interestDrawerDesc').textContent = 'Search, pick suggestions, or multi-select below. Great for trip planning — e.g. type "fr" for France.';
+
+      const selectedChips = selected.length
+        ? selected.map(id => `
+            <button type="button" class="subbeat-chip is-on" data-drawer-remove="${id}" aria-label="Remove ${getDrawerItemLabel(id)}">${getDrawerItemLabel(id)} ×</button>
+          `).join('')
+        : '<span class="cadence-hint">No selections yet — try searching "europe" or "italy"</span>';
+
+      const regionBtns = DRAWER_REGIONS.map(r => `
+        <button type="button" class="interest-region-btn ${region === r.id ? 'is-active' : ''}" data-drawer-region="${r.id}">${r.label}</button>
+      `).join('');
+
+      const suggestionList = suggestions.length && query.trim()
+        ? suggestions.map(s => `
+            <button type="button" class="interest-suggestion" data-drawer-pick="${s.id}">
+              ${s.label}
+              <span class="interest-suggestion__meta">${DRAWER_REGIONS.find(r => r.id === s.region)?.label || s.region}</span>
+            </button>
+          `).join('')
+        : '';
+
+      const itemGrid = filtered.map(item => {
+        const on = !!beat.subbeats?.[item.id];
+        return `
+          <label class="interest-item ${on ? 'is-selected' : ''}">
+            <input type="checkbox" data-drawer-toggle="${item.id}" ${on ? 'checked' : ''}>
+            <span>${item.label}</span>
+          </label>
+        `;
+      }).join('');
+
+      document.getElementById('interestDrawerBody').innerHTML = `
+        <div class="interest-search-wrap">
+          <label for="interestSearch" class="visually-hidden">Search destinations</label>
+          <input type="search" class="interest-search" id="interestSearch" placeholder="Search countries or cities — e.g. fr, paris, europe" value="${query}" autocomplete="off" role="combobox" aria-expanded="${suggestions.length ? 'true' : 'false'}" aria-controls="interestSuggestions">
+          <div class="interest-suggestions ${suggestions.length && query.trim() ? 'is-open' : ''}" id="interestSuggestions" role="listbox">
+            ${suggestionList || (query.trim() ? '<div style="padding:.65rem .85rem;font-size:.8rem;color:var(--text-muted)">No matches — try a region or country name</div>' : '')}
+          </div>
+        </div>
+        <div class="interest-region-filters" role="group" aria-label="Filter by region">${regionBtns}</div>
+        <div class="interest-selected-block">
+          <p class="interest-selected-block__label">Selected (${selected.length})</p>
+          <div class="beat-selected-chips">${selectedChips}</div>
+        </div>
+        <p class="interest-selected-block__label">Browse ${region === 'all' ? 'all' : DRAWER_REGIONS.find(r => r.id === region)?.label}</p>
+        <div class="interest-item-grid">${itemGrid}</div>
+        <p class="ux-note" style="margin-top:.75rem">Predictive search surfaces matches as you type; multi-select persists across regions.</p>
+      `;
+
+      bindInterestDrawerEvents(beatKey);
+    }
+
+    function openInterestDrawer(beatKey) {
+      state.ui.interestDrawer.beat = beatKey;
+      state.ui.interestDrawer.query = '';
+      state.ui.interestDrawer.region = beatKey === 'travel' ? 'europe' : 'all';
+      renderInterestDrawer();
+      const drawer = document.getElementById('interestDrawer');
+      drawer.hidden = false;
+      drawer.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('interestSearch')?.focus();
+    }
+
+    function closeInterestDrawer() {
+      const drawer = document.getElementById('interestDrawer');
+      drawer.classList.remove('is-open');
+      drawer.hidden = true;
+      state.ui.interestDrawer.beat = null;
+      state.ui.interestDrawer.query = '';
+      if (!document.getElementById('contactDrawer').classList.contains('is-open') &&
+          !document.getElementById('optOutModal').classList.contains('is-open') &&
+          !document.getElementById('previewModal').classList.contains('is-open')) {
+        document.body.style.overflow = '';
+      }
+      render();
+    }
+
+    function bindInterestDrawerEvents(beatKey) {
+      const search = document.getElementById('interestSearch');
+      if (search) {
+        search.addEventListener('input', e => {
+          state.ui.interestDrawer.query = e.target.value;
+          renderInterestDrawer();
+          const el = document.getElementById('interestSearch');
+          if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+        });
+      }
+
+      document.querySelectorAll('[data-drawer-region]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          state.ui.interestDrawer.region = e.target.dataset.drawerRegion;
+          renderInterestDrawer();
+        });
+      });
+
+      document.querySelectorAll('[data-drawer-pick]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          toggleDrawerItem(beatKey, e.target.closest('[data-drawer-pick]').dataset.drawerPick, true);
+        });
+      });
+
+      document.querySelectorAll('[data-drawer-toggle]').forEach(el => {
+        el.addEventListener('change', e => {
+          toggleDrawerItem(beatKey, e.target.dataset.drawerToggle, e.target.checked);
+        });
+      });
+
+      document.querySelectorAll('[data-drawer-remove]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          toggleDrawerItem(beatKey, e.target.dataset.drawerRemove, false);
+        });
+      });
+    }
+
+    function renderBeatsSection() {
+      const cards = Object.entries(BEAT_META).map(([key, meta]) => {
+        const beat = state.beats[key];
+        const status = getBeatStatusLabel(beat);
+        const hasSubbeats = meta.subbeats && Object.keys(meta.subbeats).length;
+        const expanded = state.expandedBeats[key];
+
+        const followCls = status === 'followed' ? 'chip-btn--active' : '';
+        const muteCls = status === 'muted' ? 'chip-btn--muted-active' : '';
+        const pauseCls = status === 'paused' || isPaused(beat.cadence) ? 'chip-btn--paused-active' : '';
+
+        const hasDrawer = !!meta.drawerCatalog;
+        const drawerCount = hasDrawer ? countDrawerSelections(key) : 0;
+        const selectedDrawerChips = hasDrawer && drawerCount
+          ? Object.entries(beat.subbeats || {}).filter(([, v]) => v).slice(0, 4).map(([id]) =>
+              `<span class="glance-stat glance-stat--accent">${getDrawerItemLabel(id)}</span>`
+            ).join('') + (drawerCount > 4 ? `<span class="glance-stat">+${drawerCount - 4}</span>` : '')
+          : '';
+
+        let subbeatsHtml = '';
+        const cadenceOpts = CADENCE_OPTIONS.map(o =>
+          `<option value="${o.value}" ${beat.cadence === o.value ? 'selected' : ''}>${o.label}</option>`
+        ).join('');
+
+        if (hasDrawer) {
+          subbeatsHtml = `
+            <button type="button" class="beat-refine-btn" data-open-interest-drawer="${key}">
+              Refine ${meta.drawerLabel.toLowerCase()}${drawerCount ? ` (${drawerCount} selected)` : ''}
+            </button>
+            ${selectedDrawerChips ? `<div class="beat-selected-chips">${selectedDrawerChips}</div>` : ''}
+            ${beat.status === 'followed' || beat.status === 'paused' || isPaused(beat.cadence) ? `
+              <div class="subbeats is-open" style="padding-top:.5rem;border-top:1px solid var(--border);margin-top:.5rem">
+                <label for="cadence-${key}" style="font-size:.75rem;color:var(--text-muted)">Delivery cadence</label>
+                <select class="cadence-select" id="cadence-${key}" data-beat-cadence="${key}">${cadenceOpts}</select>
+                <p class="cadence-hint">${CADENCE_HINTS[beat.cadence] || ''}</p>
+              </div>
+            ` : ''}
+          `;
+        } else if (hasSubbeats) {
+          const chips = Object.entries(meta.subbeats).map(([sk, sl]) => {
+            const on = beat.subbeats[sk];
+            return `<button type="button" class="subbeat-chip ${on ? 'is-on' : ''}" data-beat="${key}" data-subbeat="${sk}" aria-pressed="${on}">${sl}</button>`;
+          }).join('');
+          subbeatsHtml = `
+            <button type="button" class="beat-card__expand" data-expand-beat="${key}" aria-expanded="${expanded}">
+              ${expanded ? 'Hide' : 'Show'} sub-topics
+            </button>
+            <div class="subbeats ${expanded ? 'is-open' : ''}" id="subbeats-${key}">
+              <div class="subbeats__grid">${chips}</div>
+              <label for="cadence-${key}" style="font-size:.75rem;color:var(--text-muted)">Delivery cadence</label>
+              <select class="cadence-select" id="cadence-${key}" data-beat-cadence="${key}">${cadenceOpts}</select>
+              <p class="cadence-hint">${CADENCE_HINTS[beat.cadence] || ''}</p>
+            </div>
+          `;
+        } else if (beat.status === 'followed' || beat.status === 'paused' || isPaused(beat.cadence)) {
+          subbeatsHtml = `
+            <div class="subbeats is-open" style="padding-top:.5rem">
+              <label for="cadence-${key}" style="font-size:.75rem;color:var(--text-muted)">Delivery cadence</label>
+              <select class="cadence-select" id="cadence-${key}" data-beat-cadence="${key}">${cadenceOpts}</select>
+              <p class="cadence-hint">${CADENCE_HINTS[beat.cadence] || ''}</p>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="beat-card" data-beat-card="${key}">
+            <div class="beat-card__main">
+              <span class="beat-card__name">${meta.label}</span>
+              <div class="beat-actions" role="group" aria-label="${meta.label} status">
+                <button type="button" class="chip-btn ${followCls}" data-beat-status="${key}" data-status="followed">Follow</button>
+                <button type="button" class="chip-btn ${muteCls}" data-beat-status="${key}" data-status="muted">Mute</button>
+                <button type="button" class="chip-btn ${pauseCls}" data-beat-status="${key}" data-status="paused">Pause 30 days</button>
+              </div>
+            </div>
+            ${subbeatsHtml}
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <section class="section" aria-labelledby="beatsTitle">
+          <div class="section__header">
+            <h2 class="section__title" id="beatsTitle">Coverage interests</h2>
+            <p class="section__desc">Follow beats to shape your feed, alerts, and recommendations. Large topics like Travel open a searchable drawer for countries and regions.</p>
+            <p class="ux-note">UX: Explicit interest capture doubles as a discovery surface for editorial tailoring.</p>
+          </div>
+          <div class="beats-grid">${cards}</div>
+        </section>
+      `;
+    }
+
+    function renderRecommendations() {
+      const recs = getRecommendations();
+
+      const cards = recs.length ? recs.map((r, i) => `
+        <div class="rec-card">
+          <div class="rec-card__text">
+            <strong>${r.label}</strong>
+            <span class="rec-card__reason">${r.reason}</span>
+          </div>
+          <button type="button" class="btn btn--primary btn--sm" data-quick-add="${i}">Add</button>
+          ${r.type === 'newsletter' ? `<button type="button" class="btn btn--link btn--sm" data-preview="newsletter" data-preview-id="${r.id}" style="margin-left:.25rem">Preview</button>` : ''}
+        </div>
+      `).join('') : `<p class="section__desc" style="margin:0">Follow a beat below to unlock personalized picks.</p>`;
+
+      return `
+        <section class="section rec-section--prominent" aria-labelledby="recTitle">
+          <div class="section__header">
+            <h2 class="section__title" id="recTitle">Recommended for you</h2>
+            <p class="section__desc">Quick adds based on your interests — no digging required.</p>
+          </div>
+          <div class="rec-grid">${cards}</div>
+        </section>
+      `;
+    }
+
+    function renderDeliveryTimingSection() {
+      const dt = state.deliveryTiming;
+      const qh = dt.quietHours;
+      const c = dt.consolidation;
+      const preview = getConsolidationPreview();
+      const tzOpts = TIMEZONE_OPTIONS.map(t =>
+        `<option value="${t.value}" ${dt.timezone === t.value ? 'selected' : ''}>${t.label}</option>`
+      ).join('');
+      const modeOpts = CONSOLIDATION_MODES.map(m => `
+        <div class="consolidation-option">
+          <input type="radio" name="consolidationMode" id="consol-${m.value}" value="${m.value}" ${c.mode === m.value ? 'checked' : ''}>
+          <label class="consolidation-option__label" for="consol-${m.value}">
+            <span class="consolidation-option__title">${m.label}</span>
+            <span class="consolidation-option__hint">${m.hint}</span>
+          </label>
+        </div>
+      `).join('');
+      const exceptionChips = getActiveEmailNewsletters().map(key => {
+        const on = c.exceptions.includes(key);
+        return `<button type="button" class="subbeat-chip ${on ? 'is-on' : ''}" data-exception="${key}" aria-pressed="${on}">${NEWSLETTER_META[key].label}</button>`;
+      }).join('') || '<span class="cadence-hint">No active email newsletters</span>';
+
+      const showMorning = c.mode === 'dailyBundle' || c.mode === 'morningEvening';
+      const showEvening = c.mode === 'morningEvening';
+      const showWeekly = c.mode === 'weeklyOnly';
+
+      return `
+        <section class="section timing-section" aria-labelledby="timingTitle">
+          <div class="section__header">
+            <h2 class="section__title" id="timingTitle">When we reach you</h2>
+            <p class="section__desc">Set your timezone, quiet hours, and how separate programs get consolidated. One schedule can govern many products — with exceptions where you need them.</p>
+            <p class="ux-note">Common pattern: global timezone + quiet hours + bundle mode + per-product exceptions. Reduces 100 programs to 3–4 user-facing controls.</p>
+          </div>
+          <div class="timing-grid">
+            <div class="timing-block">
+              <p class="timing-block__title">Timezone</p>
+              <p class="timing-block__desc">All send times and quiet hours use this clock. Auto-detect updates when you travel.</p>
+              <div class="time-row">
+                <label for="tzSelect">Zone</label>
+                <select class="timing-select" id="tzSelect" data-timing="timezone" ${dt.timezoneAuto ? 'disabled' : ''}>${tzOpts}</select>
+              </div>
+              <label style="font-size:.8rem;display:flex;align-items:center;gap:.4rem;cursor:pointer;min-height:36px">
+                <input type="checkbox" data-timing="timezoneAuto" ${dt.timezoneAuto ? 'checked' : ''}> Use device timezone (auto-detect)
+              </label>
+            </div>
+            <div class="timing-block">
+              <p class="timing-block__title">Quiet hours</p>
+              <p class="timing-block__desc">Pause non-urgent editorial during sleep. Breaking alerts can still break through if you allow.</p>
+              <label style="font-size:.8rem;display:flex;align-items:center;gap:.4rem;cursor:pointer;margin-bottom:.65rem;min-height:36px">
+                <input type="checkbox" data-timing="quietEnabled" ${qh.enabled ? 'checked' : ''}> Enable quiet hours
+              </label>
+              <div class="time-row">
+                <label for="quietStart">From</label>
+                <input type="time" class="time-input" id="quietStart" data-timing="quietStart" value="${qh.start}" ${!qh.enabled ? 'disabled' : ''}>
+              </div>
+              <div class="time-row">
+                <label for="quietEnd">Until</label>
+                <input type="time" class="time-input" id="quietEnd" data-timing="quietEnd" value="${qh.end}" ${!qh.enabled ? 'disabled' : ''}>
+              </div>
+              <div class="quiet-channel-toggles">
+                ${['email', 'push', 'inApp'].map(ch => `
+                  <label><input type="checkbox" data-quiet-channel="${ch}" ${qh.channels[ch] ? 'checked' : ''} ${!qh.enabled ? 'disabled' : ''}> ${ch === 'inApp' ? 'In-app' : ch.charAt(0).toUpperCase() + ch.slice(1)}</label>
+                `).join('')}
+              </div>
+              <label style="font-size:.75rem;display:flex;align-items:center;gap:.4rem;cursor:pointer;margin-top:.5rem;min-height:36px">
+                <input type="checkbox" data-timing="allowBreaking" ${qh.allowBreaking ? 'checked' : ''} ${!qh.enabled ? 'disabled' : ''}> Allow major breaking alerts during quiet hours
+              </label>
+            </div>
+          </div>
+          <div class="timing-block" style="margin-top:1rem">
+            <p class="timing-block__title">Consolidate your programs</p>
+            <p class="timing-block__desc">Bundle separate newsletters into fewer sends. Most readers pick morning + evening buckets or one daily digest.</p>
+            <fieldset style="border:none;margin:0;padding:0">
+              <legend class="visually-hidden">Consolidation mode</legend>
+              <div class="consolidation-options">${modeOpts}</div>
+            </fieldset>
+            <div class="timing-grid" style="margin-top:.75rem">
+              ${showMorning ? `
+                <div class="time-row">
+                  <label for="morningTime">${c.mode === 'dailyBundle' ? 'Daily send' : 'Morning send'}</label>
+                  <input type="time" class="time-input" id="morningTime" data-timing="morningTime" value="${c.morningTime}">
+                </div>
+              ` : ''}
+              ${showEvening ? `
+                <div class="time-row">
+                  <label for="eveningTime">Evening send</label>
+                  <input type="time" class="time-input" id="eveningTime" data-timing="eveningTime" value="${c.eveningTime}">
+                </div>
+              ` : ''}
+              ${showWeekly ? `
+                <div class="time-row">
+                  <label for="weeklyDay">Day</label>
+                  <select class="timing-select" id="weeklyDay" data-timing="weeklyDay">
+                    ${WEEKDAY_OPTIONS.map(d => `<option value="${d.value}" ${c.weeklyDay === d.value ? 'selected' : ''}>${d.label}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="time-row">
+                  <label for="weeklyTime">Time</label>
+                  <input type="time" class="time-input" id="weeklyTime" data-timing="weeklyTime" value="${c.weeklyTime}">
+                </div>
+              ` : ''}
+            </div>
+            <p class="timing-block__title" style="margin-top:.85rem">Always send separately</p>
+            <p class="timing-block__desc">Pin products that should never be bundled — e.g. Morning Briefing or podcast alerts.</p>
+            <div class="exception-chips">${exceptionChips}</div>
+            <div class="consolidation-preview" aria-live="polite">
+              <strong>${preview.title}</strong>
+              ${preview.detail}
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderFrequencySection() {
+      const intensities = ['high', 'balanced', 'light'].map(i => `
+        <button type="button" class="segmented__btn ${state.globalIntensity === i ? 'is-active' : ''}" data-intensity="${i}">
+          ${i.charAt(0).toUpperCase() + i.slice(1)}
+        </button>
+      `).join('');
+
+      return `
+        <section class="section" aria-labelledby="freqTitle">
+          <div class="section__header">
+            <h2 class="section__title" id="freqTitle">Frequency tuning</h2>
+            <p class="section__desc">Set a global pace, then fine-tune individual beats and newsletters above.</p>
+          </div>
+          <div class="global-intensity-block">
+            <p style="font-size:.85rem;font-weight:600;margin:0 0 .5rem">Overall newsroom intensity</p>
+            <div class="segmented" role="group" aria-label="Global intensity">${intensities}</div>
+            <p class="cadence-hint">${GLOBAL_INTENSITY_MAP[state.globalIntensity].desc}</p>
+            <p class="ux-note">Changing intensity updates cadence defaults for followed beats and active newsletters.</p>
+          </div>
+          <div class="card" style="background:var(--muted-bg)">
+            <p style="font-size:.85rem;margin:0 0 .5rem"><strong>Cadence options</strong> (available per beat and newsletter)</p>
+            <ul style="margin:0;padding-left:1.25rem;font-size:.8rem;color:var(--text-secondary)">
+              ${CADENCE_OPTIONS.map(o => `<li><strong>${o.label}</strong> — ${o.hint}</li>`).join('')}
+            </ul>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderChannelsSection() {
+      const ch = state.channels;
+      return `
+        <section class="section" aria-labelledby="channelsTitle">
+          <div class="section__header">
+            <h2 class="section__title" id="channelsTitle">Delivery channels</h2>
+            <p class="section__desc">Turn off channels to reduce reach. Account and security messages are unaffected.</p>
+          </div>
+          <div class="channel-grid">
+            <div class="channel-row">
+              <div class="channel-row__info"><strong>Email</strong><span>Newsletters and digests</span></div>
+              <label class="toggle"><input type="checkbox" data-channel="email" ${ch.email ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+            </div>
+            <div class="channel-row">
+              <div class="channel-row__info"><strong>Push</strong><span>Mobile alerts and podcast notices</span></div>
+              <label class="toggle"><input type="checkbox" data-channel="push" ${ch.push ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+            </div>
+            <div class="channel-row">
+              <div class="channel-row__info"><strong>SMS</strong><span>Urgent breaking news only</span></div>
+              <label class="toggle"><input type="checkbox" data-channel="sms" ${ch.sms ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+            </div>
+            <div class="channel-row">
+              <div class="channel-row__info"><strong>In-app</strong><span>Notifications inside our app</span></div>
+              <label class="toggle"><input type="checkbox" data-channel="inApp" ${ch.inApp ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+            </div>
+            <div class="channel-row">
+              <div class="channel-row__info"><strong>Browser</strong><span>Web push on desktop</span></div>
+              <label class="toggle"><input type="checkbox" data-channel="browser" ${ch.browser ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderOptOutSection() {
+      return `
+        <section class="section opt-out-section" aria-labelledby="optOutSectionTitle">
+          <h2 class="section__title" id="optOutSectionTitle" style="font-size:1rem">Need fewer emails?</h2>
+          <p>Before unsubscribing, try reducing volume or pausing updates. Account messages always continue.</p>
+          <button type="button" class="btn btn--ghost" id="openOptOutBtn">Stop non-essential updates</button>
+          <p class="ux-note" style="text-align:left;margin-top:.75rem">Legal: Full unsubscribe is explicit and one click away inside the flow.</p>
+        </section>
+      `;
+    }
+
+    function renderEssentialSection() {
+      return `
+        <section class="section" aria-labelledby="essentialTitle">
+          <div class="section__header">
+            <h2 class="section__title" id="essentialTitle">Essential notices</h2>
+            <p class="section__desc">These service messages are managed separately from editorial preferences and cannot be turned off here.</p>
+          </div>
+          <ul class="essential-list">
+            <li>Password resets and login verification</li>
+            <li>Billing notices and payment receipts</li>
+            <li>Subscription renewal reminders</li>
+            <li>Security alerts for your account</li>
+          </ul>
+        </section>
+      `;
+    }
+
+    const NLP_SUGGESTIONS = [
+      'Politics and local news on weekdays, major breaking only',
+      'Quiet after 10pm, combine emails into one morning bundle at 7am',
+      'Follow tech and business, weekly digest, light overall volume',
+      'Pause sports for 30 days, keep morning briefing separate'
+    ];
+
+    const NLP_TOPIC_ALIASES = {
+      politics: 'politics', political: 'politics', congress: 'politics', 'white house': 'politics',
+      local: 'localNews', 'local news': 'localNews', metro: 'localNews', nyc: 'localNews',
+      tech: 'technology', technology: 'technology', ai: 'technology',
+      business: 'business', economy: 'business', markets: 'markets', finance: 'markets',
+      sports: 'sports', world: 'world', international: 'world',
+      health: 'health', climate: 'climate', travel: 'travel', food: 'food',
+      opinion: 'opinion', investigations: 'investigations', 'u.s.': 'usNews', 'us news': 'usNews',
+      media: 'media', culture: 'artsCulture', 'arts': 'artsCulture'
+    };
+
+    function parseNlpPrompt(text) {
+      const raw = (text || '').trim().toLowerCase();
+      const items = [];
+      const plan = [];
+
+      if (!raw) return { matched: false, items: ['Enter a description of what you want.'], plan };
+
+      const add = (label, fn) => { items.push(label); plan.push(fn); };
+
+      // Interests: "only want X and Y" / "follow X"
+      const onlyMatch = raw.match(/only (?:want|need|follow|get)\s+([^.]+)/);
+      const followMatch = raw.match(/follow(?:ing)?\s+([^.]+)/);
+      const interestPhrase = onlyMatch?.[1] || followMatch?.[1];
+      if (interestPhrase) {
+        const beats = [];
+        Object.entries(NLP_TOPIC_ALIASES).forEach(([alias, key]) => {
+          if (interestPhrase.includes(alias) && !beats.includes(key)) beats.push(key);
+        });
+        if (beats.length) {
+          add(`Follow: ${beats.map(k => BEAT_META[k].label).join(', ')}`, () => {
+            beats.forEach(k => { state.beats[k].status = 'followed'; });
+          });
+          if (onlyMatch) {
+            add('Unfollow beats not mentioned', () => {
+              Object.keys(state.beats).forEach(k => {
+                if (!beats.includes(k) && state.beats[k].status === 'followed') state.beats[k].status = 'unfollowed';
+              });
+            });
+          }
+        }
+      } else {
+        Object.entries(NLP_TOPIC_ALIASES).forEach(([alias, key]) => {
+          if (raw.includes(`follow ${alias}`) || raw.includes(`more ${alias}`)) {
+            add(`Follow ${BEAT_META[key].label}`, () => { state.beats[key].status = 'followed'; });
+          }
+        });
+        const found = [];
+        const sortedAliases = Object.entries(NLP_TOPIC_ALIASES).sort((a, b) => b[0].length - a[0].length);
+        sortedAliases.forEach(([alias, key]) => {
+          if (raw.includes(alias) && !found.includes(key)) {
+            const blocked = raw.match(new RegExp(`(?:no|stop|mute|pause|unfollow|don'?t want)\\s+${alias.replace('.', '\\.')}`));
+            if (!blocked) found.push(key);
+          }
+        });
+        if (found.length) {
+          add(`Follow: ${found.map(k => BEAT_META[k].label).join(', ')}`, () => {
+            found.forEach(k => { state.beats[k].status = 'followed'; });
+          });
+        }
+      }
+
+      // Mute / no / stop topics
+      Object.entries(NLP_TOPIC_ALIASES).forEach(([alias, key]) => {
+        if (raw.match(new RegExp(`(?:no|stop|mute|unfollow|don'?t want)\\s+${alias.replace('.', '\\.')}`))) {
+          add(`Mute ${BEAT_META[key].label}`, () => { state.beats[key].status = 'muted'; });
+        }
+      });
+
+      // Pause beats or all
+      if (/pause (?:everything|all|non-essential)/.test(raw) || /pause .*30/.test(raw) && !Object.keys(NLP_TOPIC_ALIASES).some(a => raw.includes(`pause ${a}`))) {
+        const days = raw.includes('7 day') ? 7 : 30;
+        add(`Pause non-essential items for ${days} days`, () => {
+          Object.keys(state.newsletters).forEach(k => { if (state.newsletters[k].subscribed) state.newsletters[k].cadence = days === 7 ? 'pause7' : 'pause30'; });
+          Object.keys(state.beats).forEach(k => {
+            if (state.beats[k].status === 'followed') {
+              state.beats[k].status = 'paused';
+              state.beats[k].cadence = days === 7 ? 'pause7' : 'pause30';
+            }
+          });
+        });
+      }
+      Object.entries(NLP_TOPIC_ALIASES).forEach(([alias, key]) => {
+        if (raw.match(new RegExp(`pause ${alias.replace('.', '\\.')}`))) {
+          const days = raw.includes('7') ? 7 : 30;
+          add(`Pause ${BEAT_META[key].label} for ${days} days`, () => {
+            state.beats[key].status = 'paused';
+            state.beats[key].cadence = days === 7 ? 'pause7' : 'pause30';
+          });
+        }
+      });
+
+      // Frequency / intensity
+      if (/\blight\b|less (?:email|volume|often)|lighter/.test(raw)) {
+        add('Set overall intensity to Light', () => {
+          state.globalIntensity = 'light';
+          const cfg = GLOBAL_INTENSITY_MAP.light;
+          Object.keys(state.beats).forEach(key => {
+            const beat = state.beats[key];
+            if (beat.status === 'followed' && !isPaused(beat.cadence) && beat.status !== 'paused') beat.cadence = cfg.defaultCadence;
+          });
+          Object.keys(state.newsletters).forEach(key => {
+            const nl = state.newsletters[key];
+            if (nl.subscribed && !isPaused(nl.cadence)) nl.cadence = cfg.defaultCadence;
+          });
+          if (state.breakingAlerts.level === 'all') state.breakingAlerts.level = 'major';
+        });
+      } else if (/\bhigh\b|more (?:email|often|frequent)/.test(raw)) {
+        add('Set overall intensity to High', () => {
+          state.globalIntensity = 'high';
+          const cfg = GLOBAL_INTENSITY_MAP.high;
+          Object.keys(state.beats).forEach(key => {
+            const beat = state.beats[key];
+            if (beat.status === 'followed' && !isPaused(beat.cadence) && beat.status !== 'paused') beat.cadence = cfg.defaultCadence;
+          });
+          Object.keys(state.newsletters).forEach(key => {
+            const nl = state.newsletters[key];
+            if (nl.subscribed && !isPaused(nl.cadence)) nl.cadence = cfg.defaultCadence;
+          });
+        });
+      } else if (/\bbalanced\b/.test(raw)) {
+        add('Set overall intensity to Balanced', () => { state.globalIntensity = 'balanced'; });
+      }
+
+      if (/\bweekdays?\b|weekday briefing/.test(raw)) {
+        add('Set followed beats and active newsletters to Weekdays', () => {
+          Object.keys(state.beats).forEach(k => { if (state.beats[k].status === 'followed') state.beats[k].cadence = 'weekdays'; });
+          Object.keys(state.newsletters).forEach(k => { if (state.newsletters[k].subscribed) state.newsletters[k].cadence = 'weekdays'; });
+        });
+      }
+      if (/\bweekly\b|once a week/.test(raw)) {
+        add('Set followed beats and active newsletters to Weekly', () => {
+          Object.keys(state.beats).forEach(k => { if (state.beats[k].status === 'followed') state.beats[k].cadence = 'weekly'; });
+          Object.keys(state.newsletters).forEach(k => { if (state.newsletters[k].subscribed) state.newsletters[k].cadence = 'weekly'; });
+          state.deliveryTiming.consolidation.mode = 'weeklyOnly';
+        });
+      }
+      if (/\bdaily\b|once a day/.test(raw) && !/quiet/.test(raw)) {
+        add('Set active newsletters to Daily digest', () => {
+          Object.keys(state.newsletters).forEach(k => { if (state.newsletters[k].subscribed) state.newsletters[k].cadence = 'daily'; });
+        });
+      }
+
+      // Breaking
+      if (/major (?:breaking|stories|only)|major stories only/.test(raw)) {
+        add('Breaking alerts: Major stories only', () => { state.breakingAlerts.level = 'major'; });
+      } else if (/no breaking|breaking off|turn off breaking/.test(raw)) {
+        add('Breaking alerts: Off', () => { state.breakingAlerts.level = 'off'; });
+      } else if (/all breaking|every breaking/.test(raw)) {
+        add('Breaking alerts: All breaking news', () => { state.breakingAlerts.level = 'all'; });
+      } else if (/followed topics only/.test(raw)) {
+        add('Breaking alerts: Followed topics only', () => { state.breakingAlerts.level = 'followed'; });
+      }
+
+      // Quiet hours & timeframe
+      if (/quiet|do not disturb|dnd|no notifications at night/.test(raw)) {
+        add('Enable quiet hours', () => { state.deliveryTiming.quietHours.enabled = true; });
+        const afterMatch = raw.match(/after\s+(\d{1,2})(?::(\d{2}))?\s*(?:pm|p\.m\.)?/);
+        const beforeMatch = raw.match(/(?:until|before|to)\s+(\d{1,2})(?::(\d{2}))?\s*(?:am|a\.m\.)?/);
+        if (afterMatch) {
+          let h = parseInt(afterMatch[1], 10);
+          if (/pm|p\.m/.test(raw.slice(raw.indexOf(afterMatch[0]), raw.indexOf(afterMatch[0]) + 20)) && h < 12) h += 12;
+          const m = afterMatch[2] || '00';
+          add(`Quiet hours start: ${formatTime12h(`${h}:${m}`)}`, () => { state.deliveryTiming.quietHours.start = `${String(h).padStart(2,'0')}:${m}`; });
+        }
+        if (beforeMatch) {
+          let h = parseInt(beforeMatch[1], 10);
+          const m = beforeMatch[2] || '00';
+          add(`Quiet hours end: ${formatTime12h(`${h}:${m}`)}`, () => { state.deliveryTiming.quietHours.end = `${String(h).padStart(2,'0')}:${m}`; });
+        }
+      }
+
+      // Consolidation & send times
+      if (/one (?:daily )?bundle|combine|consolidat|single (?:daily )?email/.test(raw)) {
+        add('Consolidate into one daily bundle', () => { state.deliveryTiming.consolidation.mode = 'dailyBundle'; });
+      } else if (/morning and evening|morning \+ evening|two (?:daily )?send/.test(raw)) {
+        add('Consolidate into morning + evening buckets', () => { state.deliveryTiming.consolidation.mode = 'morningEvening'; });
+      } else if (/separate send|each (?:on its own|separately)/.test(raw)) {
+        add('Keep separate sends per product', () => { state.deliveryTiming.consolidation.mode = 'separate'; });
+      }
+
+      const morningMatch = raw.match(/(?:morning|am)(?:\s+(?:at|around|by))?\s+(\d{1,2})(?::(\d{2}))?\s*(?:am)?/);
+      if (morningMatch || /\b7\s*am\b|\b6:30\b|\b7:00\b/.test(raw)) {
+        const h = morningMatch ? parseInt(morningMatch[1], 10) : 7;
+        const m = morningMatch?.[2] || '00';
+        add(`Morning send time: ${formatTime12h(`${h}:${m}`)}`, () => { state.deliveryTiming.consolidation.morningTime = `${String(h).padStart(2,'0')}:${m}`; });
+      }
+      const eveningMatch = raw.match(/evening(?:\s+(?:at|around))?\s+(\d{1,2})(?::(\d{2}))?\s*(?:pm)?/);
+      if (eveningMatch || /\b5:30\s*pm\b|\b6\s*pm\b/.test(raw)) {
+        let h = eveningMatch ? parseInt(eveningMatch[1], 10) : 6;
+        if (eveningMatch && h < 12) h += 12;
+        const m = eveningMatch?.[2] || '00';
+        add(`Evening send time: ${formatTime12h(`${h}:${m}`)}`, () => { state.deliveryTiming.consolidation.eveningTime = `${String(h).padStart(2,'0')}:${m}`; });
+      }
+
+      // Exceptions
+      if (/except morning briefing|keep morning briefing separate|morning briefing separate/.test(raw)) {
+        add('Always send Morning Briefing separately', () => {
+          if (!state.deliveryTiming.consolidation.exceptions.includes('morningBriefing'))
+            state.deliveryTiming.consolidation.exceptions.push('morningBriefing');
+        });
+      }
+      if (/except podcast|podcast separate/.test(raw)) {
+        add('Always send Podcast Alerts separately', () => {
+          if (!state.deliveryTiming.consolidation.exceptions.includes('podcastAlerts'))
+            state.deliveryTiming.consolidation.exceptions.push('podcastAlerts');
+        });
+      }
+
+      // Newsletter subscribe hints
+      if (/politics daily/.test(raw)) {
+        add('Subscribe to Politics Daily', () => { state.newsletters.politicsDaily.subscribed = true; });
+      }
+      if (/morning briefing/.test(raw) && !/except|separate/.test(raw)) {
+        add('Subscribe to Morning Briefing', () => { state.newsletters.morningBriefing.subscribed = true; });
+      }
+      if (/local edition/.test(raw)) {
+        add('Subscribe to Local Edition', () => { state.newsletters.localEdition.subscribed = true; });
+      }
+
+      if (!items.length) {
+        return {
+          matched: false,
+          items: ['We couldn\'t map that phrase yet. Try mentioning topics (politics, local), frequency (weekdays, weekly, light), or timing (quiet after 10pm, morning at 7am).'],
+          plan
+        };
+      }
+
+      return { matched: true, items, plan };
+    }
+
+    function renderNlpBetaSection() {
+      const preview = state.nlp.preview;
+      const suggestions = NLP_SUGGESTIONS.map((s, i) =>
+        `<button type="button" class="nlp-suggestion" data-nlp-suggestion="${i}">${s}</button>`
+      ).join('');
+
+      const previewHtml = preview ? (
+        preview.matched && preview.plan.length ? `
+          <p class="nlp-preview__title">Preview — ${preview.plan.length} change${preview.plan.length > 1 ? 's' : ''} ready</p>
+          <ul class="nlp-preview__list">${preview.items.map(i => `<li>${i}</li>`).join('')}</ul>
+          <div class="nlp-actions">
+            <button type="button" class="btn btn--primary btn--sm" id="nlpApplyBtn">Apply changes</button>
+            <button type="button" class="btn btn--secondary btn--sm" id="nlpClearPreviewBtn">Clear preview</button>
+          </div>
+          <p class="nlp-preview__note">Changes are staged here first. Use Save changes in the bar below to confirm across channels.</p>
+        ` : `
+          <p class="nlp-preview__title">Couldn't parse request</p>
+          <p class="nlp-preview__empty">${preview.items[0]}</p>
+          <button type="button" class="btn btn--secondary btn--sm" id="nlpClearPreviewBtn">Try again</button>
+        `
+      ) : '';
+
+      return `
+        <section class="section nlp-beta" aria-labelledby="nlpTitle">
+          <span class="nlp-beta__badge">Beta</span>
+          <div class="section__header">
+            <h2 class="section__title" id="nlpTitle">Tell us what you want</h2>
+            <p class="section__desc">Describe your ideal mix of topics, frequency, and timing in plain language. We'll translate it into preference changes you can preview before applying.</p>
+            <p class="ux-note">Beta NLP assistant: rule-based parser in this prototype; production would use guarded LLM → structured preview → confirm.</p>
+          </div>
+          <div class="nlp-beta__prompt-area">
+            <label for="nlpInput" class="visually-hidden">Describe your news preferences</label>
+            <textarea class="nlp-textarea" id="nlpInput" placeholder="Example: I only want politics and local news on weekdays, with major breaking alerts. Quiet after 10pm. Combine everything else into a morning bundle at 7am, but keep Morning Briefing separate.">${state.nlp.input}</textarea>
+            <p style="font-size:.75rem;color:var(--text-muted);margin:0">Try a suggestion:</p>
+            <div class="nlp-suggestions">${suggestions}</div>
+            <div class="nlp-actions">
+              <button type="button" class="btn btn--primary" id="nlpPreviewBtn">Preview changes</button>
+            </div>
+            <div class="nlp-preview ${preview ? 'is-visible' : ''}" id="nlpPreview" role="status" aria-live="polite">${previewHtml}</div>
+          </div>
+        </section>
+      `;
+    }
+
+    function applyNlpPreview() {
+      const preview = state.nlp.preview;
+      if (!preview?.matched || !preview.plan.length) return;
+      preview.plan.forEach(fn => fn());
+      markDirty('Applied preferences from natural language');
+      state.nlp.preview = null;
+      render();
+    }
+
+    function render() {
+      document.getElementById('lastUpdatedDisplay').textContent = 'Last updated: ' + formatLastUpdated(state.lastUpdated);
+
+      document.getElementById('mainContent').innerHTML =
+        renderRecommendations() +
+        renderBreakingSection() +
+        renderNewslettersSection() +
+        renderBeatsSection() +
+        renderDeliveryTimingSection() +
+        renderFrequencySection() +
+        renderChannelsSection() +
+        renderOptOutSection() +
+        renderEssentialSection() +
+        renderNlpBetaSection();
+
+      renderSummary();
+      bindEvents();
+    }
+
+    function renderOptOutModal() {
+      document.getElementById('optOutOptions').innerHTML = OPT_OUT_ACTIONS.map(a => `
+        <button type="button" class="modal-option ${a.danger ? 'modal-option--danger' : ''}" data-opt-out="${a.id}">
+          <strong>${a.title}</strong>
+          <span>${a.desc}</span>
+        </button>
+      `).join('');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // EVENT BINDING
+    // ═══════════════════════════════════════════════════════════════
+
+    function bindEvents() {
+      // Breaking level
+      document.querySelectorAll('[name="breakingLevel"]').forEach(radio => {
+        radio.addEventListener('change', e => {
+          state.breakingAlerts.level = e.target.value;
+          markDirty(`Breaking alerts: ${BREAKING_LEVELS.find(l => l.value === e.target.value).label}`);
+          renderSummary();
+          // Re-render breaking section for major visual state
+          const section = document.querySelector('.breaking-section');
+          if (section) {
+            const parent = section.parentNode;
+            const idx = Array.from(parent.children).indexOf(section);
+            const temp = document.createElement('div');
+            temp.innerHTML = renderBreakingSection();
+            parent.replaceChild(temp.firstElementChild, section);
+            bindBreakingOnly();
+          }
+        });
+      });
+
+      bindBreakingOnly();
+
+      // Newsletter subscribe
+      document.querySelectorAll('[data-nl-sub]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.nlSub;
+          state.newsletters[key].subscribed = e.target.checked;
+          markDirty(`${e.target.checked ? 'Subscribed to' : 'Unsubscribed from'} ${NEWSLETTER_META[key].label}`);
+          render();
+        });
+      });
+
+      document.querySelectorAll('[data-nl-cadence]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.nlCadence;
+          state.newsletters[key].cadence = e.target.value;
+          markDirty(`${NEWSLETTER_META[key].label} cadence: ${CADENCE_OPTIONS.find(o => o.value === e.target.value).label}`);
+          render();
+        });
+      });
+
+      // Beat status
+      document.querySelectorAll('[data-beat-status]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const key = e.target.dataset.beatStatus;
+          const status = e.target.dataset.status;
+          const beat = state.beats[key];
+          if (status === 'paused') {
+            beat.status = 'paused';
+            beat.cadence = 'pause30';
+          } else {
+            beat.status = status;
+            if (!isPaused(beat.cadence)) { /* keep cadence */ }
+            else if (status === 'followed') beat.cadence = 'weekdays';
+          }
+          markDirty(`${BEAT_META[key].label}: ${status}`);
+          render();
+        });
+      });
+
+      // Subbeats
+      document.querySelectorAll('[data-subbeat]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const key = e.target.dataset.beat;
+          const sk = e.target.dataset.subbeat;
+          state.beats[key].subbeats[sk] = !state.beats[key].subbeats[sk];
+          if (state.beats[key].status !== 'followed' && state.beats[key].subbeats[sk]) {
+            state.beats[key].status = 'followed';
+          }
+          markDirty(`${BEAT_META[key].subbeats[sk]} ${state.beats[key].subbeats[sk] ? 'followed' : 'unfollowed'}`);
+          render();
+        });
+      });
+
+      document.querySelectorAll('[data-beat-cadence]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.beatCadence;
+          state.beats[key].cadence = e.target.value;
+          if (isPaused(e.target.value)) state.beats[key].status = 'paused';
+          else if (state.beats[key].status === 'paused') state.beats[key].status = 'followed';
+          markDirty(`${BEAT_META[key].label} cadence updated`);
+          render();
+        });
+      });
+
+      document.querySelectorAll('[data-expand-beat]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const key = e.target.dataset.expandBeat;
+          state.expandedBeats[key] = !state.expandedBeats[key];
+          render();
+        });
+      });
+
+      // Global intensity
+      document.querySelectorAll('[data-intensity]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          applyGlobalIntensity(e.target.dataset.intensity);
+          render();
+        });
+      });
+
+      // Channels
+      document.querySelectorAll('[data-channel]').forEach(el => {
+        el.addEventListener('change', e => {
+          const ch = e.target.dataset.channel;
+          state.channels[ch] = e.target.checked;
+          if (ch === 'browser') {
+            state.contacts.browser.value = e.target.checked ? 'Chrome on MacBook' : 'Not connected';
+            state.contacts.browser.verified = e.target.checked;
+          }
+          markDirty(`${ch} channel ${e.target.checked ? 'enabled' : 'disabled'}`);
+          renderSummary();
+          if (document.getElementById('contactDrawer').classList.contains('is-open')) renderContactDrawer();
+        });
+      });
+
+      // Quick add recommendations
+      const recs = getRecommendations();
+      document.querySelectorAll('[data-quick-add]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const idx = parseInt(e.target.dataset.quickAdd, 10);
+          applyQuickAdd(recs[idx]);
+        });
+      });
+
+      bindTimingEvents();
+      bindNlpEvents();
+    }
+
+    function bindNlpEvents() {
+      const input = document.getElementById('nlpInput');
+      if (!input) return;
+
+      input.addEventListener('input', e => { state.nlp.input = e.target.value; });
+
+      document.getElementById('nlpPreviewBtn')?.addEventListener('click', () => {
+        state.nlp.input = input.value;
+        state.nlp.preview = parseNlpPrompt(state.nlp.input);
+        const section = document.getElementById('nlpPreview');
+        const parent = section?.closest('.nlp-beta');
+        if (parent) {
+          const temp = document.createElement('div');
+          temp.innerHTML = renderNlpBetaSection();
+          parent.replaceWith(temp.firstElementChild);
+          bindNlpEvents();
+        }
+      });
+
+      document.querySelectorAll('[data-nlp-suggestion]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const text = NLP_SUGGESTIONS[parseInt(e.target.dataset.nlpSuggestion, 10)];
+          state.nlp.input = text;
+          const inputEl = document.getElementById('nlpInput');
+          if (inputEl) inputEl.value = text;
+        });
+      });
+
+      document.getElementById('nlpApplyBtn')?.addEventListener('click', applyNlpPreview);
+
+      document.getElementById('nlpClearPreviewBtn')?.addEventListener('click', () => {
+        state.nlp.preview = null;
+        const beta = document.querySelector('.nlp-beta');
+        if (beta) {
+          const temp = document.createElement('div');
+          temp.innerHTML = renderNlpBetaSection();
+          beta.replaceWith(temp.firstElementChild);
+          bindNlpEvents();
+        }
+      });
+    }
+
+    function bindTimingEvents() {
+      const dt = state.deliveryTiming;
+
+      document.querySelectorAll('[data-timing="timezone"]').forEach(el => {
+        el.addEventListener('change', e => {
+          dt.timezone = e.target.value;
+          state.reader.timezone = e.target.value;
+          markDirty(`Timezone: ${TIMEZONE_OPTIONS.find(t => t.value === e.target.value)?.label}`);
+          renderSummary();
+        });
+      });
+
+      document.querySelectorAll('[data-timing="timezoneAuto"]').forEach(el => {
+        el.addEventListener('change', e => {
+          dt.timezoneAuto = e.target.checked;
+          markDirty(e.target.checked ? 'Timezone set to auto-detect' : 'Timezone set manually');
+          render();
+        });
+      });
+
+      document.querySelectorAll('[data-timing="quietEnabled"]').forEach(el => {
+        el.addEventListener('change', e => {
+          dt.quietHours.enabled = e.target.checked;
+          markDirty(e.target.checked ? 'Quiet hours enabled' : 'Quiet hours disabled');
+          render();
+        });
+      });
+
+      document.querySelectorAll('[data-timing="quietStart"]').forEach(el => {
+        el.addEventListener('change', e => {
+          dt.quietHours.start = e.target.value;
+          markDirty(`Quiet hours start: ${formatTime12h(e.target.value)}`);
+          renderSummary();
+        });
+      });
+
+      document.querySelectorAll('[data-timing="quietEnd"]').forEach(el => {
+        el.addEventListener('change', e => {
+          dt.quietHours.end = e.target.value;
+          markDirty(`Quiet hours end: ${formatTime12h(e.target.value)}`);
+          renderSummary();
+        });
+      });
+
+      document.querySelectorAll('[data-quiet-channel]').forEach(el => {
+        el.addEventListener('change', e => {
+          dt.quietHours.channels[e.target.dataset.quietChannel] = e.target.checked;
+          markDirty(`Quiet hours ${e.target.dataset.quietChannel} ${e.target.checked ? 'on' : 'off'}`);
+        });
+      });
+
+      document.querySelectorAll('[data-timing="allowBreaking"]').forEach(el => {
+        el.addEventListener('change', e => {
+          dt.quietHours.allowBreaking = e.target.checked;
+          markDirty(e.target.checked ? 'Breaking allowed during quiet hours' : 'Breaking blocked during quiet hours');
+        });
+      });
+
+      document.querySelectorAll('[name="consolidationMode"]').forEach(radio => {
+        radio.addEventListener('change', e => {
+          dt.consolidation.mode = e.target.value;
+          markDirty(`Consolidation: ${CONSOLIDATION_MODES.find(m => m.value === e.target.value)?.label}`);
+          render();
+        });
+      });
+
+      ['morningTime', 'eveningTime', 'weeklyTime'].forEach(key => {
+        document.querySelectorAll(`[data-timing="${key}"]`).forEach(el => {
+          el.addEventListener('change', e => {
+            dt.consolidation[key] = e.target.value;
+            markDirty(`Send time updated: ${formatTime12h(e.target.value)}`);
+            render();
+          });
+        });
+      });
+
+      document.querySelectorAll('[data-timing="weeklyDay"]').forEach(el => {
+        el.addEventListener('change', e => {
+          dt.consolidation.weeklyDay = e.target.value;
+          markDirty(`Weekly roundup: ${WEEKDAY_OPTIONS.find(d => d.value === e.target.value)?.label}`);
+          render();
+        });
+      });
+
+      document.querySelectorAll('[data-exception]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const key = e.target.dataset.exception;
+          const ex = dt.consolidation.exceptions;
+          const idx = ex.indexOf(key);
+          if (idx >= 0) ex.splice(idx, 1);
+          else ex.push(key);
+          markDirty(`${NEWSLETTER_META[key].label} ${idx >= 0 ? 'bundled' : 'separate send'}`);
+          render();
+        });
+      });
+    }
+
+    function bindBreakingOnly() {
+      document.querySelectorAll('[data-breaking-channel]').forEach(el => {
+        el.addEventListener('change', e => {
+          const ch = e.target.dataset.breakingChannel;
+          state.breakingAlerts.channels[ch] = e.target.checked;
+          markDirty(`Breaking ${ch} ${e.target.checked ? 'on' : 'off'}`);
+        });
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════════
+
+    document.getElementById('saveBtn').addEventListener('click', saveChanges);
+    document.getElementById('discardBtn').addEventListener('click', discardChanges);
+    document.getElementById('openContactDrawerBtn').addEventListener('click', openContactDrawer);
+    document.getElementById('profileSpotlight').addEventListener('click', e => {
+      const btn = e.target.closest('#profileExpandBtn, #profileExpandBtnCollapsed');
+      if (btn) {
+        state.ui.profileExpanded = btn.id === 'profileExpandBtnCollapsed' ? true : !state.ui.profileExpanded;
+        renderSummary();
+      }
+    });
+    document.getElementById('mainContent').addEventListener('click', e => {
+      const interestBtn = e.target.closest('[data-open-interest-drawer]');
+      if (interestBtn) {
+        openInterestDrawer(interestBtn.dataset.openInterestDrawer);
+        return;
+      }
+      const previewBtn = e.target.closest('[data-preview]');
+      if (previewBtn) {
+        openPreview(previewBtn.dataset.preview, previewBtn.dataset.previewId);
+        return;
+      }
+      if (e.target.id === 'openOptOutBtn' || e.target.closest('#openOptOutBtn')) openModal();
+    });
+    document.getElementById('saveSummary').addEventListener('click', e => {
+      const card = e.target.closest('[data-next-action]');
+      if (card) handleNextAction(card.dataset.route, card.querySelector('.next-action-card__label').textContent);
+    });
+    document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+    document.getElementById('previewCloseBtn').addEventListener('click', closePreview);
+    document.getElementById('previewSubscribeBtn').addEventListener('click', () => {
+      if (previewContext?.type === 'newsletter') {
+        state.newsletters[previewContext.id].subscribed = true;
+        markDirty(`Subscribed to ${NEWSLETTER_META[previewContext.id].label}`);
+        closePreview();
+        render();
+      }
+    });
+    document.getElementById('interestDrawerCloseBtn').addEventListener('click', closeInterestDrawer);
+    document.getElementById('interestDrawerDoneBtn').addEventListener('click', closeInterestDrawer);
+    document.getElementById('interestDrawer').addEventListener('click', e => {
+      if (e.target.id === 'interestDrawer') closeInterestDrawer();
+    });
+    document.getElementById('drawerCloseBtn').addEventListener('click', closeContactDrawer);
+
+    document.getElementById('contactDrawer').addEventListener('click', e => {
+      if (e.target.id === 'contactDrawer') closeContactDrawer();
+    });
+
+    document.getElementById('optOutModal').addEventListener('click', e => {
+      if (e.target.id === 'optOutModal') closeModal();
+    });
+
+    document.getElementById('previewModal').addEventListener('click', e => {
+      if (e.target.id === 'previewModal') closePreview();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (document.getElementById('interestDrawer').classList.contains('is-open')) closeInterestDrawer();
+      else if (document.getElementById('previewModal').classList.contains('is-open')) closePreview();
+      else if (document.getElementById('contactDrawer').classList.contains('is-open')) closeContactDrawer();
+      else if (document.getElementById('optOutModal').classList.contains('is-open')) closeModal();
+    });
+
+    document.getElementById('optOutOptions').addEventListener('click', e => {
+      const btn = e.target.closest('[data-opt-out]');
+      if (btn) applyOptOut(btn.dataset.optOut);
+    });
+
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeToggle.textContent = isDark ? 'Dark mode' : 'Light mode';
+      themeToggle.setAttribute('aria-pressed', String(!isDark));
+    });
+
+    // Trap focus in modal and drawer
+    document.getElementById('optOutModal').addEventListener('keydown', trapFocus);
+    document.getElementById('contactDrawer').addEventListener('keydown', trapFocus);
+    document.getElementById('previewModal').addEventListener('keydown', trapFocus);
+    document.getElementById('interestDrawer').addEventListener('keydown', trapFocus);
+
+    function trapFocus(e) {
+      if (e.key !== 'Tab') return;
+      const container = e.currentTarget;
+      if (!container.classList.contains('is-open')) return;
+      const focusable = container.querySelectorAll('.drawer button, .drawer [href], .drawer input, .modal button, .modal [href], .modal input, .modal-option, [tabindex]:not([tabindex="-1"])');
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+
+    renderOptOutModal();
+    render();
+  </script>
+</body>
+</html>
