@@ -297,20 +297,6 @@
       font-size: .9rem;
     }
 
-    .profile-ring--sm {
-      width: 44px;
-      height: 44px;
-      flex-shrink: 0;
-    }
-
-    .profile-ring--sm .profile-ring__score {
-      font-size: .75rem;
-    }
-
-    .profile-ring--sm .profile-ring__score span {
-      font-size: .45rem;
-    }
-
     .profile-glance__stats {
       display: flex;
       flex-wrap: wrap;
@@ -387,15 +373,6 @@
         grid-template-columns: auto 1fr auto;
         gap: 1.5rem;
       }
-    }
-
-    .profile-spotlight .profile-ring {
-      width: 96px;
-      height: 96px;
-    }
-
-    .profile-spotlight .profile-ring__score {
-      font-size: 1.45rem;
     }
 
     .stats-label {
@@ -751,53 +728,21 @@
       margin-bottom: 1rem;
     }
 
-    .profile-ring {
-      position: relative;
+    .profile-avatar {
       width: 72px;
       height: 72px;
-      flex-shrink: 0;
-    }
-
-    .profile-ring svg {
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
-
-    .profile-ring__track {
-      fill: none;
-      stroke: var(--border);
-      stroke-width: 6;
-    }
-
-    .profile-ring__fill {
-      fill: none;
-      stroke: var(--accent);
-      stroke-width: 6;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 600ms ease;
-    }
-
-    .profile-ring__score {
-      position: absolute;
-      inset: 0;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      border: 2px solid var(--accent);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 1.1rem;
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.25rem;
       color: var(--accent);
-      line-height: 1;
-    }
-
-    .profile-ring__score span {
-      font-size: .55rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      margin-top: .15rem;
+      flex-shrink: 0;
+      letter-spacing: .02em;
     }
 
     .profile-hero__text h2 {
@@ -819,53 +764,11 @@
       margin-bottom: .35rem;
     }
 
-    .profile-level__num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 1.1rem;
-      height: 1.1rem;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #fff;
-      font-size: .65rem;
-    }
-
     .profile-tagline {
       font-size: .8rem;
       color: var(--text-secondary);
       margin: 0;
       line-height: 1.4;
-    }
-
-    .xp-bar {
-      margin-bottom: 1rem;
-    }
-
-    .xp-bar__labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: .65rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      margin-bottom: .3rem;
-    }
-
-    .xp-bar__track {
-      height: 8px;
-      background: var(--muted-bg);
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    .xp-bar__fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), #3d7a5e);
-      border-radius: 999px;
-      transition: width 600ms ease;
-      min-width: 4px;
     }
 
     .summary-pills {
@@ -2360,7 +2263,7 @@
     PAGE STRUCTURE & INTERACTION MODEL (stakeholder reference)
     ─────────────────────────────────────────────────────────
     1. Header: compact title + Contact + dark mode; "How this works" in collapsible details
-    2. Your reader profile (Newsroom passport): gamified score, XP, streak, activity, achievements — collapsible
+    2. Your reader profile (Newsroom passport): badges, streak, activity — collapsible
     3. Recommended for you: first content section (discovery surface)
     4. Breaking alerts (prominent): intensity radio + channel routing
     5. Newsletter products: card grid with subscribe toggle, cadence, status badge
@@ -2403,7 +2306,7 @@
         <div>
           <p class="profile-brand">Newsroom passport</p>
           <h2 class="profile-spotlight__headline" id="profileHeadline">Your reader profile</h2>
-          <p class="profile-spotlight__tagline" id="profileTagline">Score, streaks, and achievements update as you tune preferences.</p>
+          <p class="profile-spotlight__tagline" id="profileTagline">Badges and activity update as you tune preferences.</p>
         </div>
         <button type="button" class="profile-expand-btn" id="profileExpandBtn" aria-expanded="true">Collapse</button>
       </div>
@@ -2412,8 +2315,7 @@
           <div class="profile-spotlight__core">
             <div id="profileHero"></div>
             <div class="profile-spotlight__footer">
-              <div class="xp-bar" id="xpBar"></div>
-              <p class="summary-sentence" id="summarySentence" style="margin-top:.75rem"></p>
+              <p class="summary-sentence" id="summarySentence"></p>
               <p class="profile-next-hint" id="profileNextHint"></p>
             </div>
             <div class="streak-card" id="streakCard"></div>
@@ -2841,11 +2743,11 @@
       return map[state.breakingAlerts.level] || '—';
     }
 
-    const LEVELS = [
-      { min: 0, max: 24, title: 'Curious Reader', level: 1 },
-      { min: 25, max: 49, title: 'Informed Subscriber', level: 2 },
-      { min: 50, max: 74, title: 'Newsroom Insider', level: 3 },
-      { min: 75, max: 100, title: 'Front Page Regular', level: 4 }
+    const READER_TITLES = [
+      { minBadges: 5, title: 'Front Page Regular' },
+      { minBadges: 3, title: 'Newsroom Insider' },
+      { minBadges: 1, title: 'Informed Subscriber' },
+      { minBadges: 0, title: 'Curious Reader' }
     ];
 
     const BADGE_DEFS = [
@@ -2857,36 +2759,29 @@
       { id: 'quiet', icon: '🌙', label: 'Quiet Hours', test: () => state.deliveryTiming?.quietHours?.enabled }
     ];
 
-    function computeReaderScore() {
-      const beatsPts = Math.min(countFollowedBeats() * 5, 40);
-      const nlPts = Math.min(countActiveNewsletters() * 4, 30);
-      const chPts = Math.min(countActiveChannels() * 5, 20);
-      const contactPts = Object.values(state.contacts).filter(c => state.channels[c.channelKey] && c.verified).length * 2;
-      const profilePts = Math.min(contactPts, 10);
-      return Math.min(beatsPts + nlPts + chPts + profilePts, 100);
-    }
-
-    function getReaderLevel(score) {
-      return LEVELS.find(l => score >= l.min && score <= l.max) || LEVELS[0];
-    }
-
-    function getXpProgress(score) {
-      const lvl = getReaderLevel(score);
-      const range = lvl.max - lvl.min + 1;
-      const progress = score - lvl.min;
-      return { pct: Math.round((progress / range) * 100), lvl, nextAt: lvl.max + 1 };
-    }
-
     function getEarnedBadges() {
       return BADGE_DEFS.map(b => ({ ...b, earned: b.test() }));
     }
 
-    function getProfileNextHint(score) {
+    function countEarnedBadges() {
+      return getEarnedBadges().filter(b => b.earned).length;
+    }
+
+    function getReaderTitle() {
+      const earned = countEarnedBadges();
+      return READER_TITLES.find(t => earned >= t.minBadges)?.title || READER_TITLES.at(-1).title;
+    }
+
+    function getReaderInitials(name) {
+      return name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    }
+
+    function getProfileNextHint() {
       const unearned = getEarnedBadges().filter(b => !b.earned);
-      if (score < 75 && countFollowedBeats() < 5) return 'Follow 2 more beats to unlock Beat Explorer.';
-      if (!state.channels.browser) return 'Connect browser push to boost your reach score.';
+      if (countFollowedBeats() < 5) return 'Follow 2 more beats to unlock Beat Explorer.';
+      if (!state.channels.browser) return 'Connect browser push to earn the Multi-channel badge.';
       if (unearned.length) return `Next up: ${unearned[0].label} badge.`;
-      return 'You\'ve maxed this week\'s profile milestones — nice tuning.';
+      return 'All badges unlocked — nice tuning.';
     }
 
     function formatMemberSince(iso) {
@@ -2971,9 +2866,7 @@
         parts.push(`quiet hours ${formatTime12h(state.deliveryTiming.quietHours.start)}–${formatTime12h(state.deliveryTiming.quietHours.end)}`);
       }
 
-      const score = computeReaderScore();
-      const lvl = getReaderLevel(score);
-      return `${state.reader.preferredName || state.reader.name} — ${lvl.title} with ${parts.join(' and ')}.`;
+      return `${state.reader.preferredName || state.reader.name} — ${getReaderTitle()} with ${parts.join(' and ')}.`;
     }
 
     function getRecommendations() {
@@ -3357,16 +3250,8 @@
     }
 
     function renderSummary() {
-      const score = computeReaderScore();
-      const xp = getXpProgress(score);
-      const lvl = xp.lvl;
-      const ringR = 38;
-      const ringRSm = 16;
-      const circumference = 2 * Math.PI * ringR;
-      const circumferenceSm = 2 * Math.PI * ringRSm;
-      const offset = circumference - (score / 100) * circumference;
-      const offsetSm = circumferenceSm - (score / 100) * circumferenceSm;
-      const earnedCount = getEarnedBadges().filter(b => b.earned).length;
+      const earnedCount = countEarnedBadges();
+      const readerTitle = getReaderTitle();
       const r = state.reader;
       const expanded = state.ui.profileExpanded;
 
@@ -3374,15 +3259,11 @@
 
       document.getElementById('profileGlance').innerHTML = `
         <div class="profile-glance__left">
-          <div class="profile-ring profile-ring--sm" aria-hidden="true">
-            <svg viewBox="0 0 44 44">
-              <circle class="profile-ring__track" cx="22" cy="22" r="${ringRSm}"></circle>
-              <circle class="profile-ring__fill" cx="22" cy="22" r="${ringRSm}"
-                stroke-width="4" stroke-dasharray="${circumferenceSm}" stroke-dashoffset="${offsetSm}"></circle>
-            </svg>
-            <div class="profile-ring__score">${score}<span>pts</span></div>
+          <p class="profile-glance__identity"><strong>${r.name}</strong> · ${r.tier} · ${readerTitle}</p>
+          <div class="profile-glance__stats">
+            <span class="glance-stat glance-stat--accent">${earnedCount}/${BADGE_DEFS.length} badges</span>
+            <span class="glance-stat">${r.readingStreakDays}-day streak</span>
           </div>
-          <p class="profile-glance__identity"><strong>${r.name}</strong> · ${r.tier} · Level ${lvl.level}</p>
         </div>
         <button type="button" class="profile-expand-btn" id="profileExpandBtnCollapsed" aria-expanded="false">Expand reader profile</button>
       `;
@@ -3395,31 +3276,17 @@
 
       document.getElementById('profileHero').innerHTML = `
         <div class="profile-hero">
-          <div class="profile-ring" aria-hidden="true">
-            <svg viewBox="0 0 96 96">
-              <circle class="profile-ring__track" cx="48" cy="48" r="${ringR}"></circle>
-              <circle class="profile-ring__fill" cx="48" cy="48" r="${ringR}"
-                stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"></circle>
-            </svg>
-            <div class="profile-ring__score">${score}<span>score</span></div>
-          </div>
+          <div class="profile-avatar" aria-hidden="true">${getReaderInitials(r.name)}</div>
           <div class="profile-hero__text">
-            <span class="profile-level"><span class="profile-level__num">${lvl.level}</span> ${lvl.title}</span>
-            <p class="profile-tagline">${earnedCount} of ${BADGE_DEFS.length} badges earned · Level ${lvl.level} reader</p>
+            <span class="profile-level">${readerTitle}</span>
+            <p class="profile-tagline">${earnedCount} of ${BADGE_DEFS.length} badges earned · Member since ${formatMemberSince(r.memberSince)}</p>
           </div>
-        </div>
-      `;
-
-      document.getElementById('xpBar').innerHTML = `
-        <div class="xp-bar__labels"><span>Level ${lvl.level}</span><span>${xp.pct}% to next level</span></div>
-        <div class="xp-bar__track" role="progressbar" aria-valuenow="${xp.pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Progress to next reader level">
-          <div class="xp-bar__fill" style="width:${xp.pct}%"></div>
         </div>
       `;
 
       document.getElementById('streakCard').innerHTML = `
         <span class="streak-card__icon" aria-hidden="true">🔥</span>
-        <p class="streak-card__text"><strong>${state.reader.readingStreakDays}-day</strong> streak — top 18% of subscribers who customize alerts.</p>
+        <p class="streak-card__text"><strong>${state.reader.readingStreakDays}-day</strong> streak — you've customized alerts ${state.reader.readingStreakDays} days in a row.</p>
       `;
 
       document.getElementById('summaryPills').innerHTML = `
@@ -3444,7 +3311,7 @@
       `;
 
       document.getElementById('summarySentence').textContent = buildProfileSentence();
-      document.getElementById('profileNextHint').textContent = getProfileNextHint(score);
+      document.getElementById('profileNextHint').textContent = getProfileNextHint();
     }
 
     function renderBreakingSection() {
