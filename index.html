@@ -133,7 +133,7 @@
     }
 
     .account-nav {
-      width: 220px;
+      width: 240px;
       flex-shrink: 0;
       padding: 1rem 0 2rem;
       border-right: 1px solid var(--border);
@@ -191,6 +191,20 @@
       list-style: none;
       margin: 0;
       padding: 0 0 .25rem;
+      display: block;
+    }
+
+    .account-nav__sublist-heading {
+      font-size: .6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-muted);
+      padding: .5rem 1rem .2rem 1.4rem;
+    }
+
+    .account-nav__sublist-heading:first-child {
+      padding-top: .2rem;
     }
 
     .account-nav__sublink {
@@ -299,37 +313,50 @@
         width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--border);
-        padding: .5rem 0;
-        overflow-x: auto;
+        padding: .65rem 0 .5rem;
+        overflow: visible;
       }
       .account-nav__list {
         display: flex;
-        gap: .25rem;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
         padding: 0 .75rem;
+      }
+      .account-nav__list > li:not(.account-nav__group) {
+        display: none;
       }
       .account-nav__link {
         white-space: nowrap;
-        border-left: none;
-        border-bottom: 2px solid transparent;
-        border-radius: var(--radius-sm);
+        border-left: 3px solid transparent;
+        border-bottom: none;
+        border-radius: 0;
         padding: .45rem .65rem;
       }
       .account-nav__link.is-active {
-        border-left: none;
-        border-bottom-color: var(--accent);
+        border-left-color: var(--accent);
+        border-bottom-color: transparent;
       }
-      .account-nav__label { display: none; }
+      .account-nav__label {
+        display: block;
+        padding: 0 .75rem .35rem;
+      }
       .account-nav__group {
-        flex-basis: 100%;
-        order: 10;
+        flex-basis: auto;
+        order: 0;
+        width: 100%;
       }
       .account-nav__sublist {
         display: flex;
-        flex-wrap: nowrap;
-        gap: .3rem;
-        overflow-x: auto;
-        padding: .35rem .75rem .5rem;
-        -webkit-overflow-scrolling: touch;
+        flex-wrap: wrap;
+        gap: .35rem;
+        overflow: visible;
+        padding: .15rem 0 .35rem 1rem;
+      }
+      .account-nav__sublist-heading {
+        flex-basis: 100%;
+        padding: .35rem 0 .1rem;
+        font-size: .58rem;
       }
       .account-nav__sublink {
         flex-shrink: 0;
@@ -3424,20 +3451,18 @@
     const PRODUCT_ORDER = ['coreNews', 'audio', 'games', 'lifestyle', 'membership'];
 
     const COMM_PREFS_L2_NAV = [
-      { id: 'passport', label: 'Preference passport', target: 'profileSpotlight', filter: 'all' },
-      { id: 'overview', label: 'Portfolio overview', target: 'portfolio-overview', filter: 'all' },
-      { id: 'recommendations', label: 'Recommended', target: 'section-recommendations', filter: 'all' },
-      { id: 'global', label: 'Global settings', target: 'global-settings', filter: 'all' },
+      { id: 'passport', label: 'Preference passport', target: 'profileSpotlight', filter: 'all', group: 'profile' },
+      { id: 'global', label: 'Global settings', target: 'global-settings', filter: 'all', group: 'profile' },
       ...PRODUCT_ORDER.map(id => ({
         id,
         label: PRODUCT_PORTFOLIO[id].label,
         target: `product-${id}`,
-        filter: id
-      })),
-      { id: 'nlp', label: 'Tell us what you want', target: 'nlp-beta', filter: 'all' },
-      { id: 'optOut', label: 'Need fewer messages?', target: 'opt-out-section', filter: 'all' },
-      { id: 'essential', label: 'Essential notices', target: 'essential-notices', filter: 'all' }
+        filter: id,
+        group: 'product'
+      }))
     ];
+
+    /* L3 — in-page only (portfolio overview, recommendations, NLP, opt-out, essential notices) */
 
     const PORTFOLIO_BRANDS = [
       {
@@ -3916,11 +3941,24 @@
       const active = state.ui.commNavSection;
       const sub = document.getElementById('accountNavCommPrefsSub');
       if (!sub) return;
-      sub.innerHTML = COMM_PREFS_L2_NAV.map(s => `
-        <li>
-          <a class="account-nav__sublink ${active === s.id ? 'is-active' : ''}" href="#${s.target}" data-comm-nav="${s.id}">${s.label}</a>
-        </li>
-      `).join('');
+
+      const groups = [
+        { key: 'profile', label: 'Your profile' },
+        { key: 'product', label: 'Products' }
+      ];
+
+      sub.innerHTML = groups.map(g => {
+        const items = COMM_PREFS_L2_NAV.filter(s => s.group === g.key);
+        if (!items.length) return '';
+        return `
+          <li class="account-nav__sublist-heading" aria-hidden="true">${g.label}</li>
+          ${items.map(s => `
+            <li>
+              <a class="account-nav__sublink ${active === s.id ? 'is-active' : ''}" href="#${s.target}" data-comm-nav="${s.id}">${s.label}</a>
+            </li>
+          `).join('')}
+        `;
+      }).join('');
     }
 
     function formatLastUpdated(iso) {
