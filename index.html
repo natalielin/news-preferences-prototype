@@ -3444,16 +3444,26 @@
       coreNews: { label: 'Core News', icon: '📰', desc: 'Breaking alerts, coverage interests, and editorial newsletters' },
       audio: { label: 'Audio & Podcasts', icon: '🎧', desc: 'Episode drops, listen recommendations, and live show alerts' },
       games: { label: 'Games', icon: '🧩', desc: 'Daily puzzle reminders and optional game tips' },
-      lifestyle: { label: 'Lifestyle', icon: '🍳', desc: 'Cooking, wellness, travel, and culture programs' },
-      membership: { label: 'Membership', icon: '⭐', desc: 'Member events, exclusives, and partner perks' }
+      lifestyle: { label: 'Lifestyle', icon: '🌿', desc: 'Wellness, travel, and culture programs' },
+      membership: { label: 'Membership', icon: '⭐', desc: 'Member events, exclusives, and partner perks' },
+      cooking: { label: 'Cooking', icon: '🍳', desc: 'Newsletters, recipes, and cuisine interests included with All Access' },
+      athletic: { label: 'The Athletic', icon: '🏈', desc: 'League coverage, teams, and sports alerts included with All Access' },
+      wirecutter: { label: 'Wirecutter', icon: '✓', desc: 'Deal alerts, product reviews, and buyer guides included with All Access' }
     };
 
     const PRODUCT_ORDER = ['coreNews', 'audio', 'games', 'lifestyle', 'membership'];
 
+    const PRODUCT_NAV_ORDER = [
+      ...PRODUCT_ORDER,
+      'cooking',
+      'athletic',
+      'wirecutter'
+    ];
+
     const COMM_PREFS_L2_NAV = [
       { id: 'passport', label: 'Preference passport', target: 'profileSpotlight', filter: 'all', group: 'profile' },
       { id: 'global', label: 'Global settings', target: 'global-settings', filter: 'all', group: 'profile' },
-      ...PRODUCT_ORDER.map(id => ({
+      ...PRODUCT_NAV_ORDER.map(id => ({
         id,
         label: PRODUCT_PORTFOLIO[id].label,
         target: `product-${id}`,
@@ -3479,7 +3489,7 @@
         label: 'Cooking',
         mark: 'C',
         color: '#9b4d2a',
-        productId: 'lifestyle',
+        productId: 'cooking',
         newsletterKeys: [],
         productCommKeys: ['lifestyleCooking']
       },
@@ -3509,6 +3519,24 @@
         productId: 'lifestyle',
         newsletterKeys: [],
         productCommKeys: ['lifestyleTravel', 'lifestyleWellness']
+      },
+      {
+        id: 'athletic',
+        label: 'The Athletic',
+        mark: 'TA',
+        color: '#c0392b',
+        productId: 'athletic',
+        newsletterKeys: [],
+        productCommKeys: ['athleticDaily', 'athleticAlerts']
+      },
+      {
+        id: 'wirecutter',
+        label: 'Wirecutter',
+        mark: 'W',
+        color: '#e85d04',
+        productId: 'wirecutter',
+        newsletterKeys: [],
+        productCommKeys: ['wirecutterDeals', 'wirecutterPicks']
       },
       {
         id: 'membership',
@@ -3616,9 +3644,33 @@
         defaultChannel: 'email'
       },
       lifestyleCooking: {
-        product: 'lifestyle',
+        product: 'cooking',
         label: 'Cooking newsletter',
         desc: 'Seasonal recipes and technique guides from our kitchen team.',
+        defaultChannel: 'email'
+      },
+      athleticDaily: {
+        product: 'athletic',
+        label: 'The Athletic Daily',
+        desc: 'Morning briefing on the leagues and teams you follow.',
+        defaultChannel: 'email'
+      },
+      athleticAlerts: {
+        product: 'athletic',
+        label: 'Live game alerts',
+        desc: 'Score updates and breaking sports news for your teams.',
+        defaultChannel: 'push'
+      },
+      wirecutterDeals: {
+        product: 'wirecutter',
+        label: 'Deals newsletter',
+        desc: 'Price drops and limited-time offers on Wirecutter picks.',
+        defaultChannel: 'email'
+      },
+      wirecutterPicks: {
+        product: 'wirecutter',
+        label: 'Best picks weekly',
+        desc: 'New reviews and updated recommendations from our testers.',
         defaultChannel: 'email'
       },
       lifestyleWellness: {
@@ -3784,6 +3836,10 @@
           gamesConnections: { enabled: true, cadence: 'daily', channel: 'push' },
           gamesCrossword: { enabled: false, cadence: 'weekly', channel: 'email' },
           lifestyleCooking: { enabled: true, cadence: 'weekly', channel: 'email' },
+          athleticDaily: { enabled: true, cadence: 'weekdays', channel: 'email' },
+          athleticAlerts: { enabled: true, cadence: 'asPublished', channel: 'push' },
+          wirecutterDeals: { enabled: false, cadence: 'weekly', channel: 'email' },
+          wirecutterPicks: { enabled: true, cadence: 'weekly', channel: 'email' },
           lifestyleWellness: { enabled: false, cadence: 'weekly', channel: 'email' },
           lifestyleTravel: { enabled: true, cadence: 'weekly', channel: 'email' },
           memberEvents: { enabled: true, cadence: 'asPublished', channel: 'email' },
@@ -3980,8 +4036,8 @@
       return 'unfollowed';
     }
 
-    function countFollowedBeats() {
-      return Object.values(state.beats).filter(b => b.status === 'followed').length;
+    function countFollowedBeats(exclude = []) {
+      return Object.entries(state.beats).filter(([key, b]) => b.status === 'followed' && !exclude.includes(key)).length;
     }
 
     function countActiveNewsletters() {
@@ -4006,7 +4062,13 @@
       });
       if (productId === 'coreNews') {
         if (state.breakingAlerts.level !== 'off') count++;
-        count += countFollowedBeats();
+        count += countFollowedBeats(['food', 'sports']);
+      }
+      if (productId === 'cooking') {
+        if (state.beats.food?.status === 'followed') count += Math.max(countDrawerSelections('food'), 1);
+      }
+      if (productId === 'athletic') {
+        if (state.beats.sports?.status === 'followed') count += Math.max(countDrawerSelections('sports'), 1);
       }
       return count;
     }
@@ -4024,7 +4086,15 @@
       if (!active) return 'Nothing active yet';
       if (productId === 'coreNews') {
         const programs = Object.entries(NEWSLETTER_META).filter(([k, m]) => m.product === productId && state.newsletters[k].subscribed).length;
-        return `${programs} newsletter${programs === 1 ? '' : 's'} · ${countFollowedBeats()} beats · ${breakingLevelLabel()}`;
+        return `${programs} newsletter${programs === 1 ? '' : 's'} · ${countFollowedBeats(['food', 'sports'])} beats · ${breakingLevelLabel()}`;
+      }
+      if (productId === 'cooking') {
+        const topics = countDrawerSelections('food');
+        return `${active} program${active === 1 ? '' : 's'} active${topics ? ` · ${topics} cuisine${topics === 1 ? '' : 's'}` : ''}`;
+      }
+      if (productId === 'athletic') {
+        const teams = countDrawerSelections('sports');
+        return `${active} program${active === 1 ? '' : 's'} active${teams ? ` · ${teams} league${teams === 1 ? '' : 's'}/team${teams === 1 ? '' : 's'}` : ''}`;
       }
       return `${active} program${active === 1 ? '' : 's'} active`;
     }
@@ -5647,8 +5717,22 @@
       });
     }
 
-    function renderBeatsSection() {
-      const cards = Object.entries(BEAT_META).map(([key, meta]) => {
+    function renderBeatsSection(options = {}) {
+      const {
+        only = null,
+        exclude = ['food', 'sports'],
+        sectionId = 'beats-section',
+        title = 'Coverage interests',
+        desc = 'Follow beats to shape your feed, alerts, and recommendations. Travel and World open searchable sub-category drawers.'
+      } = options;
+
+      const entries = Object.entries(BEAT_META).filter(([key]) => {
+        if (only) return only.includes(key);
+        return !exclude.includes(key);
+      });
+      if (!entries.length) return '';
+
+      const cards = entries.map(([key, meta]) => {
         const beat = state.beats[key];
         const status = getBeatStatusLabel(beat);
         const hasSubbeats = meta.subbeats && Object.keys(meta.subbeats).length;
@@ -5727,11 +5811,11 @@
       }).join('');
 
       return `
-        <section class="section" id="beats-section" aria-labelledby="beatsTitle">
+        <section class="section" id="${sectionId}" aria-labelledby="${sectionId}-title">
           <div class="section__header">
-            <h3 class="section__title" id="beatsTitle" style="font-size:1rem">Coverage interests</h3>
-            <p class="section__desc">Follow beats to shape your feed, alerts, and recommendations. Cooking, Sports, Travel, and World open searchable sub-category drawers.</p>
-            <p class="ux-note">UX: Explicit interest capture doubles as a discovery surface for editorial tailoring.</p>
+            <h3 class="section__title" id="${sectionId}-title" style="font-size:1rem">${title}</h3>
+            <p class="section__desc">${desc}</p>
+            ${only ? '' : '<p class="ux-note">UX: Explicit interest capture doubles as a discovery surface for editorial tailoring.</p>'}
           </div>
           <div class="beats-grid">${cards}</div>
         </section>
@@ -6293,7 +6377,28 @@
         renderProductCommsSection('games', 'Game reminders', 'Daily puzzle nudges and optional tips — all opt-in.');
 
       const lifestyleContent =
-        renderProductCommsSection('lifestyle', 'Lifestyle programs', 'Cooking, wellness, and travel inspiration aligned to your interests.');
+        renderProductCommsSection('lifestyle', 'Lifestyle programs', 'Wellness and travel inspiration aligned to your interests.');
+
+      const cookingContent =
+        renderProductCommsSection('cooking', 'Cooking programs', 'Newsletters and recipe inspiration from our kitchen team.') +
+        renderBeatsSection({
+          only: ['food'],
+          sectionId: 'beats-cooking',
+          title: 'Cuisines & topics',
+          desc: 'Follow cooking interests and refine cuisines, techniques, and dietary preferences.'
+        });
+
+      const athleticContent =
+        renderProductCommsSection('athletic', 'Sports programs', 'Daily briefings and live alerts from The Athletic.') +
+        renderBeatsSection({
+          only: ['sports'],
+          sectionId: 'beats-athletic',
+          title: 'Leagues & teams',
+          desc: 'Follow leagues and teams to personalize coverage and alerts.'
+        });
+
+      const wirecutterContent =
+        renderProductCommsSection('wirecutter', 'Wirecutter programs', 'Deal alerts and product recommendations from our reviewers.');
 
       const membershipContent =
         renderNewslettersSection('membership', 'Member programs', 'Exclusive content and behind-the-scenes reporting for subscribers.') +
@@ -6308,6 +6413,9 @@
         renderProductBlock('audio', audioContent) +
         renderProductBlock('games', gamesContent) +
         renderProductBlock('lifestyle', lifestyleContent) +
+        renderProductBlock('cooking', cookingContent) +
+        renderProductBlock('athletic', athleticContent) +
+        renderProductBlock('wirecutter', wirecutterContent) +
         renderProductBlock('membership', membershipContent) +
         (state.ui.productFilter === 'all' ? renderNlpBetaSection() : '') +
         (state.ui.productFilter === 'all' ? renderOptOutSection() : '') +
