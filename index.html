@@ -183,6 +183,54 @@
       pointer-events: none;
     }
 
+    .account-nav__group {
+      margin: 0;
+    }
+
+    .account-nav__sublist {
+      list-style: none;
+      margin: 0;
+      padding: 0 0 .25rem;
+    }
+
+    .account-nav__sublink {
+      display: block;
+      padding: .38rem 1rem .38rem 1.4rem;
+      font-size: .74rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+    }
+
+    .account-nav__sublink:hover {
+      background: var(--muted-bg);
+      color: var(--text);
+    }
+
+    .account-nav__sublink.is-active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-left-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .account-nav__sublink:focus-visible {
+      outline: none;
+      box-shadow: inset var(--focus-ring);
+    }
+
+    #profileSpotlight,
+    #portfolio-overview,
+    #section-recommendations,
+    #global-settings,
+    .product-block,
+    #nlp-beta,
+    #opt-out-section,
+    #essential-notices {
+      scroll-margin-top: 1.25rem;
+    }
+
     .account-main {
       flex: 1;
       min-width: 0;
@@ -271,6 +319,31 @@
         border-bottom-color: var(--accent);
       }
       .account-nav__label { display: none; }
+      .account-nav__group {
+        flex-basis: 100%;
+        order: 10;
+      }
+      .account-nav__sublist {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: .3rem;
+        overflow-x: auto;
+        padding: .35rem .75rem .5rem;
+        -webkit-overflow-scrolling: touch;
+      }
+      .account-nav__sublink {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: .35rem .55rem;
+        font-size: .68rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        border-left: 1px solid var(--border);
+      }
+      .account-nav__sublink.is-active {
+        border-color: var(--accent);
+        border-left-color: var(--accent);
+      }
     }
 
     /* ── Layout ──────────────────────────────────────────────────── */
@@ -3060,7 +3133,10 @@
         <ul class="account-nav__list">
           <li><a class="account-nav__link is-placeholder" href="#">Overview</a></li>
           <li><a class="account-nav__link is-placeholder" href="#">Profile & identity</a></li>
-          <li><a class="account-nav__link is-active" href="#" aria-current="page">Communication preferences</a></li>
+          <li class="account-nav__group">
+            <a class="account-nav__link is-active" href="#" aria-current="page">Communication preferences</a>
+            <ul class="account-nav__sublist" id="accountNavCommPrefsSub" aria-label="Communication preferences sections"></ul>
+          </li>
           <li><a class="account-nav__link is-placeholder" href="#">Billing & subscription</a></li>
           <li><a class="account-nav__link is-placeholder" href="#">Privacy & data</a></li>
           <li><a class="account-nav__link is-placeholder" href="#">Security & sign-in</a></li>
@@ -3346,6 +3422,22 @@
     };
 
     const PRODUCT_ORDER = ['coreNews', 'audio', 'games', 'lifestyle', 'membership'];
+
+    const COMM_PREFS_L2_NAV = [
+      { id: 'passport', label: 'Preference passport', target: 'profileSpotlight', filter: 'all' },
+      { id: 'overview', label: 'Portfolio overview', target: 'portfolio-overview', filter: 'all' },
+      { id: 'recommendations', label: 'Recommended', target: 'section-recommendations', filter: 'all' },
+      { id: 'global', label: 'Global settings', target: 'global-settings', filter: 'all' },
+      ...PRODUCT_ORDER.map(id => ({
+        id,
+        label: PRODUCT_PORTFOLIO[id].label,
+        target: `product-${id}`,
+        filter: id
+      })),
+      { id: 'nlp', label: 'Tell us what you want', target: 'nlp-beta', filter: 'all' },
+      { id: 'optOut', label: 'Need fewer messages?', target: 'opt-out-section', filter: 'all' },
+      { id: 'essential', label: 'Essential notices', target: 'essential-notices', filter: 'all' }
+    ];
 
     const PORTFOLIO_BRANDS = [
       {
@@ -3697,7 +3789,7 @@
         lastUpdated: '2026-07-10T08:59:00',
         expandedBeats: {},
         nlp: { input: '', preview: null },
-        ui: { profileExpanded: true, brandsExpanded: false, productFilter: 'all', activityDrawer: null, activityDrawerJump: null, activityBrandId: null, interestDrawer: { beat: null, query: '', region: 'europe' } }
+        ui: { profileExpanded: true, brandsExpanded: false, commNavSection: null, productFilter: 'all', activityDrawer: null, activityDrawerJump: null, activityBrandId: null, interestDrawer: { beat: null, query: '', region: 'europe' } }
       };
     }
 
@@ -3802,6 +3894,33 @@
           </div>
         </div>
       `;
+    }
+
+    function jumpToCommPrefsSection(sectionId) {
+      const section = COMM_PREFS_L2_NAV.find(s => s.id === sectionId);
+      if (!section) return;
+      state.ui.productFilter = section.filter;
+      state.ui.commNavSection = section.id;
+      render();
+      requestAnimationFrame(() => {
+        const el = document.getElementById(section.target);
+        if (el) {
+          el.classList.add('preference-highlight');
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => el.classList.remove('preference-highlight'), 2200);
+        }
+      });
+    }
+
+    function renderAccountNav() {
+      const active = state.ui.commNavSection;
+      const sub = document.getElementById('accountNavCommPrefsSub');
+      if (!sub) return;
+      sub.innerHTML = COMM_PREFS_L2_NAV.map(s => `
+        <li>
+          <a class="account-nav__sublink ${active === s.id ? 'is-active' : ''}" href="#${s.target}" data-comm-nav="${s.id}">${s.label}</a>
+        </li>
+      `).join('');
     }
 
     function formatLastUpdated(iso) {
@@ -5603,7 +5722,7 @@
       }).join('') : `<p class="section__desc" style="margin:0">Follow a beat below to unlock personalized picks.</p>`;
 
       return `
-        <section class="section rec-section--prominent" aria-labelledby="recTitle">
+        <section class="section rec-section--prominent" id="section-recommendations" aria-labelledby="recTitle">
           <div class="section__header">
             <h2 class="section__title" id="recTitle">Recommended across your portfolio</h2>
             <p class="section__desc">Quick adds from any product line — based on what you already follow and use.</p>
@@ -5792,7 +5911,7 @@
 
     function renderOptOutSection() {
       return `
-        <section class="section opt-out-section" aria-labelledby="optOutSectionTitle">
+        <section class="section opt-out-section" id="opt-out-section" aria-labelledby="optOutSectionTitle">
           <h2 class="section__title" id="optOutSectionTitle" style="font-size:1rem">Need fewer messages?</h2>
           <p>Before opting out entirely, try reducing volume or pausing updates across any product line. Account messages always continue.</p>
           <button type="button" class="btn btn--ghost" id="openOptOutBtn">Stop non-essential updates</button>
@@ -5803,7 +5922,7 @@
 
     function renderEssentialSection() {
       return `
-        <section class="section" aria-labelledby="essentialTitle">
+        <section class="section" id="essential-notices" aria-labelledby="essentialTitle">
           <div class="section__header">
             <h2 class="section__title" id="essentialTitle">Essential notices</h2>
             <p class="section__desc">These service messages are managed separately from product preferences and cannot be turned off here.</p>
@@ -6090,7 +6209,7 @@
       ) : '';
 
       return `
-        <section class="section nlp-beta" aria-labelledby="nlpTitle">
+        <section class="section nlp-beta" id="nlp-beta" aria-labelledby="nlpTitle">
           <span class="nlp-beta__badge">Beta</span>
           <div class="section__header">
             <h2 class="section__title" id="nlpTitle">Tell us what you want</h2>
@@ -6157,6 +6276,7 @@
         (state.ui.productFilter === 'all' ? renderEssentialSection() : '');
 
       renderSummary();
+      renderAccountNav();
       bindEvents();
     }
 
@@ -6474,6 +6594,13 @@
     // INIT
     // ═══════════════════════════════════════════════════════════════
 
+    document.querySelector('.account-nav').addEventListener('click', e => {
+      const link = e.target.closest('[data-comm-nav]');
+      if (!link) return;
+      e.preventDefault();
+      jumpToCommPrefsSection(link.dataset.commNav);
+    });
+
     document.getElementById('saveBtn').addEventListener('click', saveChanges);
     document.getElementById('discardBtn').addEventListener('click', discardChanges);
     document.getElementById('openContactDrawerBtn').addEventListener('click', openContactDrawer);
@@ -6503,6 +6630,7 @@
       const filterBtn = e.target.closest('[data-product-filter]');
       if (filterBtn) {
         state.ui.productFilter = filterBtn.dataset.productFilter;
+        state.ui.commNavSection = filterBtn.dataset.productFilter === 'all' ? null : filterBtn.dataset.productFilter;
         render();
         if (state.ui.productFilter !== 'all') {
           requestAnimationFrame(() => {
