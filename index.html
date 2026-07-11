@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Preference Center — Full Product Portfolio</title>
+  <title>Communication preferences — Account</title>
   <style>
     /* ── Design tokens ───────────────────────────────────────────── */
     :root {
@@ -79,6 +79,198 @@
       color: var(--text);
       background: var(--bg);
       -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Account shell (L0) ──────────────────────────────────────── */
+    .account-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .account-topbar {
+      background: #1a1a18;
+      color: #f0eeea;
+      padding: .55rem 1.25rem;
+      border-bottom: 1px solid #2a2a28;
+    }
+
+    [data-theme="dark"] .account-topbar {
+      background: #0a0a09;
+      border-bottom-color: #2a2826;
+    }
+
+    .account-topbar__inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .account-topbar__brand {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: #f0eeea;
+      text-decoration: none;
+    }
+
+    .account-topbar__user {
+      font-size: .75rem;
+      color: #b8b5ad;
+    }
+
+    .account-body {
+      flex: 1;
+      display: flex;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+      align-items: stretch;
+    }
+
+    .account-nav {
+      width: 220px;
+      flex-shrink: 0;
+      padding: 1rem 0 2rem;
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .account-nav__label {
+      font-size: .65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      padding: 0 1rem .5rem;
+      margin: 0;
+    }
+
+    .account-nav__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .account-nav__link {
+      display: block;
+      padding: .55rem 1rem;
+      font-size: .82rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+    }
+
+    .account-nav__link:hover {
+      background: var(--muted-bg);
+      color: var(--text);
+    }
+
+    .account-nav__link.is-active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-left-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .account-nav__link.is-placeholder {
+      opacity: .55;
+      pointer-events: none;
+    }
+
+    .account-main {
+      flex: 1;
+      min-width: 0;
+      padding: 0 0 5rem;
+    }
+
+    .account-breadcrumb {
+      font-size: .72rem;
+      color: var(--text-muted);
+      padding: .75rem 1.25rem 0;
+      margin: 0;
+    }
+
+    .account-breadcrumb a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .account-breadcrumb a:hover { text-decoration: underline; }
+
+    .account-breadcrumb span[aria-current] {
+      color: var(--text-secondary);
+    }
+
+    .l1-header {
+      padding: .5rem 1.25rem .75rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 0;
+    }
+
+    .l1-header__top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: .65rem 1rem;
+    }
+
+    .l1-header h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.2rem, 3vw, 1.55rem);
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -.02em;
+    }
+
+    .l1-header__sub {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      margin: .35rem 0 0;
+      max-width: 58ch;
+      line-height: 1.45;
+    }
+
+    .l1-header__meta {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 799px) {
+      .account-body { flex-direction: column; }
+      .account-nav {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: .5rem 0;
+        overflow-x: auto;
+      }
+      .account-nav__list {
+        display: flex;
+        gap: .25rem;
+        padding: 0 .75rem;
+      }
+      .account-nav__link {
+        white-space: nowrap;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        border-radius: var(--radius-sm);
+        padding: .45rem .65rem;
+      }
+      .account-nav__link.is-active {
+        border-left: none;
+        border-bottom-color: var(--accent);
+      }
+      .account-nav__label { display: none; }
     }
 
     /* ── Layout ──────────────────────────────────────────────────── */
@@ -166,22 +358,16 @@
     }
 
     .layout {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1.25rem;
-    }
-
-    @media (min-width: 960px) {
-      .layout {
-        padding: 1.25rem 1.25rem 6rem;
-      }
+      max-width: none;
+      margin: 0;
+      padding: .75rem 1.25rem 1.25rem;
     }
 
     /* ── Profile spotlight (glance + expandable) ─────────────────── */
     .profile-spotlight-wrap {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: .65rem 1.25rem 0;
+      max-width: none;
+      margin: 0;
+      padding: .75rem 1.25rem 0;
     }
 
     .profile-spotlight {
@@ -190,15 +376,15 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: .75rem 1rem;
+      padding: .65rem .85rem;
       box-shadow: var(--shadow-sm);
       transition: border-color var(--transition), box-shadow var(--transition);
     }
 
     .profile-spotlight.is-expanded {
-      border: 2px solid var(--accent);
-      padding: 1.15rem 1.15rem 1.1rem;
-      box-shadow: var(--shadow-md);
+      border: 1px solid var(--accent);
+      padding: .75rem .85rem .65rem;
+      box-shadow: var(--shadow-sm);
     }
 
     .profile-spotlight.is-expanded .profile-glance {
@@ -263,8 +449,8 @@
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent), #3d7a5e, #c4a035, var(--accent));
+      height: 3px;
+      background: var(--accent);
     }
 
     .profile-glance {
@@ -340,15 +526,7 @@
     }
 
     .profile-spotlight.is-expanded::after {
-      content: "";
-      position: absolute;
-      top: -40%;
-      right: -10%;
-      width: 280px;
-      height: 280px;
-      background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
-      pointer-events: none;
-      opacity: .5;
+      display: none;
     }
 
     .profile-spotlight__inner {
@@ -358,21 +536,31 @@
 
     .profile-spotlight__core {
       display: grid;
-      gap: 1rem;
+      gap: .65rem;
+      align-items: start;
     }
 
     @media (min-width: 720px) {
       .profile-spotlight__core {
-        grid-template-columns: auto 1fr;
-        align-items: center;
+        grid-template-columns: 1fr minmax(240px, 42%);
+        gap: .75rem 1rem;
       }
     }
 
-    @media (min-width: 1024px) {
-      .profile-spotlight__core {
-        grid-template-columns: auto 1fr auto;
-        gap: 1.5rem;
-      }
+    .profile-spotlight__identity-block {
+      min-width: 0;
+    }
+
+    .profile-spotlight__footer {
+      margin: 0;
+    }
+
+    .profile-spotlight .summary-sentence {
+      padding: 0;
+      background: none;
+      border: none;
+      font-size: .78rem;
+      margin: .35rem 0 0;
     }
 
     .stats-label {
@@ -381,7 +569,7 @@
       text-transform: uppercase;
       letter-spacing: .05em;
       color: var(--text-muted);
-      margin: 1rem 0 .5rem;
+      margin: .65rem 0 .4rem;
     }
 
     .profile-spotlight .summary-pills {
@@ -396,17 +584,40 @@
 
     .profile-spotlight__footer {
       flex: 1;
-      min-width: 12rem;
+      min-width: 0;
     }
 
     .profile-spotlight .reading-meter {
       margin-bottom: 0;
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width: 720px) {
       .profile-spotlight .reading-meter {
-        max-width: 280px;
+        max-width: none;
       }
+    }
+
+    .profile-avatar {
+      width: 48px;
+      height: 48px;
+      font-size: 1rem;
+    }
+
+    .profile-hero {
+      margin-bottom: 0;
+      gap: .65rem;
+    }
+
+    .profile-spotlight__header {
+      margin-bottom: .65rem;
+    }
+
+    .profile-spotlight__headline {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+    }
+
+    .profile-spotlight__tagline {
+      font-size: .75rem;
     }
 
     /* ── Contact drawer ──────────────────────────────────────────── */
@@ -931,7 +1142,7 @@
       font-family: inherit;
       color: inherit;
       cursor: pointer;
-      padding: .85rem .9rem;
+      padding: .65rem .75rem;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
@@ -947,14 +1158,14 @@
     .reading-meter__header {
       display: flex;
       align-items: center;
-      gap: .75rem;
-      margin-bottom: .75rem;
+      gap: .6rem;
+      margin-bottom: .55rem;
     }
 
     .reading-meter__ring {
       position: relative;
-      width: 64px;
-      height: 64px;
+      width: 52px;
+      height: 52px;
       flex-shrink: 0;
     }
 
@@ -1520,11 +1731,11 @@
     }
 
     .rec-card {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto;
       align-items: center;
-      justify-content: space-between;
       gap: .75rem;
-      padding: .85rem 1rem;
+      padding: .75rem .85rem;
       border: 1px dashed var(--border-strong);
       border-radius: var(--radius-sm);
       background: var(--accent-soft);
@@ -1532,6 +1743,26 @@
 
     .rec-card__text {
       font-size: .85rem;
+      min-width: 0;
+    }
+
+    .rec-card__actions {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: .35rem;
+      min-width: 5.5rem;
+      flex-shrink: 0;
+    }
+
+    .rec-card__actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .rec-card__actions .btn--placeholder {
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .rec-card__reason {
@@ -2657,8 +2888,8 @@
   <!--
     PAGE STRUCTURE & INTERACTION MODEL (stakeholder reference)
     ─────────────────────────────────────────────────────────
-    1. Header: unified Preference Center title + Contact + dark mode
-    2. Your preference profile: weekly reading meter (Kindle/iOS-style), clickable activity cards — review what you're receiving and adjust inline
+    1. L0 Account shell: top bar + sidebar nav; Communication preferences is active L1
+    2. Preference passport: compact layout, weekly reading meter, clickable activity cards
     3. Portfolio nav: filter/jump across product lines (Core News, Audio, Games, etc.)
     4. Portfolio overview: at-a-glance cards per product line (when viewing All)
     5. Recommended for you: cross-portfolio discovery surface
@@ -2668,46 +2899,67 @@
     9. Sticky save bar: single save applies everywhere
   -->
 
-  <header class="page-header">
-    <div class="page-header__inner">
-      <div class="page-header__top">
-        <h1>Preference Center</h1>
-        <div class="page-header__meta">
-          <span class="last-updated" id="lastUpdatedDisplay" aria-live="polite">Last updated: —</span>
-          <button type="button" class="btn btn--secondary btn--sm" id="openContactDrawerBtn">Contact</button>
-          <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">Dark mode</button>
-        </div>
+  <div class="account-shell">
+    <header class="account-topbar">
+      <div class="account-topbar__inner">
+        <a class="account-topbar__brand" href="#">Account</a>
+        <span class="account-topbar__user">Jordan Lee · Subscriber</span>
       </div>
-      <details class="page-header__details">
-        <summary>How this works</summary>
-        <p class="page-header__subhead">One place to manage communication across our full product portfolio — news, audio, games, lifestyle, and membership. Tune each product, set global delivery rules, and reduce volume anytime without losing your account.</p>
-      </details>
-    </div>
-  </header>
+    </header>
+    <div class="account-body">
+      <nav class="account-nav" aria-label="Account settings">
+        <p class="account-nav__label">Account management</p>
+        <ul class="account-nav__list">
+          <li><a class="account-nav__link is-placeholder" href="#">Overview</a></li>
+          <li><a class="account-nav__link is-placeholder" href="#">Profile & identity</a></li>
+          <li><a class="account-nav__link is-active" href="#" aria-current="page">Communication preferences</a></li>
+          <li><a class="account-nav__link is-placeholder" href="#">Billing & subscription</a></li>
+          <li><a class="account-nav__link is-placeholder" href="#">Privacy & data</a></li>
+          <li><a class="account-nav__link is-placeholder" href="#">Security & sign-in</a></li>
+          <li><a class="account-nav__link is-placeholder" href="#">Help & support</a></li>
+        </ul>
+      </nav>
+      <div class="account-main">
+        <p class="account-breadcrumb"><a href="#">Account</a> / <span aria-current="page">Communication preferences</span></p>
+
+        <header class="l1-header">
+          <div class="l1-header__top">
+            <div>
+              <h1>Communication preferences</h1>
+              <p class="l1-header__sub">Manage newsletters, alerts, and programs across our product portfolio — without leaving your account.</p>
+            </div>
+            <div class="l1-header__meta">
+              <span class="last-updated" id="lastUpdatedDisplay" aria-live="polite">Last updated: —</span>
+              <button type="button" class="btn btn--secondary btn--sm" id="openContactDrawerBtn">Contact</button>
+              <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">Dark mode</button>
+            </div>
+          </div>
+        </header>
 
   <div id="saveSummary" class="save-summary" role="status" aria-live="polite"></div>
 
   <div class="profile-spotlight-wrap">
-    <section class="profile-spotlight is-expanded" id="profileSpotlight" aria-labelledby="profileHeadline">
+    <section class="profile-spotlight" id="profileSpotlight" aria-labelledby="profileHeadline">
       <div class="profile-glance" id="profileGlance"></div>
       <div class="profile-spotlight__header" id="profileHeader">
         <div>
           <p class="profile-brand">Preference passport</p>
           <h2 class="profile-spotlight__headline" id="profileHeadline">Your preference profile</h2>
-          <p class="profile-spotlight__tagline" id="profileTagline">Your reading habits and delivery preferences — tap activity cards to adjust what you receive.</p>
         </div>
-        <button type="button" class="profile-expand-btn" id="profileExpandBtn" aria-expanded="true">Collapse</button>
+        <button type="button" class="profile-expand-btn" id="profileExpandBtn" aria-expanded="false">Expand</button>
       </div>
       <div class="profile-spotlight__details">
         <div class="profile-spotlight__inner summary-panel" id="summaryPanel">
           <div class="profile-spotlight__core">
-            <div id="profileHero"></div>
-            <div class="profile-spotlight__footer">
-              <p class="summary-sentence" id="summarySentence"></p>
+            <div class="profile-spotlight__identity-block">
+              <div id="profileHero"></div>
+              <div class="profile-spotlight__footer">
+                <p class="summary-sentence" id="summarySentence"></p>
+              </div>
             </div>
-            <div class="reading-meter" id="readingMeter"></div>
+            <div id="readingMeter"></div>
           </div>
-          <p class="stats-label">Portfolio activity <span class="stats-label__hint">— click a card to review and adjust</span></p>
+          <p class="stats-label">Portfolio activity <span class="stats-label__hint">— click to review & adjust</span></p>
           <div class="summary-pills" id="summaryPills" style="margin-bottom:0"></div>
         </div>
       </div>
@@ -2719,6 +2971,10 @@
       <!-- Sections rendered by JS -->
     </main>
   </div>
+
+      </div><!-- /.account-main -->
+    </div><!-- /.account-body -->
+  </div><!-- /.account-shell -->
 
   <div class="save-bar" id="saveBar" role="region" aria-label="Unsaved changes">
     <p class="save-bar__text">You have unsaved changes to your preferences.</p>
@@ -2820,9 +3076,9 @@
       media: { label: 'Media', subbeats: null },
       climate: { label: 'Climate', subbeats: null },
       health: { label: 'Health', subbeats: null },
-      sports: { label: 'Sports', subbeats: { nfl: 'NFL', nba: 'NBA', womensSports: "Women's sports", localTeams: 'Local teams' } },
+      sports: { label: 'Sports', subbeats: null, drawerCatalog: 'sports', drawerLabel: 'Leagues & teams' },
       artsCulture: { label: 'Arts & Culture', subbeats: null },
-      food: { label: 'Food', subbeats: null },
+      food: { label: 'Cooking', subbeats: null, drawerCatalog: 'cooking', drawerLabel: 'Cuisines & topics' },
       travel: { label: 'Travel', subbeats: null, drawerCatalog: 'destinations', drawerLabel: 'Destinations' },
       opinion: { label: 'Opinion', subbeats: null },
       localNews: { label: 'Local News', subbeats: { transit: 'Transit', housing: 'Housing', schools: 'Schools', weather: 'Weather' } },
@@ -2836,6 +3092,22 @@
       { id: 'asiaPacific', label: 'Asia-Pacific' },
       { id: 'africaMiddleEast', label: 'Africa & Middle East' }
     ];
+
+    const DRAWER_FILTER_GROUPS = {
+      destinations: DRAWER_REGIONS,
+      cooking: [
+        { id: 'all', label: 'All' },
+        { id: 'cuisine', label: 'Cuisines' },
+        { id: 'technique', label: 'Techniques' },
+        { id: 'diet', label: 'Diet & lifestyle' }
+      ],
+      sports: [
+        { id: 'all', label: 'All' },
+        { id: 'usMajor', label: 'U.S. major leagues' },
+        { id: 'global', label: 'Global' },
+        { id: 'college', label: 'College & local' }
+      ]
+    };
 
     const DRAWER_CATALOGS = {
       destinations: [
@@ -2881,6 +3153,41 @@
         { id: 'uae', label: 'United Arab Emirates', region: 'africaMiddleEast', synonyms: ['dubai', 'abu dhabi'] },
         { id: 'israel', label: 'Israel', region: 'africaMiddleEast', synonyms: ['tel aviv', 'jerusalem'] },
         { id: 'turkey', label: 'Turkey', region: 'africaMiddleEast', synonyms: ['istanbul', 'turkish'] }
+      ],
+      cooking: [
+        { id: 'italian', label: 'Italian', region: 'cuisine', synonyms: ['pasta', 'risotto', 'pizza'] },
+        { id: 'french', label: 'French', region: 'cuisine', synonyms: ['bistro', 'pastry'] },
+        { id: 'mexican', label: 'Mexican', region: 'cuisine', synonyms: ['tacos', 'salsa'] },
+        { id: 'indian', label: 'Indian', region: 'cuisine', synonyms: ['curry', 'masala'] },
+        { id: 'chinese', label: 'Chinese', region: 'cuisine', synonyms: ['dim sum', 'wok'] },
+        { id: 'japanese', label: 'Japanese', region: 'cuisine', synonyms: ['sushi', 'ramen'] },
+        { id: 'mediterranean', label: 'Mediterranean', region: 'cuisine', synonyms: ['greek', 'middle eastern'] },
+        { id: 'baking', label: 'Baking & pastry', region: 'technique', synonyms: ['bread', 'dessert', 'cake'] },
+        { id: 'grilling', label: 'Grilling & BBQ', region: 'technique', synonyms: ['bbq', 'smoke'] },
+        { id: 'quickMeals', label: 'Quick weeknight meals', region: 'technique', synonyms: ['30 minute', 'easy'] },
+        { id: 'mealPrep', label: 'Meal prep', region: 'technique', synonyms: ['batch', 'planning'] },
+        { id: 'vegetarian', label: 'Vegetarian', region: 'diet', synonyms: ['plant-based', 'veggie'] },
+        { id: 'vegan', label: 'Vegan', region: 'diet', synonyms: ['plant-based'] },
+        { id: 'healthy', label: 'Healthy eating', region: 'diet', synonyms: ['nutrition', 'light'] },
+        { id: 'wine', label: 'Wine & pairings', region: 'diet', synonyms: ['cocktails', 'drinks'] }
+      ],
+      sports: [
+        { id: 'nfl', label: 'NFL', region: 'usMajor', synonyms: ['football', 'super bowl'] },
+        { id: 'nba', label: 'NBA', region: 'usMajor', synonyms: ['basketball'] },
+        { id: 'mlb', label: 'MLB', region: 'usMajor', synonyms: ['baseball'] },
+        { id: 'nhl', label: 'NHL', region: 'usMajor', synonyms: ['hockey'] },
+        { id: 'wnba', label: 'WNBA', region: 'usMajor', synonyms: ["women's basketball"] },
+        { id: 'mls', label: 'MLS', region: 'usMajor', synonyms: ['soccer'] },
+        { id: 'premierLeague', label: 'Premier League', region: 'global', synonyms: ['epl', 'english soccer'] },
+        { id: 'championsLeague', label: 'Champions League', region: 'global', synonyms: ['uefa'] },
+        { id: 'f1', label: 'Formula 1', region: 'global', synonyms: ['racing', 'motorsport'] },
+        { id: 'tennis', label: 'Tennis', region: 'global', synonyms: ['grand slam', 'wimbledon'] },
+        { id: 'golf', label: 'Golf', region: 'global', synonyms: ['pga', 'masters'] },
+        { id: 'olympics', label: 'Olympics', region: 'global', synonyms: ['winter games', 'summer games'] },
+        { id: 'collegeFootball', label: 'College football', region: 'college', synonyms: ['ncaa football'] },
+        { id: 'collegeBasketball', label: 'College basketball', region: 'college', synonyms: ['march madness', 'ncaa'] },
+        { id: 'localTeams', label: 'Local teams', region: 'college', synonyms: ['hometown', 'metro'] },
+        { id: 'womensSports', label: "Women's sports", region: 'global', synonyms: ['nwsl', 'equity'] }
       ]
     };
 
@@ -3128,9 +3435,9 @@
           media: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
           climate: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
           health: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
-          sports: { status: 'muted', subbeats: {}, cadence: 'pause30' },
+          sports: { status: 'followed', subbeats: { nfl: true, nba: true, localTeams: true }, cadence: 'weekly' },
           artsCulture: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
-          food: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
+          food: { status: 'followed', subbeats: { italian: true, baking: true, quickMeals: true }, cadence: 'weekly' },
           travel: { status: 'followed', subbeats: { france: true, italy: true, spain: true }, cadence: 'weekly' },
           opinion: { status: 'unfollowed', subbeats: {}, cadence: 'weekly' },
           localNews: { status: 'followed', subbeats: { transit: true, housing: true, schools: false, weather: true }, cadence: 'weekly' },
@@ -3185,7 +3492,7 @@
         lastUpdated: '2026-07-10T08:59:00',
         expandedBeats: {},
         nlp: { input: '', preview: null },
-        ui: { profileExpanded: true, productFilter: 'all', activityDrawer: null, activityDrawerJump: null, interestDrawer: { beat: null, query: '', region: 'europe' } }
+        ui: { profileExpanded: false, productFilter: 'all', activityDrawer: null, activityDrawerJump: null, interestDrawer: { beat: null, query: '', region: 'europe' } }
       };
     }
 
@@ -4424,12 +4731,12 @@
           <div class="profile-avatar" aria-hidden="true">${getReaderInitials(r.name)}</div>
           <div class="profile-hero__text">
             <span class="profile-level">${r.tier}</span>
-            <p class="profile-tagline">Member since ${formatMemberSince(r.memberSince)} · ${formatReadingMinutes(ri.weeklyMinutes)} read this week</p>
+            <p class="profile-tagline">${formatReadingMinutes(ri.weeklyMinutes)} read this week · Member since ${formatMemberSince(r.memberSince)}</p>
           </div>
         </div>
       `;
 
-      document.getElementById('readingMeter').innerHTML = renderReadingMeter(!expanded);
+      document.getElementById('readingMeter').innerHTML = renderReadingMeter(false);
 
       document.getElementById('summaryPills').innerHTML = `
         ${renderActivityPill('products', countActiveProductLines(), 'Products')}
@@ -4678,6 +4985,34 @@
       }).slice(0, 8);
     }
 
+    function getDrawerRegions(beatKey) {
+      const catalog = BEAT_META[beatKey]?.drawerCatalog;
+      return DRAWER_FILTER_GROUPS[catalog] || DRAWER_REGIONS;
+    }
+
+    function getDrawerUIConfig(beatKey) {
+      const catalog = BEAT_META[beatKey]?.drawerCatalog;
+      if (catalog === 'cooking') {
+        return {
+          desc: 'Search cuisines, techniques, and diet preferences. Pick what you want more recipe and coverage ideas for.',
+          placeholder: 'Search cooking — e.g. italian, baking, vegetarian',
+          emptyHint: 'No matches — try a cuisine or technique'
+        };
+      }
+      if (catalog === 'sports') {
+        return {
+          desc: 'Follow leagues and teams for scores, alerts, and coverage tuned to what you watch.',
+          placeholder: 'Search sports — e.g. nfl, nba, premier league',
+          emptyHint: 'No matches — try a league or sport name'
+        };
+      }
+      return {
+        desc: 'Search, pick suggestions, or multi-select below. Great for trip planning — e.g. type "fr" for France.',
+        placeholder: 'Search countries or cities — e.g. fr, paris, europe',
+        emptyHint: 'No matches — try a region or country name'
+      };
+    }
+
     function getFilteredDrawerItems(beatKey) {
       const items = getDrawerCatalog(beatKey);
       const { region, query } = state.ui.interestDrawer;
@@ -4707,20 +5042,22 @@
       const meta = BEAT_META[beatKey];
       const beat = state.beats[beatKey];
       const { query, region } = state.ui.interestDrawer;
+      const regions = getDrawerRegions(beatKey);
+      const ui = getDrawerUIConfig(beatKey);
       const selected = Object.entries(beat.subbeats || {}).filter(([, v]) => v).map(([k]) => k);
       const suggestions = searchDrawerItems(getDrawerCatalog(beatKey), query);
       const filtered = getFilteredDrawerItems(beatKey);
 
       document.getElementById('interestDrawerTitle').textContent = `${meta.label} — ${meta.drawerLabel || 'Sub-categories'}`;
-      document.getElementById('interestDrawerDesc').textContent = 'Search, pick suggestions, or multi-select below. Great for trip planning — e.g. type "fr" for France.';
+      document.getElementById('interestDrawerDesc').textContent = ui.desc;
 
       const selectedChips = selected.length
         ? selected.map(id => `
             <button type="button" class="subbeat-chip is-on" data-drawer-remove="${id}" aria-label="Remove ${getDrawerItemLabel(id)}">${getDrawerItemLabel(id)} ×</button>
           `).join('')
-        : '<span class="cadence-hint">No selections yet — try searching "europe" or "italy"</span>';
+        : `<span class="cadence-hint">No selections yet — ${ui.placeholder.split('—')[1]?.trim() || 'search to begin'}</span>`;
 
-      const regionBtns = DRAWER_REGIONS.map(r => `
+      const regionBtns = regions.map(r => `
         <button type="button" class="interest-region-btn ${region === r.id ? 'is-active' : ''}" data-drawer-region="${r.id}">${r.label}</button>
       `).join('');
 
@@ -4728,7 +5065,7 @@
         ? suggestions.map(s => `
             <button type="button" class="interest-suggestion" data-drawer-pick="${s.id}">
               ${s.label}
-              <span class="interest-suggestion__meta">${DRAWER_REGIONS.find(r => r.id === s.region)?.label || s.region}</span>
+              <span class="interest-suggestion__meta">${regions.find(r => r.id === s.region)?.label || s.region}</span>
             </button>
           `).join('')
         : '';
@@ -4745,20 +5082,20 @@
 
       document.getElementById('interestDrawerBody').innerHTML = `
         <div class="interest-search-wrap">
-          <label for="interestSearch" class="visually-hidden">Search destinations</label>
-          <input type="search" class="interest-search" id="interestSearch" placeholder="Search countries or cities — e.g. fr, paris, europe" value="${query}" autocomplete="off" role="combobox" aria-expanded="${suggestions.length ? 'true' : 'false'}" aria-controls="interestSuggestions">
+          <label for="interestSearch" class="visually-hidden">Search ${meta.label} topics</label>
+          <input type="search" class="interest-search" id="interestSearch" placeholder="${ui.placeholder}" value="${query}" autocomplete="off" role="combobox" aria-expanded="${suggestions.length ? 'true' : 'false'}" aria-controls="interestSuggestions">
           <div class="interest-suggestions ${suggestions.length && query.trim() ? 'is-open' : ''}" id="interestSuggestions" role="listbox">
-            ${suggestionList || (query.trim() ? '<div style="padding:.65rem .85rem;font-size:.8rem;color:var(--text-muted)">No matches — try a region or country name</div>' : '')}
+            ${suggestionList || (query.trim() ? `<div style="padding:.65rem .85rem;font-size:.8rem;color:var(--text-muted)">${ui.emptyHint}</div>` : '')}
           </div>
         </div>
-        <div class="interest-region-filters" role="group" aria-label="Filter by region">${regionBtns}</div>
+        <div class="interest-region-filters" role="group" aria-label="Filter topics">${regionBtns}</div>
         <div class="interest-selected-block">
           <p class="interest-selected-block__label">Selected (${selected.length})</p>
           <div class="beat-selected-chips">${selectedChips}</div>
         </div>
-        <p class="interest-selected-block__label">Browse ${region === 'all' ? 'all' : DRAWER_REGIONS.find(r => r.id === region)?.label}</p>
+        <p class="interest-selected-block__label">Browse ${region === 'all' ? 'all' : regions.find(r => r.id === region)?.label}</p>
         <div class="interest-item-grid">${itemGrid}</div>
-        <p class="ux-note" style="margin-top:.75rem">Predictive search surfaces matches as you type; multi-select persists across regions.</p>
+        <p class="ux-note" style="margin-top:.75rem">Predictive search surfaces matches as you type; multi-select persists across filters.</p>
       `;
 
       bindInterestDrawerEvents(beatKey);
@@ -4767,7 +5104,8 @@
     function openInterestDrawer(beatKey) {
       state.ui.interestDrawer.beat = beatKey;
       state.ui.interestDrawer.query = '';
-      state.ui.interestDrawer.region = beatKey === 'travel' ? 'europe' : 'all';
+      const defaultRegions = { travel: 'europe', food: 'cuisine', sports: 'usMajor', world: 'all' };
+      state.ui.interestDrawer.region = defaultRegions[beatKey] || 'all';
       renderInterestDrawer();
       const drawer = document.getElementById('interestDrawer');
       drawer.hidden = false;
@@ -4911,7 +5249,7 @@
         <section class="section" id="beats-section" aria-labelledby="beatsTitle">
           <div class="section__header">
             <h3 class="section__title" id="beatsTitle" style="font-size:1rem">Coverage interests</h3>
-            <p class="section__desc">Follow beats to shape your feed, alerts, and recommendations across Core News. Large topics like Travel open a searchable drawer for countries and regions.</p>
+            <p class="section__desc">Follow beats to shape your feed, alerts, and recommendations. Cooking, Sports, Travel, and World open searchable sub-category drawers.</p>
             <p class="ux-note">UX: Explicit interest capture doubles as a discovery surface for editorial tailoring.</p>
           </div>
           <div class="beats-grid">${cards}</div>
@@ -4922,16 +5260,23 @@
     function renderRecommendations() {
       const recs = getRecommendations();
 
-      const cards = recs.length ? recs.map((r, i) => `
+      const cards = recs.length ? recs.map((r, i) => {
+        const canPreview = r.type === 'newsletter';
+        return `
         <div class="rec-card">
           <div class="rec-card__text">
             <strong>${r.label}</strong>
             <span class="rec-card__reason">${r.reason}</span>
           </div>
-          <button type="button" class="btn btn--primary btn--sm" data-quick-add="${i}">Add</button>
-          ${r.type === 'newsletter' ? `<button type="button" class="btn btn--link btn--sm" data-preview="newsletter" data-preview-id="${r.id}" style="margin-left:.25rem">Preview</button>` : ''}
+          <div class="rec-card__actions">
+            <button type="button" class="btn btn--primary btn--sm" data-quick-add="${i}">Add</button>
+            ${canPreview
+              ? `<button type="button" class="btn btn--secondary btn--sm" data-preview="newsletter" data-preview-id="${r.id}">Preview</button>`
+              : `<button type="button" class="btn btn--secondary btn--sm btn--placeholder" tabindex="-1" aria-hidden="true">Preview</button>`}
+          </div>
         </div>
-      `).join('') : `<p class="section__desc" style="margin:0">Follow a beat below to unlock personalized picks.</p>`;
+      `;
+      }).join('') : `<p class="section__desc" style="margin:0">Follow a beat below to unlock personalized picks.</p>`;
 
       return `
         <section class="section rec-section--prominent" aria-labelledby="recTitle">
