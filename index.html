@@ -400,8 +400,8 @@
       flex-wrap: wrap;
       align-items: flex-start;
       justify-content: space-between;
-      gap: .75rem 1rem;
-      margin-bottom: 1rem;
+      gap: .5rem .75rem;
+      margin-bottom: .45rem;
       position: relative;
       z-index: 1;
     }
@@ -569,7 +569,7 @@
       text-transform: uppercase;
       letter-spacing: .05em;
       color: var(--text-muted);
-      margin: .65rem 0 .4rem;
+      margin: .45rem 0 .35rem;
     }
 
     .profile-spotlight .summary-pills {
@@ -588,6 +588,16 @@
     }
 
     .profile-spotlight .reading-meter {
+      margin-bottom: 0;
+    }
+
+    .reading-meter--compact .reading-meter__mix-title,
+    .reading-meter--compact .reading-meter__bars,
+    .reading-meter--compact .reading-meter__personality {
+      display: none;
+    }
+
+    .reading-meter--compact .reading-meter__header {
       margin-bottom: 0;
     }
 
@@ -614,6 +624,138 @@
 
     .profile-spotlight__headline {
       font-size: clamp(1rem, 2.5vw, 1.2rem);
+    }
+
+    .entitlements-strip {
+      margin: .5rem 0 0;
+      padding-top: .55rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .entitlements-strip__intro {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .45rem .65rem;
+      margin-bottom: 0;
+    }
+
+    .entitlements-strip.is-expanded .entitlements-strip__intro {
+      margin-bottom: .5rem;
+    }
+
+    .entitlements-expand-btn {
+      flex-shrink: 0;
+      font-size: .68rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: none;
+      border: none;
+      padding: .15rem 0;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .entitlements-expand-btn:hover {
+      color: var(--accent-hover, #0d3a5c);
+    }
+
+    .entitlements-expand-btn:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 2px;
+    }
+
+    .entitlements-strip:not(.is-expanded) .brand-tile-row {
+      display: none;
+    }
+
+    .entitlement-badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: .68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: .25rem .5rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #1a4d7c, #2d6a4f);
+      color: #fff;
+    }
+
+    .entitlements-strip__copy {
+      font-size: .72rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.35;
+      flex: 1;
+      min-width: 12rem;
+    }
+
+    .brand-tile-row {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: .45rem;
+      overflow-x: auto;
+      padding-bottom: .15rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .brand-tile {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .2rem;
+      min-width: 4.75rem;
+      max-width: 5.5rem;
+      padding: .45rem .4rem .4rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      cursor: pointer;
+      font-family: inherit;
+      color: inherit;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .brand-tile:hover {
+      border-color: var(--brand-color, var(--accent));
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-tile:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .brand-tile__mark {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      font-weight: 800;
+      color: #fff;
+      background: var(--brand-color, var(--accent));
+      letter-spacing: -.02em;
+    }
+
+    .brand-tile__label {
+      font-size: .62rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .brand-tile__stat {
+      font-size: .58rem;
+      color: var(--text-muted);
+      text-align: center;
     }
 
     .profile-spotlight__tagline {
@@ -1090,6 +1232,12 @@
       color: var(--text-secondary);
       margin: 0 0 1rem;
       line-height: 1.45;
+    }
+
+    .activity-drawer-footer {
+      margin-top: 1rem;
+      padding-top: .75rem;
+      border-top: 1px solid var(--border);
     }
 
     .activity-breaking-options {
@@ -2903,7 +3051,7 @@
     <header class="account-topbar">
       <div class="account-topbar__inner">
         <a class="account-topbar__brand" href="#">Account</a>
-        <span class="account-topbar__user">Jordan Lee · Subscriber</span>
+        <span class="account-topbar__user">Jordan Lee · All Access</span>
       </div>
     </header>
     <div class="account-body">
@@ -2939,26 +3087,24 @@
   <div id="saveSummary" class="save-summary" role="status" aria-live="polite"></div>
 
   <div class="profile-spotlight-wrap">
-    <section class="profile-spotlight" id="profileSpotlight" aria-labelledby="profileHeadline">
+    <section class="profile-spotlight is-expanded" id="profileSpotlight" aria-labelledby="profileHeadline">
       <div class="profile-glance" id="profileGlance"></div>
       <div class="profile-spotlight__header" id="profileHeader">
         <div>
           <p class="profile-brand">Preference passport</p>
           <h2 class="profile-spotlight__headline" id="profileHeadline">Your preference profile</h2>
         </div>
-        <button type="button" class="profile-expand-btn" id="profileExpandBtn" aria-expanded="false">Expand</button>
+        <button type="button" class="profile-expand-btn" id="profileExpandBtn" aria-expanded="true">Collapse</button>
       </div>
       <div class="profile-spotlight__details">
         <div class="profile-spotlight__inner summary-panel" id="summaryPanel">
           <div class="profile-spotlight__core">
             <div class="profile-spotlight__identity-block">
               <div id="profileHero"></div>
-              <div class="profile-spotlight__footer">
-                <p class="summary-sentence" id="summarySentence"></p>
-              </div>
             </div>
             <div id="readingMeter"></div>
           </div>
+          <div id="entitlementsStrip"></div>
           <p class="stats-label">Portfolio activity <span class="stats-label__hint">— click to review & adjust</span></p>
           <div class="summary-pills" id="summaryPills" style="margin-bottom:0"></div>
         </div>
@@ -3201,6 +3347,63 @@
 
     const PRODUCT_ORDER = ['coreNews', 'audio', 'games', 'lifestyle', 'membership'];
 
+    const PORTFOLIO_BRANDS = [
+      {
+        id: 'newsroom',
+        label: 'Newsroom',
+        mark: 'N',
+        color: '#1a4d7c',
+        productId: 'coreNews',
+        newsletterKeys: ['morningBriefing', 'eveningDigest', 'politicsDaily', 'marketsMinute', 'techBriefing', 'localEdition', 'weekendReads', 'investigationsDigest'],
+        productCommKeys: []
+      },
+      {
+        id: 'cooking',
+        label: 'Cooking',
+        mark: 'C',
+        color: '#9b4d2a',
+        productId: 'lifestyle',
+        newsletterKeys: [],
+        productCommKeys: ['lifestyleCooking']
+      },
+      {
+        id: 'audio',
+        label: 'Audio',
+        mark: 'A',
+        color: '#5b4d8a',
+        productId: 'audio',
+        newsletterKeys: ['podcastAlerts'],
+        productCommKeys: ['audioRecommendations', 'audioLiveAlerts']
+      },
+      {
+        id: 'games',
+        label: 'Games',
+        mark: 'G',
+        color: '#2d6a4f',
+        productId: 'games',
+        newsletterKeys: [],
+        productCommKeys: ['gamesWordReminder', 'gamesConnections', 'gamesCrossword']
+      },
+      {
+        id: 'travel',
+        label: 'Travel',
+        mark: 'T',
+        color: '#3a7ca5',
+        productId: 'lifestyle',
+        newsletterKeys: [],
+        productCommKeys: ['lifestyleTravel', 'lifestyleWellness']
+      },
+      {
+        id: 'membership',
+        label: 'Membership',
+        mark: 'M',
+        color: '#6b5b2e',
+        productId: 'membership',
+        newsletterKeys: ['subscriberExclusives'],
+        productCommKeys: ['memberEvents', 'memberPerks']
+      }
+    ];
+
     const NEWSLETTER_META = {
       morningBriefing: {
         product: 'coreNews',
@@ -3394,7 +3597,9 @@
           region: 'New York Metro',
           timezone: 'America/New_York',
           postalCode: '10012',
-          tier: 'Subscriber',
+          tier: 'All Access',
+          planLabel: 'Annual · full portfolio',
+          entitlement: 'allAccess',
           memberSince: '2022-03-15',
           accountId: 'RDR-48291',
           readingInsights: {
@@ -3492,7 +3697,7 @@
         lastUpdated: '2026-07-10T08:59:00',
         expandedBeats: {},
         nlp: { input: '', preview: null },
-        ui: { profileExpanded: false, productFilter: 'all', activityDrawer: null, activityDrawerJump: null, interestDrawer: { beat: null, query: '', region: 'europe' } }
+        ui: { profileExpanded: true, brandsExpanded: false, productFilter: 'all', activityDrawer: null, activityDrawerJump: null, activityBrandId: null, interestDrawer: { beat: null, query: '', region: 'europe' } }
       };
     }
 
@@ -3518,8 +3723,85 @@
 
     function refreshActivityDrawerIfOpen() {
       if (!state.ui.activityDrawer) return;
+      if (state.ui.activityDrawer === 'brand') {
+        const brand = PORTFOLIO_BRANDS.find(b => b.id === state.ui.activityBrandId);
+        if (brand) {
+          document.getElementById('activityDrawerTitle').textContent = `${brand.label} communications`;
+          document.getElementById('activityDrawerDesc').textContent = `Included with All Access — manage newsletters and program updates from ${brand.label}.`;
+        }
+      }
       document.getElementById('activityDrawerBody').innerHTML = buildActivityDrawerBody(state.ui.activityDrawer);
       bindActivityDrawerEvents();
+    }
+
+    function getBrandProgramItems(brand) {
+      const items = [];
+      brand.newsletterKeys.forEach(key => {
+        const meta = NEWSLETTER_META[key];
+        const nl = state.newsletters[key];
+        items.push({
+          kind: 'newsletter',
+          key,
+          label: meta.label,
+          desc: meta.desc,
+          product: meta.product,
+          cadence: nl.cadence,
+          channel: nl.channel || 'email',
+          active: nl.subscribed,
+          hasPreview: !!meta.sample
+        });
+      });
+      brand.productCommKeys.forEach(key => {
+        const meta = PRODUCT_COMMS_META[key];
+        const pc = state.productComms[key];
+        items.push({
+          kind: 'productComm',
+          key,
+          label: meta.label,
+          desc: meta.desc,
+          product: meta.product,
+          cadence: pc.cadence,
+          channel: pc.channel || meta.defaultChannel,
+          active: pc.enabled,
+          hasPreview: false
+        });
+      });
+      return items;
+    }
+
+    function countBrandActivePrograms(brand) {
+      let n = 0;
+      brand.newsletterKeys.forEach(k => { if (state.newsletters[k]?.subscribed) n++; });
+      brand.productCommKeys.forEach(k => { if (state.productComms[k]?.enabled) n++; });
+      return n;
+    }
+
+    function renderEntitlementsStrip() {
+      const r = state.reader;
+      const expanded = state.ui.brandsExpanded;
+      const brandCount = PORTFOLIO_BRANDS.length;
+      return `
+        <div class="entitlements-strip ${expanded ? 'is-expanded' : ''}">
+          <div class="entitlements-strip__intro">
+            <span class="entitlement-badge">${r.tier}</span>
+            <p class="entitlements-strip__copy">${r.planLabel ? r.planLabel + ' · ' : ''}Full portfolio access${expanded ? ' — tap a brand to manage its newsletters' : ''}</p>
+            <button type="button" class="entitlements-expand-btn" id="brandsExpandBtn" aria-expanded="${expanded}">${expanded ? 'Hide brands' : `Show ${brandCount} brands`}</button>
+          </div>
+          <div class="brand-tile-row" role="list" aria-label="Portfolio brands included in your plan">
+            ${PORTFOLIO_BRANDS.map(brand => {
+              const active = countBrandActivePrograms(brand);
+              const total = brand.newsletterKeys.length + brand.productCommKeys.length;
+              return `
+                <button type="button" class="brand-tile" data-brand-drilldown="${brand.id}" style="--brand-color: ${brand.color}" role="listitem" aria-label="${brand.label}: ${active} of ${total} programs active">
+                  <span class="brand-tile__mark" aria-hidden="true">${brand.mark}</span>
+                  <span class="brand-tile__label">${brand.label}</span>
+                  <span class="brand-tile__stat">${active}/${total} active</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
     }
 
     function formatLastUpdated(iso) {
@@ -3777,9 +4059,51 @@
           return buildPausedActivityBody();
         case 'reading':
           return buildReadingActivityBody();
+        case 'brand':
+          return buildBrandActivityBody(state.ui.activityBrandId);
         default:
           return '<p class="activity-empty">Nothing to show.</p>';
       }
+    }
+
+    function buildBrandActivityBody(brandId) {
+      const brand = PORTFOLIO_BRANDS.find(b => b.id === brandId);
+      if (!brand) return '<p class="activity-empty">Brand not found.</p>';
+      const items = getBrandProgramItems(brand);
+      const active = countBrandActivePrograms(brand);
+      if (!items.length) {
+        return `<p class="activity-empty">No programs mapped to ${brand.label} yet.</p>`;
+      }
+      return `
+        <p class="activity-drawer-intro">${active} of ${items.length} ${brand.label} program${items.length === 1 ? '' : 's'} active. All included with All Access.</p>
+        ${items.map(item => {
+          const cadenceSelect = item.kind === 'newsletter'
+            ? `<select class="select-sm" data-activity-nl-cadence="${item.key}" aria-label="Cadence for ${item.label}" ${!item.active ? 'disabled' : ''}>${CADENCE_OPTIONS.map(o => `<option value="${o.value}" ${item.cadence === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select>`
+            : `<select class="select-sm" data-activity-pc-cadence="${item.key}" aria-label="Cadence for ${item.label}" ${!item.active ? 'disabled' : ''}>${CADENCE_OPTIONS.map(o => `<option value="${o.value}" ${item.cadence === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select>`;
+          const toggle = item.kind === 'newsletter'
+            ? `<label class="toggle" aria-label="Subscribed to ${item.label}"><input type="checkbox" data-activity-nl-sub="${item.key}" ${item.active ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>`
+            : `<label class="toggle" aria-label="Enable ${item.label}"><input type="checkbox" data-activity-pc-enable="${item.key}" ${item.active ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>`;
+          const preview = item.hasPreview
+            ? `<button type="button" class="btn btn--ghost btn--sm" data-preview="newsletter" data-preview-id="${item.key}">Preview</button>`
+            : '';
+          return `
+            <div class="activity-item">
+              <div class="activity-item__main">
+                <span class="activity-item__title">${item.label}</span>
+                <span class="activity-item__detail">${item.desc}${item.active ? ` · ${cadenceLabel(item.cadence)} · via ${item.channel}` : ''}</span>
+              </div>
+              <div class="activity-item__actions">
+                ${preview}
+                ${cadenceSelect}
+                ${toggle}
+              </div>
+            </div>
+          `;
+        }).join('')}
+        <div class="activity-drawer-footer">
+          <button type="button" class="btn btn--secondary btn--sm" data-activity-jump-product="${brand.productId}">View all ${PRODUCT_PORTFOLIO[brand.productId]?.label || 'settings'}</button>
+        </div>
+      `;
     }
 
     function buildProductsActivityBody() {
@@ -3997,10 +4321,28 @@
       });
     }
 
+    function openBrandDrawer(brandId) {
+      const brand = PORTFOLIO_BRANDS.find(b => b.id === brandId);
+      if (!brand) return;
+      state.ui.activityDrawer = 'brand';
+      state.ui.activityBrandId = brandId;
+      state.ui.activityDrawerJump = { filter: brand.productId, target: `product-${brand.productId}` };
+      document.getElementById('activityDrawerTitle').textContent = `${brand.label} communications`;
+      document.getElementById('activityDrawerDesc').textContent = `Included with All Access — manage newsletters and program updates from ${brand.label}.`;
+      document.getElementById('activityDrawerBody').innerHTML = buildBrandActivityBody(brandId);
+      const drawer = document.getElementById('activityDrawer');
+      drawer.hidden = false;
+      drawer.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      bindActivityDrawerEvents();
+      document.getElementById('activityDrawerCloseBtn').focus();
+    }
+
     function openActivityDrawer(type) {
       const meta = ACTIVITY_DRAWER_META[type];
       if (!meta) return;
       state.ui.activityDrawer = type;
+      state.ui.activityBrandId = null;
       state.ui.activityDrawerJump = meta.jump;
       document.getElementById('activityDrawerTitle').textContent = meta.title;
       document.getElementById('activityDrawerDesc').textContent = meta.desc;
@@ -4019,6 +4361,7 @@
       drawer.hidden = true;
       state.ui.activityDrawer = null;
       state.ui.activityDrawerJump = null;
+      state.ui.activityBrandId = null;
       if (!document.getElementById('contactDrawer').classList.contains('is-open') &&
           !document.getElementById('optOutModal').classList.contains('is-open') &&
           !document.getElementById('previewModal').classList.contains('is-open') &&
@@ -4271,25 +4614,6 @@
         title: `${bundled.length} products → 1 weekly roundup`,
         detail: `${WEEKDAY_OPTIONS.find(d => d.value === dt.consolidation.weeklyDay)?.label || 'Sunday'} at ${formatTime12h(dt.consolidation.weeklyTime)} ${tzLabel}.${exceptions.length ? ' Separate: ' + exceptions.map(k => NEWSLETTER_META[k].label).join(', ') + '.' : ''}`
       };
-    }
-
-    function buildProfileSentence() {
-      const parts = [];
-      const intensity = state.globalIntensity;
-      if (intensity === 'light') parts.push('a lighter portfolio diet');
-      else if (intensity === 'high') parts.push('frequent updates across products');
-      else parts.push('balanced weekday delivery');
-
-      const breaking = state.breakingAlerts.level;
-      if (breaking === 'major') parts.push('fewer breaking interruptions');
-      else if (breaking === 'off') parts.push('no breaking alerts');
-      else if (breaking === 'followed') parts.push('alerts only for topics you follow');
-
-      if (state.deliveryTiming?.quietHours?.enabled) {
-        parts.push(`quiet hours ${formatTime12h(state.deliveryTiming.quietHours.start)}–${formatTime12h(state.deliveryTiming.quietHours.end)}`);
-      }
-
-      return `${state.reader.preferredName || state.reader.name} prefers ${parts.join(' and ')}.`;
     }
 
     function getRecommendations() {
@@ -4731,12 +5055,14 @@
           <div class="profile-avatar" aria-hidden="true">${getReaderInitials(r.name)}</div>
           <div class="profile-hero__text">
             <span class="profile-level">${r.tier}</span>
-            <p class="profile-tagline">${formatReadingMinutes(ri.weeklyMinutes)} read this week · Member since ${formatMemberSince(r.memberSince)}</p>
+            <p class="profile-tagline">${r.planLabel || 'Full portfolio'} · Member since ${formatMemberSince(r.memberSince)}</p>
           </div>
         </div>
       `;
 
-      document.getElementById('readingMeter').innerHTML = renderReadingMeter(false);
+      document.getElementById('readingMeter').innerHTML = renderReadingMeter(true);
+
+      document.getElementById('entitlementsStrip').innerHTML = renderEntitlementsStrip();
 
       document.getElementById('summaryPills').innerHTML = `
         ${renderActivityPill('products', countActiveProductLines(), 'Products')}
@@ -4746,8 +5072,6 @@
         ${renderActivityPill('channels', countActiveChannels(), 'Channels')}
         ${renderActivityPill('paused', countPausedItems(), 'Paused')}
       `;
-
-      document.getElementById('summarySentence').textContent = buildProfileSentence();
     }
 
     function renderPortfolioNav() {
@@ -5828,9 +6152,9 @@
         renderProductBlock('games', gamesContent) +
         renderProductBlock('lifestyle', lifestyleContent) +
         renderProductBlock('membership', membershipContent) +
+        (state.ui.productFilter === 'all' ? renderNlpBetaSection() : '') +
         (state.ui.productFilter === 'all' ? renderOptOutSection() : '') +
-        (state.ui.productFilter === 'all' ? renderEssentialSection() : '') +
-        (state.ui.productFilter === 'all' ? renderNlpBetaSection() : '');
+        (state.ui.productFilter === 'all' ? renderEssentialSection() : '');
 
       renderSummary();
       bindEvents();
@@ -6154,6 +6478,16 @@
     document.getElementById('discardBtn').addEventListener('click', discardChanges);
     document.getElementById('openContactDrawerBtn').addEventListener('click', openContactDrawer);
     document.getElementById('profileSpotlight').addEventListener('click', e => {
+      const brandBtn = e.target.closest('[data-brand-drilldown]');
+      if (brandBtn) {
+        openBrandDrawer(brandBtn.dataset.brandDrilldown);
+        return;
+      }
+      if (e.target.closest('#brandsExpandBtn')) {
+        state.ui.brandsExpanded = !state.ui.brandsExpanded;
+        renderSummary();
+        return;
+      }
       const pill = e.target.closest('[data-activity-drilldown]');
       if (pill) {
         openActivityDrawer(pill.dataset.activityDrilldown);
@@ -6215,6 +6549,11 @@
       jumpToPreferenceTarget(state.ui.activityDrawerJump || ACTIVITY_DRAWER_META[state.ui.activityDrawer]?.jump);
     });
     document.getElementById('activityDrawer').addEventListener('click', e => {
+      const previewBtn = e.target.closest('[data-preview]');
+      if (previewBtn) {
+        openPreview(previewBtn.dataset.preview, previewBtn.dataset.previewId);
+        return;
+      }
       if (e.target.id === 'activityDrawer') closeActivityDrawer();
     });
 
