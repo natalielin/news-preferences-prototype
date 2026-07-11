@@ -399,13 +399,13 @@
       min-width: 12rem;
     }
 
-    .profile-spotlight .streak-card {
+    .profile-spotlight .reading-meter {
       margin-bottom: 0;
     }
 
     @media (min-width: 1024px) {
-      .profile-spotlight .streak-card {
-        max-width: 220px;
+      .profile-spotlight .reading-meter {
+        max-width: 280px;
       }
     }
 
@@ -771,16 +771,143 @@
     .summary-pill {
       display: flex;
       flex-direction: column;
+      align-items: stretch;
+      gap: .15rem;
       padding: .55rem .65rem;
       background: var(--muted-bg);
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
-      transition: transform 200ms ease, border-color 200ms ease;
+      transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      color: inherit;
+      width: 100%;
+      min-height: var(--tap-min);
+    }
+
+    .summary-pill:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
     }
 
     .summary-pill:hover {
       border-color: var(--accent);
       transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .summary-pill__top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .35rem;
+    }
+
+    .summary-pill__chevron {
+      font-size: .85rem;
+      color: var(--text-muted);
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: .15rem;
+    }
+
+    .summary-pill__hint {
+      font-size: .62rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .stats-label__hint {
+      font-size: .72rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin: .15rem 0 0;
+    }
+
+    .activity-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: .65rem;
+      padding: .75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .activity-item:last-child { border-bottom: none; }
+
+    .activity-item__main {
+      flex: 1;
+      min-width: 10rem;
+    }
+
+    .activity-item__title {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: .15rem;
+    }
+
+    .activity-item__detail {
+      display: block;
+      font-size: .75rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+    }
+
+    .activity-item__actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .45rem;
+    }
+
+    .activity-empty {
+      font-size: .85rem;
+      color: var(--text-secondary);
+      margin: 0;
+      padding: .5rem 0;
+    }
+
+    .activity-drawer-intro {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      margin: 0 0 1rem;
+      line-height: 1.45;
+    }
+
+    .activity-breaking-options {
+      display: grid;
+      gap: .45rem;
+      margin-bottom: 1rem;
+    }
+
+    .activity-breaking-options label {
+      display: flex;
+      align-items: flex-start;
+      gap: .45rem;
+      font-size: .8rem;
+      cursor: pointer;
+      padding: .5rem .65rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+    }
+
+    .activity-breaking-options input { margin-top: .15rem; accent-color: var(--accent); }
+
+    .preference-highlight {
+      animation: highlightPulse 2.2s ease;
+    }
+
+    @keyframes highlightPulse {
+      0%, 100% { box-shadow: var(--shadow-sm); }
+      25% { box-shadow: 0 0 0 3px rgba(26,77,124,.35); }
     }
 
     .summary-pill__value {
@@ -797,27 +924,178 @@
       letter-spacing: .04em;
     }
 
-    .streak-card {
-      display: flex;
-      align-items: center;
-      gap: .65rem;
-      padding: .65rem .75rem;
-      background: var(--warning-bg);
-      border: 1px solid var(--warning);
+    .reading-meter {
+      display: block;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      color: inherit;
+      cursor: pointer;
+      padding: .85rem .9rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       margin-bottom: .85rem;
+      box-shadow: var(--shadow-sm);
     }
 
-    .streak-card__icon { font-size: 1.25rem; }
+    .reading-meter:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
 
-    .streak-card__text {
-      font-size: .8rem;
-      color: var(--text);
+    .reading-meter__header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: .75rem;
+    }
+
+    .reading-meter__ring {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+
+    .reading-meter__ring svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .reading-meter__ring-track {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 5;
+    }
+
+    .reading-meter__ring-fill {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 5;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 600ms ease;
+    }
+
+    .reading-meter__ring-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: .7rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .reading-meter__ring-label span {
+      font-size: .5rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .reading-meter__headline {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 .15rem;
+      line-height: 1.2;
+    }
+
+    .reading-meter__sub {
+      font-size: .72rem;
+      color: var(--text-secondary);
       margin: 0;
       line-height: 1.35;
     }
 
-    .streak-card__text strong { color: var(--warning); }
+    .reading-meter__vanity {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--success);
+      margin: .2rem 0 0;
+    }
+
+    .reading-meter__vanity.is-down { color: var(--text-muted); }
+
+    .reading-meter__mix-title {
+      font-size: .65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-muted);
+      margin: 0 0 .45rem;
+    }
+
+    .reading-meter__bars {
+      display: grid;
+      gap: .4rem;
+      margin-bottom: .65rem;
+    }
+
+    .reading-mix-row {
+      display: grid;
+      grid-template-columns: 4.5rem 1fr auto;
+      align-items: center;
+      gap: .45rem;
+      font-size: .68rem;
+    }
+
+    .reading-mix-row__label {
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .reading-mix-row__track {
+      height: 6px;
+      background: var(--muted-bg);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .reading-mix-row__fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 999px;
+      min-width: 2px;
+    }
+
+    .reading-mix-row__fill--audio { background: #5b7fa6; }
+    .reading-mix-row__fill--games { background: #7a5b9e; }
+    .reading-mix-row__fill--lifestyle { background: #9b6b3a; }
+
+    .reading-mix-row__time {
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: .62rem;
+      white-space: nowrap;
+    }
+
+    .reading-meter__personality {
+      font-size: .75rem;
+      color: var(--text-secondary);
+      margin: 0;
+      padding-top: .55rem;
+      border-top: 1px solid var(--border);
+      line-height: 1.4;
+    }
+
+    .reading-meter__personality strong {
+      color: var(--text);
+    }
+
+    .reading-meter--compact .reading-meter__bars,
+    .reading-meter--compact .reading-meter__personality,
+    .reading-meter--compact .reading-meter__mix-title {
+      display: none;
+    }
 
     .summary-sentence {
       font-size: .85rem;
@@ -2380,7 +2658,7 @@
     PAGE STRUCTURE & INTERACTION MODEL (stakeholder reference)
     ─────────────────────────────────────────────────────────
     1. Header: unified Preference Center title + Contact + dark mode
-    2. Your preference profile: streak, portfolio activity — collapsible
+    2. Your preference profile: weekly reading meter (Kindle/iOS-style), clickable activity cards — review what you're receiving and adjust inline
     3. Portfolio nav: filter/jump across product lines (Core News, Audio, Games, etc.)
     4. Portfolio overview: at-a-glance cards per product line (when viewing All)
     5. Recommended for you: cross-portfolio discovery surface
@@ -2416,7 +2694,7 @@
         <div>
           <p class="profile-brand">Preference passport</p>
           <h2 class="profile-spotlight__headline" id="profileHeadline">Your preference profile</h2>
-          <p class="profile-spotlight__tagline" id="profileTagline">Activity across your portfolio updates as you tune products and channels.</p>
+          <p class="profile-spotlight__tagline" id="profileTagline">Your reading habits and delivery preferences — tap activity cards to adjust what you receive.</p>
         </div>
         <button type="button" class="profile-expand-btn" id="profileExpandBtn" aria-expanded="true">Collapse</button>
       </div>
@@ -2427,9 +2705,9 @@
             <div class="profile-spotlight__footer">
               <p class="summary-sentence" id="summarySentence"></p>
             </div>
-            <div class="streak-card" id="streakCard"></div>
+            <div class="reading-meter" id="readingMeter"></div>
           </div>
-          <p class="stats-label">Portfolio activity</p>
+          <p class="stats-label">Portfolio activity <span class="stats-label__hint">— click a card to review and adjust</span></p>
           <div class="summary-pills" id="summaryPills" style="margin-bottom:0"></div>
         </div>
       </div>
@@ -2464,6 +2742,23 @@
       <div class="drawer__body" id="interestDrawerBody"></div>
       <div class="drawer__footer-actions">
         <button type="button" class="btn btn--primary" id="interestDrawerDoneBtn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-overlay" id="activityDrawer" role="dialog" aria-modal="true" aria-labelledby="activityDrawerTitle" hidden>
+    <div class="drawer" style="width:min(520px,100vw)">
+      <div class="drawer__header">
+        <div>
+          <h2 class="drawer__title" id="activityDrawerTitle">Activity details</h2>
+          <p class="drawer__desc" id="activityDrawerDesc"></p>
+        </div>
+        <button type="button" class="drawer__close" id="activityDrawerCloseBtn" aria-label="Close activity details">×</button>
+      </div>
+      <div class="drawer__body" id="activityDrawerBody"></div>
+      <div class="drawer__footer-actions">
+        <button type="button" class="btn btn--secondary" id="activityDrawerJumpBtn">Open full settings</button>
+        <button type="button" class="btn btn--primary" id="activityDrawerDoneBtn">Done</button>
       </div>
     </div>
   </div>
@@ -2795,7 +3090,21 @@
           tier: 'Subscriber',
           memberSince: '2022-03-15',
           accountId: 'RDR-48291',
-          readingStreakDays: 23
+          readingInsights: {
+            weeklyMinutes: 247,
+            weeklyGoalMinutes: 300,
+            lastWeekMinutes: 209,
+            topFormat: 'Morning Briefing',
+            readerType: 'Weekday news reader',
+            mix: [
+              { id: 'politics', label: 'Politics', minutes: 68, product: 'coreNews' },
+              { id: 'business', label: 'Business', minutes: 52, product: 'coreNews' },
+              { id: 'localNews', label: 'Local', minutes: 41, product: 'coreNews' },
+              { id: 'audio', label: 'Audio', minutes: 48, product: 'audio' },
+              { id: 'games', label: 'Games', minutes: 22, product: 'games' },
+              { id: 'lifestyle', label: 'Lifestyle', minutes: 16, product: 'lifestyle' }
+            ]
+          }
         },
         contacts: {
           email: { label: 'Email', icon: '✉', value: 'jordan.lee@example.com', detail: 'Primary inbox', verified: true, channelKey: 'email' },
@@ -2876,7 +3185,7 @@
         lastUpdated: '2026-07-10T08:59:00',
         expandedBeats: {},
         nlp: { input: '', preview: null },
-        ui: { profileExpanded: true, productFilter: 'all', interestDrawer: { beat: null, query: '', region: 'europe' } }
+        ui: { profileExpanded: true, productFilter: 'all', activityDrawer: null, activityDrawerJump: null, interestDrawer: { beat: null, query: '', region: 'europe' } }
       };
     }
 
@@ -2897,6 +3206,13 @@
       state.dirty = true;
       document.getElementById('saveBar').classList.add('is-visible');
       renderSummary();
+      refreshActivityDrawerIfOpen();
+    }
+
+    function refreshActivityDrawerIfOpen() {
+      if (!state.ui.activityDrawer) return;
+      document.getElementById('activityDrawerBody').innerHTML = buildActivityDrawerBody(state.ui.activityDrawer);
+      bindActivityDrawerEvents();
     }
 
     function formatLastUpdated(iso) {
@@ -2996,6 +3312,510 @@
       return map[state.breakingAlerts.level] || '—';
     }
 
+    function breakingLevelLabel() {
+      const map = { all: 'All breaking', major: 'Major only', followed: 'Followed topics', off: 'Off' };
+      return map[state.breakingAlerts.level] || '—';
+    }
+
+    function cadenceLabel(value) {
+      return CADENCE_OPTIONS.find(o => o.value === value)?.label || value;
+    }
+
+    function getActiveProgramItems() {
+      const items = [];
+      Object.entries(NEWSLETTER_META).forEach(([key, meta]) => {
+        const nl = state.newsletters[key];
+        if (nl.subscribed) {
+          items.push({ kind: 'newsletter', key, label: meta.label, product: meta.product, cadence: nl.cadence, channel: nl.channel });
+        }
+      });
+      Object.entries(PRODUCT_COMMS_META).forEach(([key, meta]) => {
+        const pc = state.productComms[key];
+        if (pc?.enabled) {
+          items.push({ kind: 'productComm', key, label: meta.label, product: meta.product, cadence: pc.cadence, channel: pc.channel });
+        }
+      });
+      return items;
+    }
+
+    function getFollowedBeatItems() {
+      return Object.entries(state.beats)
+        .filter(([, beat]) => beat.status === 'followed')
+        .map(([key, beat]) => ({
+          kind: 'beat',
+          key,
+          label: BEAT_META[key].label,
+          cadence: beat.cadence,
+          subbeatCount: Object.values(beat.subbeats || {}).filter(Boolean).length
+        }));
+    }
+
+    function getPausedItemDetails() {
+      const items = [];
+      Object.entries(state.beats).forEach(([key, beat]) => {
+        if (beat.status === 'paused' || isPaused(beat.cadence)) {
+          items.push({ kind: 'beat', key, label: BEAT_META[key].label, cadence: beat.cadence, status: beat.status });
+        }
+      });
+      Object.entries(state.newsletters).forEach(([key, nl]) => {
+        if (nl.subscribed && isPaused(nl.cadence)) {
+          items.push({ kind: 'newsletter', key, label: NEWSLETTER_META[key].label, cadence: nl.cadence, status: 'paused' });
+        }
+      });
+      Object.entries(state.productComms || {}).forEach(([key, pc]) => {
+        if (pc.enabled && isPaused(pc.cadence)) {
+          items.push({ kind: 'productComm', key, label: PRODUCT_COMMS_META[key].label, cadence: pc.cadence, status: 'paused' });
+        }
+      });
+      return items;
+    }
+
+    function getActivityPillHint(type) {
+      switch (type) {
+        case 'products': {
+          const labels = PRODUCT_ORDER.filter(id => countActiveInProduct(id) > 0).map(id => PRODUCT_PORTFOLIO[id].label);
+          return labels.length ? labels.slice(0, 2).join(', ') + (labels.length > 2 ? ` +${labels.length - 2}` : '') : 'Nothing active yet';
+        }
+        case 'programs': {
+          const items = getActiveProgramItems();
+          return items.length ? items.slice(0, 2).map(i => i.label).join(', ') + (items.length > 2 ? ` +${items.length - 2}` : '') : 'No programs active';
+        }
+        case 'beats': {
+          const items = getFollowedBeatItems();
+          return items.length ? items.slice(0, 2).map(i => i.label).join(', ') + (items.length > 2 ? ` +${items.length - 2}` : '') : 'No beats followed';
+        }
+        case 'breaking': {
+          if (state.breakingAlerts.level === 'off') return 'Alerts off';
+          const ch = Object.entries(state.breakingAlerts.channels).filter(([, on]) => on).map(([k]) => k).join(', ');
+          return `${breakingLevelLabel()}${ch ? ` · ${ch}` : ''}`;
+        }
+        case 'channels': {
+          const on = Object.entries(state.channels).filter(([, v]) => v).map(([k]) => k);
+          return on.length ? on.join(', ') : 'All channels off';
+        }
+        case 'paused': {
+          const items = getPausedItemDetails();
+          return items.length ? items.slice(0, 2).map(i => i.label).join(', ') + (items.length > 2 ? ` +${items.length - 2}` : '') : 'Nothing paused';
+        }
+        default: return '';
+      }
+    }
+
+    const ACTIVITY_DRAWER_META = {
+      products: {
+        title: 'Your active products',
+        desc: 'Product lines where you currently receive something. Jump in to manage programs and interests.',
+        jump: { filter: 'all', target: 'portfolio-overview' }
+      },
+      programs: {
+        title: 'What you\'re receiving',
+        desc: 'Every newsletter and program currently sending to you — adjust cadence or turn off without leaving your passport.',
+        jump: { filter: 'all', target: 'portfolio-overview' }
+      },
+      beats: {
+        title: 'Coverage you follow',
+        desc: 'Topics shaping your feed and alerts. Change cadence or stop following from here.',
+        jump: { filter: 'coreNews', target: 'beats-section' }
+      },
+      breaking: {
+        title: 'Breaking alerts',
+        desc: 'Urgent notifications outside your regular programs — tune intensity and delivery channels.',
+        jump: { filter: 'coreNews', target: 'breaking-section' }
+      },
+      channels: {
+        title: 'Where we reach you',
+        desc: 'Channels enabled across your portfolio. Account messages still use verified contact info.',
+        jump: { filter: 'all', target: 'global-settings' }
+      },
+      paused: {
+        title: 'Paused items',
+        desc: 'Programs and topics on temporary hold. Resume anytime to start receiving again.',
+        jump: { filter: 'all', target: null }
+      },
+      reading: {
+        title: 'Your reading this week',
+        desc: 'Time spent across our portfolio — inspired by Kindle and Screen Time weekly summaries. Use this to tune what you follow and subscribe to.',
+        jump: { filter: 'coreNews', target: 'beats-section' }
+      }
+    };
+
+    function renderActivityPill(type, value, label) {
+      return `
+        <button type="button" class="summary-pill" data-activity-drilldown="${type}" aria-label="Review ${label.toLowerCase()}: ${getActivityPillHint(type)}">
+          <span class="summary-pill__top">
+            <span>
+              <span class="summary-pill__value">${value}</span>
+              <span class="summary-pill__label">${label}</span>
+            </span>
+            <span class="summary-pill__chevron" aria-hidden="true">›</span>
+          </span>
+          <span class="summary-pill__hint">${getActivityPillHint(type)}</span>
+        </button>
+      `;
+    }
+
+    function buildActivityDrawerBody(type) {
+      switch (type) {
+        case 'products':
+          return buildProductsActivityBody();
+        case 'programs':
+          return buildProgramsActivityBody();
+        case 'beats':
+          return buildBeatsActivityBody();
+        case 'breaking':
+          return buildBreakingActivityBody();
+        case 'channels':
+          return buildChannelsActivityBody();
+        case 'paused':
+          return buildPausedActivityBody();
+        case 'reading':
+          return buildReadingActivityBody();
+        default:
+          return '<p class="activity-empty">Nothing to show.</p>';
+      }
+    }
+
+    function buildProductsActivityBody() {
+      const active = PRODUCT_ORDER.filter(id => countActiveInProduct(id) > 0);
+      if (!active.length) {
+        return `<p class="activity-empty">No product lines active yet. Browse recommendations below to start receiving.</p>`;
+      }
+      return `
+        <p class="activity-drawer-intro">You're receiving content from ${active.length} product line${active.length === 1 ? '' : 's'}.</p>
+        ${active.map(id => {
+          const meta = PRODUCT_PORTFOLIO[id];
+          return `
+            <div class="activity-item">
+              <div class="activity-item__main">
+                <span class="activity-item__title">${meta.icon} ${meta.label}</span>
+                <span class="activity-item__detail">${getProductProgramSummary(id)}</span>
+              </div>
+              <div class="activity-item__actions">
+                <button type="button" class="btn btn--secondary btn--sm" data-activity-jump-product="${id}">Manage</button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      `;
+    }
+
+    function buildProgramsActivityBody() {
+      const items = getActiveProgramItems();
+      if (!items.length) {
+        return `<p class="activity-empty">No active programs. Add recommendations below or subscribe from any product section.</p>`;
+      }
+      return `
+        <p class="activity-drawer-intro">${items.length} program${items.length === 1 ? '' : 's'} currently sending on your schedule.</p>
+        ${items.map(item => {
+          const cadenceSelect = item.kind === 'newsletter'
+            ? `<select class="select-sm" data-activity-nl-cadence="${item.key}" aria-label="Cadence for ${item.label}">${CADENCE_OPTIONS.map(o => `<option value="${o.value}" ${item.cadence === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select>`
+            : `<select class="select-sm" data-activity-pc-cadence="${item.key}" aria-label="Cadence for ${item.label}">${CADENCE_OPTIONS.map(o => `<option value="${o.value}" ${item.cadence === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}</select>`;
+          const toggle = item.kind === 'newsletter'
+            ? `<label class="toggle" aria-label="Subscribed to ${item.label}"><input type="checkbox" data-activity-nl-sub="${item.key}" checked><span class="toggle__track"></span><span class="toggle__thumb"></span></label>`
+            : `<label class="toggle" aria-label="Enable ${item.label}"><input type="checkbox" data-activity-pc-enable="${item.key}" checked><span class="toggle__track"></span><span class="toggle__thumb"></span></label>`;
+          return `
+            <div class="activity-item">
+              <div class="activity-item__main">
+                <span class="activity-item__title">${item.label}</span>
+                <span class="activity-item__detail">${PRODUCT_PORTFOLIO[item.product]?.label || item.product} · ${cadenceLabel(item.cadence)} · via ${item.channel}</span>
+              </div>
+              <div class="activity-item__actions">
+                ${cadenceSelect}
+                ${toggle}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      `;
+    }
+
+    function buildBeatsActivityBody() {
+      const items = getFollowedBeatItems();
+      if (!items.length) {
+        return `<p class="activity-empty">No coverage beats followed. Follow topics in Core News to personalize your feed.</p>`;
+      }
+      return `
+        <p class="activity-drawer-intro">${items.length} beat${items.length === 1 ? '' : 's'} shaping what you see and get alerted about.</p>
+        ${items.map(item => `
+          <div class="activity-item">
+            <div class="activity-item__main">
+              <span class="activity-item__title">${item.label}</span>
+              <span class="activity-item__detail">${cadenceLabel(item.cadence)}${item.subbeatCount ? ` · ${item.subbeatCount} sub-topic${item.subbeatCount === 1 ? '' : 's'}` : ''}</span>
+            </div>
+            <div class="activity-item__actions">
+              <select class="select-sm" data-activity-beat-cadence="${item.key}" aria-label="Cadence for ${item.label}">
+                ${CADENCE_OPTIONS.map(o => `<option value="${o.value}" ${item.cadence === o.value ? 'selected' : ''}>${o.label}</option>`).join('')}
+              </select>
+              <button type="button" class="btn btn--ghost btn--sm" data-activity-beat-unfollow="${item.key}">Unfollow</button>
+            </div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function buildBreakingActivityBody() {
+      const ch = state.breakingAlerts.channels;
+      const levels = BREAKING_LEVELS.map(l => `
+        <label>
+          <input type="radio" name="activityBreakingLevel" value="${l.value}" ${state.breakingAlerts.level === l.value ? 'checked' : ''}>
+          <span><strong>${l.label}</strong><br><span style="color:var(--text-secondary);font-size:.75rem">${l.hint}</span></span>
+        </label>
+      `).join('');
+      const activeChannels = Object.entries(ch).filter(([, on]) => on).map(([k]) => k).join(', ') || 'none';
+      return `
+        <p class="activity-drawer-intro">Currently: <strong>${breakingLevelLabel()}</strong> via ${activeChannels}.</p>
+        <p class="drawer__section-title" style="margin-top:0">Alert intensity</p>
+        <div class="activity-breaking-options">${levels}</div>
+        <p class="drawer__section-title">Delivery channels</p>
+        ${['push', 'sms', 'inApp', 'browser'].map(c => `
+          <div class="channel-row" style="margin-bottom:.45rem">
+            <div class="channel-row__info"><strong>${c === 'inApp' ? 'In-app' : c.charAt(0).toUpperCase() + c.slice(1)}</strong></div>
+            <label class="toggle"><input type="checkbox" data-activity-breaking-channel="${c}" ${ch[c] ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function buildChannelsActivityBody() {
+      const ch = state.channels;
+      const labels = { email: 'Email', push: 'Push', sms: 'SMS', inApp: 'In-app', browser: 'Browser' };
+      const hints = {
+        email: 'Newsletters, digests, lifestyle programs',
+        push: 'Breaking alerts, games, podcast notices',
+        sms: 'Urgent breaking news only',
+        inApp: 'Badge and feed alerts in the app',
+        browser: 'Web push on desktop'
+      };
+      return `
+        <p class="activity-drawer-intro">${countActiveChannels()} of 5 channels enabled portfolio-wide.</p>
+        ${Object.entries(labels).map(([key, label]) => `
+          <div class="activity-item">
+            <div class="activity-item__main">
+              <span class="activity-item__title">${label}</span>
+              <span class="activity-item__detail">${hints[key]}</span>
+            </div>
+            <div class="activity-item__actions">
+              <label class="toggle"><input type="checkbox" data-activity-channel="${key}" ${ch[key] ? 'checked' : ''}><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+            </div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function buildPausedActivityBody() {
+      const items = getPausedItemDetails();
+      if (!items.length) {
+        return `<p class="activity-empty">Nothing paused right now. Use Pause on any beat or program to take a break without unsubscribing.</p>`;
+      }
+      return `
+        <p class="activity-drawer-intro">${items.length} item${items.length === 1 ? '' : 's'} on hold — resume when you're ready.</p>
+        ${items.map(item => `
+          <div class="activity-item">
+            <div class="activity-item__main">
+              <span class="activity-item__title">${item.label}</span>
+              <span class="activity-item__detail">${item.cadence === 'pause7' ? 'Paused 7 days' : item.cadence === 'pause30' ? 'Paused 30 days' : 'Paused'}</span>
+            </div>
+            <div class="activity-item__actions">
+              <button type="button" class="btn btn--primary btn--sm" data-activity-resume="${item.kind}" data-activity-resume-key="${item.key}">Resume</button>
+            </div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function buildReadingActivityBody() {
+      const ri = state.reader.readingInsights;
+      const delta = getReadingWeekDelta(ri);
+      const totalMix = ri.mix.reduce((sum, m) => sum + m.minutes, 0);
+      const sorted = [...ri.mix].sort((a, b) => b.minutes - a.minutes);
+
+      return `
+        <p class="activity-drawer-intro">
+          <strong>${formatReadingMinutes(ri.weeklyMinutes)}</strong> across all products this week
+          (${getReadingGoalPct(ri)}% of your ${formatReadingMinutes(ri.weeklyGoalMinutes)} goal).
+          ${delta.label}.
+        </p>
+        <p class="drawer__section-title" style="margin-top:0">Time by topic & product</p>
+        ${sorted.map(m => {
+          const share = totalMix ? Math.round((m.minutes / totalMix) * 100) : 0;
+          return `
+            <div class="activity-item">
+              <div class="activity-item__main">
+                <span class="activity-item__title">${m.label}</span>
+                <span class="activity-item__detail">${PRODUCT_PORTFOLIO[m.product]?.label || m.product} · ${share}% of your week · ${formatReadingMinutes(m.minutes)}</span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+        <p class="drawer__section-title">Reader profile</p>
+        <div class="activity-item" style="border-bottom:none">
+          <div class="activity-item__main">
+            <span class="activity-item__title">${ri.readerType}</span>
+            <span class="activity-item__detail">Most-opened format: <strong>${ri.topFormat}</strong> · More engaged than 62% of weekday subscribers in your metro</span>
+          </div>
+        </div>
+        <p class="ux-note" style="margin-top:.75rem">Prototype: consumption data is simulated. Production would aggregate app, web, audio, and email engagement with privacy controls.</p>
+      `;
+    }
+
+    function resumePausedItem(kind, key) {
+      if (kind === 'beat') {
+        state.beats[key].status = 'followed';
+        state.beats[key].cadence = 'weekdays';
+        markDirty(`Resumed ${BEAT_META[key].label}`);
+      } else if (kind === 'newsletter') {
+        state.newsletters[key].cadence = 'weekdays';
+        markDirty(`Resumed ${NEWSLETTER_META[key].label}`);
+      } else if (kind === 'productComm') {
+        state.productComms[key].cadence = 'weekly';
+        markDirty(`Resumed ${PRODUCT_COMMS_META[key].label}`);
+      }
+    }
+
+    function jumpToPreferenceTarget(jump) {
+      if (!jump) return;
+      closeActivityDrawer();
+      state.ui.productFilter = jump.filter || 'all';
+      render();
+      requestAnimationFrame(() => {
+        let el = null;
+        if (jump.target === 'global-settings') el = document.getElementById('global-settings');
+        else if (jump.target) el = document.getElementById(jump.target);
+        else if (jump.filter && jump.filter !== 'all') el = document.getElementById(`product-${jump.filter}`);
+        if (el) {
+          el.classList.add('preference-highlight');
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => el.classList.remove('preference-highlight'), 2200);
+        }
+      });
+    }
+
+    function openActivityDrawer(type) {
+      const meta = ACTIVITY_DRAWER_META[type];
+      if (!meta) return;
+      state.ui.activityDrawer = type;
+      state.ui.activityDrawerJump = meta.jump;
+      document.getElementById('activityDrawerTitle').textContent = meta.title;
+      document.getElementById('activityDrawerDesc').textContent = meta.desc;
+      document.getElementById('activityDrawerBody').innerHTML = buildActivityDrawerBody(type);
+      const drawer = document.getElementById('activityDrawer');
+      drawer.hidden = false;
+      drawer.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      bindActivityDrawerEvents();
+      document.getElementById('activityDrawerCloseBtn').focus();
+    }
+
+    function closeActivityDrawer() {
+      const drawer = document.getElementById('activityDrawer');
+      drawer.classList.remove('is-open');
+      drawer.hidden = true;
+      state.ui.activityDrawer = null;
+      state.ui.activityDrawerJump = null;
+      if (!document.getElementById('contactDrawer').classList.contains('is-open') &&
+          !document.getElementById('optOutModal').classList.contains('is-open') &&
+          !document.getElementById('previewModal').classList.contains('is-open') &&
+          !document.getElementById('interestDrawer').classList.contains('is-open')) {
+        document.body.style.overflow = '';
+      }
+    }
+
+    function bindActivityDrawerEvents() {
+      document.querySelectorAll('[data-activity-jump-product]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          closeActivityDrawer();
+          state.ui.productFilter = btn.dataset.activityJumpProduct;
+          render();
+          requestAnimationFrame(() => {
+            const el = document.getElementById(`product-${btn.dataset.activityJumpProduct}`);
+            if (el) {
+              el.classList.add('preference-highlight');
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              setTimeout(() => el.classList.remove('preference-highlight'), 2200);
+            }
+          });
+        });
+      });
+
+      document.querySelectorAll('[data-activity-nl-sub]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.activityNlSub;
+          state.newsletters[key].subscribed = e.target.checked;
+          markDirty(`${e.target.checked ? 'Subscribed to' : 'Unsubscribed from'} ${NEWSLETTER_META[key].label}`);
+        });
+      });
+
+      document.querySelectorAll('[data-activity-nl-cadence]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.activityNlCadence;
+          state.newsletters[key].cadence = e.target.value;
+          markDirty(`${NEWSLETTER_META[key].label} cadence: ${cadenceLabel(e.target.value)}`);
+        });
+      });
+
+      document.querySelectorAll('[data-activity-pc-enable]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.activityPcEnable;
+          state.productComms[key].enabled = e.target.checked;
+          markDirty(`${e.target.checked ? 'Enabled' : 'Disabled'} ${PRODUCT_COMMS_META[key].label}`);
+        });
+      });
+
+      document.querySelectorAll('[data-activity-pc-cadence]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.activityPcCadence;
+          state.productComms[key].cadence = e.target.value;
+          markDirty(`${PRODUCT_COMMS_META[key].label} cadence: ${cadenceLabel(e.target.value)}`);
+        });
+      });
+
+      document.querySelectorAll('[data-activity-beat-cadence]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.activityBeatCadence;
+          state.beats[key].cadence = e.target.value;
+          if (isPaused(e.target.value)) state.beats[key].status = 'paused';
+          markDirty(`${BEAT_META[key].label} cadence: ${cadenceLabel(e.target.value)}`);
+        });
+      });
+
+      document.querySelectorAll('[data-activity-beat-unfollow]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.activityBeatUnfollow;
+          state.beats[key].status = 'unfollowed';
+          markDirty(`Unfollowed ${BEAT_META[key].label}`);
+        });
+      });
+
+      document.querySelectorAll('[name="activityBreakingLevel"]').forEach(radio => {
+        radio.addEventListener('change', e => {
+          state.breakingAlerts.level = e.target.value;
+          markDirty(`Breaking alerts: ${BREAKING_LEVELS.find(l => l.value === e.target.value).label}`);
+        });
+      });
+
+      document.querySelectorAll('[data-activity-breaking-channel]').forEach(el => {
+        el.addEventListener('change', e => {
+          const ch = e.target.dataset.activityBreakingChannel;
+          state.breakingAlerts.channels[ch] = e.target.checked;
+          markDirty(`Breaking ${ch} ${e.target.checked ? 'on' : 'off'}`);
+        });
+      });
+
+      document.querySelectorAll('[data-activity-channel]').forEach(el => {
+        el.addEventListener('change', e => {
+          const ch = e.target.dataset.activityChannel;
+          state.channels[ch] = e.target.checked;
+          markDirty(`${ch} channel ${e.target.checked ? 'enabled' : 'disabled'}`);
+        });
+      });
+
+      document.querySelectorAll('[data-activity-resume]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          resumePausedItem(btn.dataset.activityResume, btn.dataset.activityResumeKey);
+        });
+      });
+    }
+
     function getReaderInitials(name) {
       return name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
     }
@@ -3003,6 +3823,86 @@
     function formatMemberSince(iso) {
       const d = new Date(iso);
       return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    function formatReadingMinutes(total) {
+      if (total < 60) return `${total} min`;
+      const h = Math.floor(total / 60);
+      const m = total % 60;
+      return m ? `${h}h ${m}m` : `${h}h`;
+    }
+
+    function getReadingGoalPct(insights) {
+      return Math.min(Math.round((insights.weeklyMinutes / insights.weeklyGoalMinutes) * 100), 100);
+    }
+
+    function getReadingWeekDelta(insights) {
+      const delta = insights.weeklyMinutes - insights.lastWeekMinutes;
+      const pct = insights.lastWeekMinutes
+        ? Math.round((delta / insights.lastWeekMinutes) * 100)
+        : 0;
+      if (pct > 0) return { pct, label: `Up ${pct}% vs last week`, direction: 'up' };
+      if (pct < 0) return { pct, label: `Down ${Math.abs(pct)}% vs last week`, direction: 'down' };
+      return { pct: 0, label: 'Same as last week', direction: 'flat' };
+    }
+
+    function getTopReadingMix(insights) {
+      return [...insights.mix].sort((a, b) => b.minutes - a.minutes)[0];
+    }
+
+    function renderReadingMeter(compact) {
+      const ri = state.reader.readingInsights;
+      const pct = getReadingGoalPct(ri);
+      const delta = getReadingWeekDelta(ri);
+      const top = getTopReadingMix(ri);
+      const ringR = 26;
+      const circ = 2 * Math.PI * ringR;
+      const offset = circ - (pct / 100) * circ;
+      const totalMix = ri.mix.reduce((sum, m) => sum + m.minutes, 0);
+
+      const bars = [...ri.mix]
+        .sort((a, b) => b.minutes - a.minutes)
+        .slice(0, 5)
+        .map(m => {
+          const width = totalMix ? Math.round((m.minutes / totalMix) * 100) : 0;
+          const fillClass = m.product === 'audio'
+            ? 'reading-mix-row__fill reading-mix-row__fill--audio'
+            : m.product === 'games'
+              ? 'reading-mix-row__fill reading-mix-row__fill--games'
+              : m.product === 'lifestyle'
+                ? 'reading-mix-row__fill reading-mix-row__fill--lifestyle'
+                : 'reading-mix-row__fill';
+          return `
+            <div class="reading-mix-row">
+              <span class="reading-mix-row__label">${m.label}</span>
+              <div class="reading-mix-row__track" aria-hidden="true"><div class="${fillClass}" style="width:${width}%"></div></div>
+              <span class="reading-mix-row__time">${formatReadingMinutes(m.minutes)}</span>
+            </div>
+          `;
+        }).join('');
+
+      return `
+        <button type="button" class="reading-meter ${compact ? 'reading-meter--compact' : ''}" data-activity-drilldown="reading" aria-label="Weekly reading: ${formatReadingMinutes(ri.weeklyMinutes)}. Top topic: ${top.label}. Tap for details.">
+          <div class="reading-meter__header">
+            <div class="reading-meter__ring" aria-hidden="true">
+              <svg viewBox="0 0 64 64">
+                <circle class="reading-meter__ring-track" cx="32" cy="32" r="${ringR}"></circle>
+                <circle class="reading-meter__ring-fill" cx="32" cy="32" r="${ringR}"
+                  stroke-dasharray="${circ}" stroke-dashoffset="${offset}"></circle>
+              </svg>
+              <div class="reading-meter__ring-label">${pct}<span>%</span></div>
+            </div>
+            <div>
+              <p class="reading-meter__headline">${formatReadingMinutes(ri.weeklyMinutes)}</p>
+              <p class="reading-meter__sub">This week · Goal ${formatReadingMinutes(ri.weeklyGoalMinutes)}</p>
+              <p class="reading-meter__vanity ${delta.direction === 'down' ? 'is-down' : ''}">${delta.label}</p>
+            </div>
+          </div>
+          <p class="reading-meter__mix-title">What you read most</p>
+          <div class="reading-meter__bars">${bars}</div>
+          <p class="reading-meter__personality"><strong>${ri.readerType}</strong> · Top format: ${ri.topFormat} · Leading topic: ${top.label}</p>
+        </button>
+      `;
     }
 
     function formatTimezone(tz) {
@@ -3252,7 +4152,8 @@
       previewContext = null;
       if (!document.getElementById('contactDrawer').classList.contains('is-open') &&
           !document.getElementById('optOutModal').classList.contains('is-open') &&
-          !document.getElementById('interestDrawer').classList.contains('is-open')) {
+          !document.getElementById('interestDrawer').classList.contains('is-open') &&
+          !document.getElementById('activityDrawer').classList.contains('is-open')) {
         document.body.style.overflow = '';
       }
     }
@@ -3429,7 +4330,8 @@
       modal.hidden = true;
       if (!document.getElementById('contactDrawer').classList.contains('is-open') &&
           !document.getElementById('previewModal').classList.contains('is-open') &&
-          !document.getElementById('interestDrawer').classList.contains('is-open')) {
+          !document.getElementById('interestDrawer').classList.contains('is-open') &&
+          !document.getElementById('activityDrawer').classList.contains('is-open')) {
         document.body.style.overflow = '';
       }
     }
@@ -3486,13 +4388,16 @@
       drawer.hidden = true;
       if (!document.getElementById('optOutModal').classList.contains('is-open') &&
           !document.getElementById('previewModal').classList.contains('is-open') &&
-          !document.getElementById('interestDrawer').classList.contains('is-open')) {
+          !document.getElementById('interestDrawer').classList.contains('is-open') &&
+          !document.getElementById('activityDrawer').classList.contains('is-open')) {
         document.body.style.overflow = '';
       }
     }
 
     function renderSummary() {
       const r = state.reader;
+      const ri = r.readingInsights;
+      const topTopic = getTopReadingMix(ri);
       const expanded = state.ui.profileExpanded;
 
       document.getElementById('profileSpotlight').classList.toggle('is-expanded', expanded);
@@ -3501,8 +4406,8 @@
         <div class="profile-glance__left">
           <p class="profile-glance__identity"><strong>${r.name}</strong> · ${r.tier}</p>
           <div class="profile-glance__stats">
-            <span class="glance-stat glance-stat--accent">${countActivePrograms()} programs</span>
-            <span class="glance-stat">${r.readingStreakDays}-day streak</span>
+            <span class="glance-stat glance-stat--accent">${formatReadingMinutes(ri.weeklyMinutes)} this week</span>
+            <span class="glance-stat">Most read: ${topTopic.label}</span>
           </div>
         </div>
         <button type="button" class="profile-expand-btn" id="profileExpandBtnCollapsed" aria-expanded="false">Expand profile</button>
@@ -3519,23 +4424,20 @@
           <div class="profile-avatar" aria-hidden="true">${getReaderInitials(r.name)}</div>
           <div class="profile-hero__text">
             <span class="profile-level">${r.tier}</span>
-            <p class="profile-tagline">Member since ${formatMemberSince(r.memberSince)} · ${countActivePrograms()} active programs</p>
+            <p class="profile-tagline">Member since ${formatMemberSince(r.memberSince)} · ${formatReadingMinutes(ri.weeklyMinutes)} read this week</p>
           </div>
         </div>
       `;
 
-      document.getElementById('streakCard').innerHTML = `
-        <span class="streak-card__icon" aria-hidden="true">🔥</span>
-        <p class="streak-card__text"><strong>${state.reader.readingStreakDays}-day</strong> streak — you've customized alerts ${state.reader.readingStreakDays} days in a row.</p>
-      `;
+      document.getElementById('readingMeter').innerHTML = renderReadingMeter(!expanded);
 
       document.getElementById('summaryPills').innerHTML = `
-        <div class="summary-pill"><span class="summary-pill__value">${countActiveProductLines()}</span><span class="summary-pill__label">Products</span></div>
-        <div class="summary-pill"><span class="summary-pill__value">${countActivePrograms()}</span><span class="summary-pill__label">Programs</span></div>
-        <div class="summary-pill"><span class="summary-pill__value">${countFollowedBeats()}</span><span class="summary-pill__label">Beats</span></div>
-        <div class="summary-pill"><span class="summary-pill__value">${breakingLevelLabel()}</span><span class="summary-pill__label">Breaking</span></div>
-        <div class="summary-pill"><span class="summary-pill__value">${countActiveChannels()}</span><span class="summary-pill__label">Channels</span></div>
-        <div class="summary-pill"><span class="summary-pill__value">${countPausedItems()}</span><span class="summary-pill__label">Paused</span></div>
+        ${renderActivityPill('products', countActiveProductLines(), 'Products')}
+        ${renderActivityPill('programs', countActivePrograms(), 'Programs')}
+        ${renderActivityPill('beats', countFollowedBeats(), 'Beats')}
+        ${renderActivityPill('breaking', breakingLevelLabel(), 'Breaking')}
+        ${renderActivityPill('channels', countActiveChannels(), 'Channels')}
+        ${renderActivityPill('paused', countPausedItems(), 'Paused')}
       `;
 
       document.getElementById('summarySentence').textContent = buildProfileSentence();
@@ -3562,7 +4464,7 @@
     function renderPortfolioOverview() {
       if (state.ui.productFilter !== 'all') return '';
       return `
-        <section class="section" aria-labelledby="portfolioOverviewTitle" style="margin-top:0">
+        <section class="section" aria-labelledby="portfolioOverviewTitle" id="portfolio-overview" style="margin-top:0">
           <div class="section__header">
             <h2 class="section__title" id="portfolioOverviewTitle">Your portfolio at a glance</h2>
             <p class="section__desc">One account, every product — jump into a line to manage its programs and interests.</p>
@@ -3672,7 +4574,7 @@
       `).join('');
 
       return `
-        <section class="section breaking-section" aria-labelledby="breakingTitle">
+        <section class="section breaking-section" id="breaking-section" aria-labelledby="breakingTitle">
           <div class="section__header">
             <h2 class="section__title" id="breakingTitle">Breaking news alerts</h2>
             <p class="section__desc">Urgent notifications when major stories develop — separate from newsletters and other product updates.</p>
@@ -3882,7 +4784,8 @@
       state.ui.interestDrawer.query = '';
       if (!document.getElementById('contactDrawer').classList.contains('is-open') &&
           !document.getElementById('optOutModal').classList.contains('is-open') &&
-          !document.getElementById('previewModal').classList.contains('is-open')) {
+          !document.getElementById('previewModal').classList.contains('is-open') &&
+          !document.getElementById('activityDrawer').classList.contains('is-open')) {
         document.body.style.overflow = '';
       }
       render();
@@ -4005,7 +4908,7 @@
       }).join('');
 
       return `
-        <section class="section" aria-labelledby="beatsTitle">
+        <section class="section" id="beats-section" aria-labelledby="beatsTitle">
           <div class="section__header">
             <h3 class="section__title" id="beatsTitle" style="font-size:1rem">Coverage interests</h3>
             <p class="section__desc">Follow beats to shape your feed, alerts, and recommendations across Core News. Large topics like Travel open a searchable drawer for countries and regions.</p>
@@ -4906,6 +5809,11 @@
     document.getElementById('discardBtn').addEventListener('click', discardChanges);
     document.getElementById('openContactDrawerBtn').addEventListener('click', openContactDrawer);
     document.getElementById('profileSpotlight').addEventListener('click', e => {
+      const pill = e.target.closest('[data-activity-drilldown]');
+      if (pill) {
+        openActivityDrawer(pill.dataset.activityDrilldown);
+        return;
+      }
       const btn = e.target.closest('#profileExpandBtn, #profileExpandBtnCollapsed');
       if (btn) {
         state.ui.profileExpanded = btn.id === 'profileExpandBtnCollapsed' ? true : !state.ui.profileExpanded;
@@ -4956,6 +5864,15 @@
     document.getElementById('interestDrawer').addEventListener('click', e => {
       if (e.target.id === 'interestDrawer') closeInterestDrawer();
     });
+    document.getElementById('activityDrawerCloseBtn').addEventListener('click', closeActivityDrawer);
+    document.getElementById('activityDrawerDoneBtn').addEventListener('click', closeActivityDrawer);
+    document.getElementById('activityDrawerJumpBtn').addEventListener('click', () => {
+      jumpToPreferenceTarget(state.ui.activityDrawerJump || ACTIVITY_DRAWER_META[state.ui.activityDrawer]?.jump);
+    });
+    document.getElementById('activityDrawer').addEventListener('click', e => {
+      if (e.target.id === 'activityDrawer') closeActivityDrawer();
+    });
+
     document.getElementById('drawerCloseBtn').addEventListener('click', closeContactDrawer);
 
     document.getElementById('contactDrawer').addEventListener('click', e => {
@@ -4973,6 +5890,7 @@
     document.addEventListener('keydown', e => {
       if (e.key !== 'Escape') return;
       if (document.getElementById('interestDrawer').classList.contains('is-open')) closeInterestDrawer();
+      else if (document.getElementById('activityDrawer').classList.contains('is-open')) closeActivityDrawer();
       else if (document.getElementById('previewModal').classList.contains('is-open')) closePreview();
       else if (document.getElementById('contactDrawer').classList.contains('is-open')) closeContactDrawer();
       else if (document.getElementById('optOutModal').classList.contains('is-open')) closeModal();
@@ -4997,6 +5915,7 @@
     document.getElementById('contactDrawer').addEventListener('keydown', trapFocus);
     document.getElementById('previewModal').addEventListener('keydown', trapFocus);
     document.getElementById('interestDrawer').addEventListener('keydown', trapFocus);
+    document.getElementById('activityDrawer').addEventListener('keydown', trapFocus);
 
     function trapFocus(e) {
       if (e.key !== 'Tab') return;
