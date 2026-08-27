@@ -772,6 +772,329 @@
       display: none;
     }
 
+    /* ── Ambient / implicit preference layer ─────────────────────── */
+    .ambient-layer {
+      margin: .55rem 0 0;
+      padding-top: .55rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      gap: .55rem;
+    }
+
+    .ambient-block__title {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-muted);
+      margin: 0 0 .35rem;
+    }
+
+    .ambient-block__hint {
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--text-secondary);
+      font-size: .68rem;
+    }
+
+    .ambient-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--muted-bg);
+      padding: .55rem .65rem;
+      display: grid;
+      gap: .35rem;
+    }
+
+    .ambient-card--suggest {
+      border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+      background: color-mix(in srgb, var(--accent-soft) 70%, var(--surface));
+    }
+
+    .ambient-card__eyebrow {
+      font-size: .62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--accent);
+    }
+
+    .ambient-card__title {
+      font-size: .82rem;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .ambient-card__why {
+      font-size: .72rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .ambient-card__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+      align-items: center;
+      margin-top: .15rem;
+    }
+
+    .ambient-time-chip {
+      font-family: inherit;
+      font-size: .72rem;
+      font-weight: 600;
+      padding: .28rem .55rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .ambient-time-chip:hover,
+    .ambient-time-chip.is-active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .audience-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+    }
+
+    .audience-chip {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: .1rem;
+      max-width: 14rem;
+      padding: .4rem .55rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      cursor: pointer;
+      font-family: inherit;
+      text-align: left;
+      color: inherit;
+    }
+
+    .audience-chip:hover {
+      border-color: var(--accent);
+    }
+
+    .audience-chip__label {
+      font-size: .72rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .audience-chip__why {
+      font-size: .62rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .recent-setup-list {
+      display: grid;
+      gap: .35rem;
+    }
+
+    .recent-setup-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: .35rem .65rem;
+      padding: .4rem .5rem;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: .75rem;
+    }
+
+    .recent-setup-item__text {
+      flex: 1;
+      min-width: 10rem;
+      margin: 0;
+      line-height: 1.35;
+      color: var(--text-secondary);
+    }
+
+    .recent-setup-item__text strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .delivery-when {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .35rem .5rem;
+      margin-top: .45rem;
+      padding-top: .45rem;
+      border-top: 1px dashed var(--border);
+    }
+
+    .delivery-when__label {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--text-muted);
+    }
+
+    .delivery-when__select {
+      font-family: inherit;
+      font-size: .75rem;
+      padding: .25rem .4rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .delivery-when__signal {
+      font-size: .68rem;
+      color: var(--text-muted);
+      flex: 1;
+      min-width: 8rem;
+    }
+
+    .ambient-demo-banner {
+      margin: 0 0 1rem;
+      padding: .65rem .85rem;
+      border: 1px dashed color-mix(in srgb, var(--accent) 40%, var(--border));
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--accent-soft) 50%, var(--surface));
+      font-size: .78rem;
+      line-height: 1.45;
+      color: var(--text-secondary);
+    }
+
+    .ambient-demo-banner strong {
+      color: var(--text);
+    }
+
+    .ambient-demo-banner__actions {
+      margin-top: .45rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+    }
+
+    .pref-layers-diagram {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: .35rem .5rem;
+      align-items: stretch;
+      margin-bottom: .15rem;
+    }
+
+    @media (max-width: 520px) {
+      .pref-layers-diagram {
+        grid-template-columns: 1fr;
+      }
+      .pref-layer__arrow {
+        text-align: center;
+        padding: .15rem 0;
+      }
+    }
+
+    .pref-layer {
+      padding: .45rem .55rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .pref-layer--implicit {
+      border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+      background: color-mix(in srgb, var(--accent-soft) 40%, var(--surface));
+    }
+
+    .pref-layer__name {
+      display: block;
+      font-size: .68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--accent);
+      margin-bottom: .15rem;
+    }
+
+    .pref-layer__examples {
+      font-size: .65rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .pref-layer__arrow {
+      font-size: .62rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      align-self: center;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .in-context-moment {
+      margin-bottom: 1rem;
+      padding: .65rem .75rem;
+      border: 2px solid color-mix(in srgb, var(--accent) 25%, var(--border));
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent-soft) 35%, var(--surface)), var(--surface));
+    }
+
+    .in-context-moment__label {
+      font-size: .62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--accent);
+      margin: 0 0 .45rem;
+    }
+
+    .in-context-moment__card {
+      padding: .55rem .65rem;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .in-context-moment__title {
+      font-size: .88rem;
+      font-weight: 700;
+      margin: 0 0 .25rem;
+      line-height: 1.35;
+    }
+
+    .in-context-moment__why {
+      font-size: .75rem;
+      color: var(--text-secondary);
+      margin: 0 0 .5rem;
+      line-height: 1.4;
+    }
+
+    .in-context-moment__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+      margin-bottom: .35rem;
+    }
+
+    .in-context-moment__footnote {
+      font-size: .65rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.35;
+    }
+
     .entitlement-badge {
       display: inline-flex;
       align-items: center;
@@ -3208,6 +3531,7 @@
             <div id="readingMeter"></div>
           </div>
           <div id="entitlementsStrip"></div>
+          <div id="ambientLayer"></div>
           <p class="stats-label">Portfolio activity <span class="stats-label__hint">— click to review & adjust</span></p>
           <div class="summary-pills" id="summaryPills" style="margin-bottom:0"></div>
         </div>
@@ -3839,9 +4163,9 @@
           gamesCrossword: { enabled: false, cadence: 'weekly', channel: 'email' },
           lifestyleCooking: { enabled: true, cadence: 'weekly', channel: 'email' },
           athleticDaily: { enabled: true, cadence: 'weekdays', channel: 'email' },
-          athleticAlerts: { enabled: true, cadence: 'asPublished', channel: 'push' },
+          athleticAlerts: { enabled: false, cadence: 'asPublished', channel: 'push' },
           wirecutterDeals: { enabled: false, cadence: 'weekly', channel: 'email' },
-          wirecutterPicks: { enabled: true, cadence: 'weekly', channel: 'email' },
+          wirecutterPicks: { enabled: false, cadence: 'weekly', channel: 'email' },
           lifestyleWellness: { enabled: false, cadence: 'weekly', channel: 'email' },
           lifestyleTravel: { enabled: true, cadence: 'weekly', channel: 'email' },
           memberEvents: { enabled: true, cadence: 'asPublished', channel: 'email' },
@@ -3872,7 +4196,19 @@
         lastUpdated: '2026-07-10T08:59:00',
         expandedBeats: {},
         nlp: { input: '', preview: null },
-        ui: { profileExpanded: true, brandsExpanded: false, commNavSection: null, productFilter: 'all', activityDrawer: null, activityDrawerJump: null, activityBrandId: null, interestDrawer: { beat: null, query: '', region: 'europe' } }
+        ambient: {
+          dismissedSuggestionIds: [],
+          preferredSendTimes: {},
+          recentlySetUp: [
+            {
+              id: 'auto-quiet',
+              label: 'Quiet hours 10:00 PM–7:00 AM',
+              why: 'From late-night push dismissals last week',
+              undoType: 'quietHours'
+            }
+          ]
+        },
+        ui: { profileExpanded: true, brandsExpanded: false, ambientAudiencesOpen: false, commNavSection: null, productFilter: 'all', activityDrawer: null, activityDrawerJump: null, activityBrandId: null, interestDrawer: { beat: null, query: '', region: 'europe' } }
       };
     }
 
@@ -3977,6 +4313,287 @@
           </div>
         </div>
       `;
+    }
+
+    function getAmbientAudiences() {
+      const audiences = [];
+      const top = getTopReadingMix(state.reader.readingInsights);
+      const briefingTime = state.ambient.preferredSendTimes.morningBriefing;
+
+      if (state.newsletters.morningBriefing?.subscribed) {
+        audiences.push({
+          id: 'weekday_morning_briefing',
+          label: 'Weekday morning briefing',
+          why: briefingTime
+            ? `Usually reads 7–9am · Deliver at ${formatTime12h(briefingTime)}`
+            : 'Usually reads 7–9am weekdays',
+          jump: { filter: 'coreNews', target: 'product-coreNews' }
+        });
+      }
+      if (state.beats.sports?.status === 'followed') {
+        const n = countDrawerSelections('sports');
+        audiences.push({
+          id: 'athletic_teams',
+          label: 'The Athletic · your teams',
+          why: n ? `${n} league${n === 1 ? '' : 's'}/team${n === 1 ? '' : 's'} followed` : 'Sports beat followed',
+          jump: { filter: 'athletic', target: 'product-athletic' }
+        });
+      }
+      if (state.beats.food?.status === 'followed' || state.productComms.lifestyleCooking?.enabled) {
+        audiences.push({
+          id: 'cooking_engaged',
+          label: 'Cooking · recipes & technique',
+          why: 'Reads Cooking · All Access included',
+          jump: { filter: 'cooking', target: 'product-cooking' }
+        });
+      }
+      if (state.productComms.gamesWordReminder?.enabled) {
+        audiences.push({
+          id: 'games_streak',
+          label: 'Daily puzzle reminders',
+          why: top?.product === 'games' ? 'High Games reading this week' : 'Word reminder on',
+          jump: { filter: 'games', target: 'product-games' }
+        });
+      }
+      if (state.deliveryTiming?.quietHours?.enabled) {
+        audiences.push({
+          id: 'quiet_nights',
+          label: 'Quiet nights',
+          why: `${formatTime12h(state.deliveryTiming.quietHours.start)}–${formatTime12h(state.deliveryTiming.quietHours.end)}`,
+          jump: { filter: 'all', target: 'global-settings' }
+        });
+      }
+      return audiences;
+    }
+
+    function getAmbientSuggestions() {
+      const dismissed = new Set(state.ambient.dismissedSuggestionIds || []);
+      const suggestions = [];
+      const current = state.ambient.preferredSendTimes.morningBriefing;
+
+      if (!dismissed.has('briefing_time') && state.newsletters.morningBriefing?.subscribed && !current) {
+        suggestions.push({
+          id: 'briefing_time',
+          kind: 'when',
+          title: 'Send Morning Briefing at 7:30 AM weekdays?',
+          why: 'You usually open news between 7:00–8:15 AM Mon–Fri on mobile.',
+          times: ['07:00', '07:30', '08:00'],
+          defaultTime: '07:30'
+        });
+      }
+
+      if (!dismissed.has('athletic_alerts') && state.beats.sports?.status === 'followed' && !state.productComms.athleticAlerts?.enabled) {
+        suggestions.push({
+          id: 'athletic_alerts',
+          kind: 'enable',
+          title: 'Turn on The Athletic live game alerts?',
+          why: 'You follow NFL & NBA — alerts only for teams you follow.',
+          actionLabel: 'Enable alerts'
+        });
+      }
+
+      if (!dismissed.has('wirecutter_picks') && !state.productComms.wirecutterPicks?.enabled) {
+        suggestions.push({
+          id: 'wirecutter_picks',
+          kind: 'enable',
+          title: 'Get Wirecutter Best picks weekly?',
+          why: 'Included with All Access · you haven’t enabled Wirecutter yet.',
+          actionLabel: 'Enable weekly'
+        });
+      }
+
+      if (!dismissed.has('evening_digest') && !state.newsletters.eveningDigest?.subscribed) {
+        suggestions.push({
+          id: 'evening_digest',
+          kind: 'enable',
+          title: 'Prefer an evening wrap instead of more morning mail?',
+          why: 'Negative signal: Morning Briefing open rate dipped mid-week.',
+          actionLabel: 'Try Evening Digest'
+        });
+      }
+
+      return suggestions.slice(0, 2);
+    }
+
+    function pushRecentlySetUp(item) {
+      state.ambient.recentlySetUp = [
+        item,
+        ...(state.ambient.recentlySetUp || []).filter(r => r.id !== item.id)
+      ].slice(0, 5);
+    }
+
+    function renderTwoLayerDiagram() {
+      return `
+        <div class="pref-layers-diagram" aria-hidden="true">
+          <div class="pref-layer pref-layer--implicit">
+            <span class="pref-layer__name">Ambient / implicit</span>
+            <span class="pref-layer__examples">Habits · audiences · in-app prompts · signals</span>
+          </div>
+          <span class="pref-layer__arrow">↔ one graph</span>
+          <div class="pref-layer">
+            <span class="pref-layer__name">Explicit / backstop</span>
+            <span class="pref-layer__examples">Passport · L2 nav · program cards · undo</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderInContextMomentDemo() {
+      const dismissed = new Set(state.ambient.dismissedSuggestionIds || []);
+      const hasTime = state.ambient.preferredSendTimes.morningBriefing;
+      if (hasTime || dismissed.has('briefing_time')) return '';
+      if (state.ui.productFilter !== 'all' && state.ui.productFilter !== 'coreNews') return '';
+      return `
+        <div class="in-context-moment" id="in-context-moment" role="region" aria-label="In-product preference moment (demo)">
+          <p class="in-context-moment__label">Simulated · in the news app after reading</p>
+          <div class="in-context-moment__card">
+            <p class="in-context-moment__title">Want the Morning Briefing before you usually read?</p>
+            <p class="in-context-moment__why">You opened top stories around 7:00–8:15 AM on weekdays this week (mobile).</p>
+            <div class="in-context-moment__actions">
+              <button type="button" class="btn btn--primary btn--sm" data-in-context-briefing="07:30">7:30 AM weekdays</button>
+              <button type="button" class="btn btn--secondary btn--sm" data-in-context-briefing="07:00">7:00 AM</button>
+              <button type="button" class="btn btn--ghost btn--sm" data-in-context-dismiss>Not now</button>
+            </div>
+            <p class="in-context-moment__footnote">Writes to the same preference graph as Account · mirrored in passport “From your habits”</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAmbientLayer() {
+      const suggestions = getAmbientSuggestions();
+      const audiences = getAmbientAudiences();
+      const recent = state.ambient.recentlySetUp || [];
+      const diagram = renderTwoLayerDiagram();
+
+      const suggestHtml = suggestions.length ? `
+        <div class="ambient-block">
+          <p class="ambient-block__title">From your habits <span class="ambient-block__hint">— predicted · confirm to apply</span></p>
+          ${suggestions.map(s => `
+            <div class="ambient-card ambient-card--suggest" data-ambient-suggest="${s.id}">
+              <span class="ambient-card__eyebrow">${s.kind === 'when' ? 'When' : 'Suggest'}</span>
+              <p class="ambient-card__title">${s.title}</p>
+              <p class="ambient-card__why">${s.why}</p>
+              <div class="ambient-card__actions">
+                ${s.kind === 'when'
+                  ? (s.times || []).map(t => `
+                      <button type="button" class="ambient-time-chip ${t === s.defaultTime ? 'is-active' : ''}" data-ambient-accept-when="${s.id}" data-time="${t}">${formatTime12h(t)}</button>
+                    `).join('')
+                  : `<button type="button" class="btn btn--primary btn--sm" data-ambient-accept="${s.id}">${s.actionLabel || 'Accept'}</button>`
+                }
+                <button type="button" class="btn btn--ghost btn--sm" data-ambient-dismiss="${s.id}">Not now</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      ` : '';
+
+      const audienceHtml = audiences.length ? `
+        <div class="ambient-block">
+          <p class="ambient-block__title">Audiences you’re in <span class="ambient-block__hint">— from signals · tap to adjust</span></p>
+          <div class="audience-chip-row">
+            ${audiences.map(a => `
+              <button type="button" class="audience-chip" data-ambient-audience="${a.id}" data-jump-filter="${a.jump.filter}" data-jump-target="${a.jump.target}" title="${a.why}">
+                <span class="audience-chip__label">${a.label}</span>
+                <span class="audience-chip__why">${a.why}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      ` : '';
+
+      const recentHtml = recent.length ? `
+        <div class="ambient-block">
+          <p class="ambient-block__title">Recently set up for you <span class="ambient-block__hint">— undo anytime</span></p>
+          <div class="recent-setup-list">
+            ${recent.map(r => `
+              <div class="recent-setup-item">
+                <p class="recent-setup-item__text"><strong>${r.label}</strong> · ${r.why}</p>
+                <button type="button" class="btn btn--ghost btn--sm" data-ambient-undo="${r.id}">Undo</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : '';
+
+      return `<div class="ambient-layer" id="ambientLayerBlock">${diagram}${suggestHtml}${audienceHtml}${recentHtml}</div>`;
+    }
+
+    function acceptAmbientSuggestion(id, time) {
+      if (id === 'briefing_time') {
+        const t = time || '07:30';
+        state.ambient.preferredSendTimes.morningBriefing = t;
+        state.newsletters.morningBriefing.subscribed = true;
+        state.newsletters.morningBriefing.cadence = 'weekdays';
+        pushRecentlySetUp({
+          id: 'briefing_time_set',
+          label: `Morning Briefing · ${formatTime12h(t)} weekdays`,
+          why: 'Confirmed from your morning reading habit',
+          undoType: 'briefingTime'
+        });
+        markDirty(`Morning Briefing delivery set to ${formatTime12h(t)}`);
+      } else if (id === 'athletic_alerts') {
+        state.productComms.athleticAlerts.enabled = true;
+        pushRecentlySetUp({
+          id: 'athletic_alerts_on',
+          label: 'The Athletic live game alerts',
+          why: 'Enabled from sports follows',
+          undoType: 'athleticAlerts'
+        });
+        markDirty('Enabled The Athletic live game alerts');
+      } else if (id === 'wirecutter_picks') {
+        state.productComms.wirecutterPicks.enabled = true;
+        pushRecentlySetUp({
+          id: 'wirecutter_picks_on',
+          label: 'Wirecutter Best picks weekly',
+          why: 'Enabled from All Access entitlement nudge',
+          undoType: 'wirecutterPicks'
+        });
+        markDirty('Enabled Wirecutter Best picks');
+      } else if (id === 'evening_digest') {
+        state.newsletters.eveningDigest.subscribed = true;
+        pushRecentlySetUp({
+          id: 'evening_digest_on',
+          label: 'Evening Digest',
+          why: 'Suggested after Morning Briefing engagement dipped',
+          undoType: 'eveningDigest'
+        });
+        markDirty('Subscribed to Evening Digest');
+      }
+      if (!state.ambient.dismissedSuggestionIds.includes(id)) {
+        state.ambient.dismissedSuggestionIds.push(id);
+      }
+      render();
+    }
+
+    function dismissAmbientSuggestion(id) {
+      if (!state.ambient.dismissedSuggestionIds.includes(id)) {
+        state.ambient.dismissedSuggestionIds.push(id);
+      }
+      render();
+    }
+
+    function undoAmbientSetup(id) {
+      const item = (state.ambient.recentlySetUp || []).find(r => r.id === id);
+      if (!item) return;
+      if (item.undoType === 'quietHours') {
+        state.deliveryTiming.quietHours.enabled = false;
+      } else if (item.undoType === 'briefingTime') {
+        delete state.ambient.preferredSendTimes.morningBriefing;
+        state.ambient.dismissedSuggestionIds = state.ambient.dismissedSuggestionIds.filter(x => x !== 'briefing_time');
+      } else if (item.undoType === 'athleticAlerts') {
+        state.productComms.athleticAlerts.enabled = false;
+        state.ambient.dismissedSuggestionIds = state.ambient.dismissedSuggestionIds.filter(x => x !== 'athletic_alerts');
+      } else if (item.undoType === 'wirecutterPicks') {
+        state.productComms.wirecutterPicks.enabled = false;
+        state.ambient.dismissedSuggestionIds = state.ambient.dismissedSuggestionIds.filter(x => x !== 'wirecutter_picks');
+      } else if (item.undoType === 'eveningDigest') {
+        state.newsletters.eveningDigest.subscribed = false;
+        state.ambient.dismissedSuggestionIds = state.ambient.dismissedSuggestionIds.filter(x => x !== 'evening_digest');
+      }
+      state.ambient.recentlySetUp = state.ambient.recentlySetUp.filter(r => r.id !== id);
+      markDirty(`Undid: ${item.label}`);
+      render();
     }
 
     function jumpToCommPrefsSection(sectionId) {
@@ -5292,6 +5909,7 @@
       document.getElementById('readingMeter').innerHTML = renderReadingMeter(true);
 
       document.getElementById('entitlementsStrip').innerHTML = renderEntitlementsStrip();
+      document.getElementById('ambientLayer').innerHTML = renderAmbientLayer();
 
       document.getElementById('summaryPills').innerHTML = `
         ${renderActivityPill('products', countActiveProductLines(), 'Products')}
@@ -5479,6 +6097,23 @@
         const cadenceOpts = CADENCE_OPTIONS.map(o =>
           `<option value="${o.value}" ${nl.cadence === o.value ? 'selected' : ''}>${o.label}</option>`
         ).join('');
+        const preferredTime = state.ambient.preferredSendTimes[key];
+        const deliveryWhen = key === 'morningBriefing' ? `
+          <div class="delivery-when">
+            <span class="delivery-when__label">Deliver at</span>
+            <select class="delivery-when__select" data-preferred-send="${key}" aria-label="Preferred delivery time for ${meta.label}" ${!nl.subscribed ? 'disabled' : ''}>
+              <option value="" ${!preferredTime ? 'selected' : ''}>As published</option>
+              <option value="06:30" ${preferredTime === '06:30' ? 'selected' : ''}>6:30 AM</option>
+              <option value="07:00" ${preferredTime === '07:00' ? 'selected' : ''}>7:00 AM</option>
+              <option value="07:30" ${preferredTime === '07:30' ? 'selected' : ''}>7:30 AM</option>
+              <option value="08:00" ${preferredTime === '08:00' ? 'selected' : ''}>8:00 AM</option>
+              <option value="17:30" ${preferredTime === '17:30' ? 'selected' : ''}>5:30 PM</option>
+            </select>
+            <span class="delivery-when__signal">${preferredTime
+              ? `Predicted from your ${formatTime12h(preferredTime)} reading habit`
+              : 'Predict from when you usually read · or set explicitly'}</span>
+          </div>
+        ` : '';
         return `
           <article class="product-card" data-newsletter="${key}">
             <div class="product-card__header">
@@ -5495,6 +6130,7 @@
               <span class="channel-indicator">via ${nl.channel}</span>
               <select class="select-sm" data-nl-cadence="${key}" aria-label="Cadence for ${meta.label}" ${!nl.subscribed ? 'disabled' : ''}>${cadenceOpts}</select>
             </div>
+            ${deliveryWhen}
           </article>
         `;
       }).join('');
@@ -6367,6 +7003,7 @@
       document.getElementById('lastUpdatedDisplay').textContent = 'Last updated: ' + formatLastUpdated(state.lastUpdated);
 
       const coreNewsContent =
+        renderInContextMomentDemo() +
         renderBreakingSection() +
         renderNewslettersSection('coreNews', 'Editorial newsletters', 'Subscribe to the news products you want — independent of topic follows.') +
         renderBeatsSection();
@@ -6407,6 +7044,16 @@
         renderProductCommsSection('membership', 'Events & perks', 'Invitations, partner offers, and member-only access.');
 
       document.getElementById('mainContent').innerHTML =
+        (state.ui.productFilter === 'all' ? `
+          <div class="ambient-demo-banner">
+            <strong>Two layers, one preference graph.</strong> Ambient signals (habits, in-app prompts, audiences) write to the same store as explicit controls below. Try the <em>in-app moment</em> in Core News, confirm a send time in the passport, or undo Quiet hours.
+            <div class="ambient-demo-banner__actions">
+              <button type="button" class="btn btn--secondary btn--sm" data-scroll-to="in-context-moment">In-app moment</button>
+              <button type="button" class="btn btn--secondary btn--sm" data-scroll-to="ambientLayerBlock">Passport ambient layer</button>
+              <button type="button" class="btn btn--secondary btn--sm" data-scroll-to="product-coreNews">Morning Briefing card</button>
+            </div>
+          </div>
+        ` : '') +
         renderPortfolioNav() +
         renderPortfolioOverview() +
         renderRecommendations() +
@@ -6478,6 +7125,30 @@
           const key = e.target.dataset.nlCadence;
           state.newsletters[key].cadence = e.target.value;
           markDirty(`${NEWSLETTER_META[key].label} cadence: ${CADENCE_OPTIONS.find(o => o.value === e.target.value).label}`);
+          render();
+        });
+      });
+
+      document.querySelectorAll('[data-preferred-send]').forEach(el => {
+        el.addEventListener('change', e => {
+          const key = e.target.dataset.preferredSend;
+          const value = e.target.value;
+          if (value) {
+            state.ambient.preferredSendTimes[key] = value;
+            if (!state.ambient.dismissedSuggestionIds.includes('briefing_time')) {
+              state.ambient.dismissedSuggestionIds.push('briefing_time');
+            }
+            pushRecentlySetUp({
+              id: `${key}_time_set`,
+              label: `${NEWSLETTER_META[key].label} · ${formatTime12h(value)}`,
+              why: 'Set explicitly on the program card',
+              undoType: key === 'morningBriefing' ? 'briefingTime' : 'preferredSend'
+            });
+            markDirty(`${NEWSLETTER_META[key].label} delivery set to ${formatTime12h(value)}`);
+          } else {
+            delete state.ambient.preferredSendTimes[key];
+            markDirty(`${NEWSLETTER_META[key].label} delivery set to as published`);
+          }
           render();
         });
       });
@@ -6763,6 +7434,41 @@
         renderSummary();
         return;
       }
+      const acceptWhen = e.target.closest('[data-ambient-accept-when]');
+      if (acceptWhen) {
+        acceptAmbientSuggestion(acceptWhen.dataset.ambientAcceptWhen, acceptWhen.dataset.time);
+        return;
+      }
+      const accept = e.target.closest('[data-ambient-accept]');
+      if (accept) {
+        acceptAmbientSuggestion(accept.dataset.ambientAccept);
+        return;
+      }
+      const dismiss = e.target.closest('[data-ambient-dismiss]');
+      if (dismiss) {
+        dismissAmbientSuggestion(dismiss.dataset.ambientDismiss);
+        return;
+      }
+      const undo = e.target.closest('[data-ambient-undo]');
+      if (undo) {
+        undoAmbientSetup(undo.dataset.ambientUndo);
+        return;
+      }
+      const audience = e.target.closest('[data-ambient-audience]');
+      if (audience) {
+        state.ui.productFilter = audience.dataset.jumpFilter || 'all';
+        state.ui.commNavSection = audience.dataset.jumpFilter === 'all' ? 'global' : audience.dataset.jumpFilter;
+        render();
+        requestAnimationFrame(() => {
+          const el = document.getElementById(audience.dataset.jumpTarget);
+          if (el) {
+            el.classList.add('preference-highlight');
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => el.classList.remove('preference-highlight'), 2200);
+          }
+        });
+        return;
+      }
       const pill = e.target.closest('[data-activity-drilldown]');
       if (pill) {
         openActivityDrawer(pill.dataset.activityDrilldown);
@@ -6775,6 +7481,27 @@
       }
     });
     document.getElementById('mainContent').addEventListener('click', e => {
+      const scrollBtn = e.target.closest('[data-scroll-to]');
+      if (scrollBtn) {
+        const el = document.getElementById(scrollBtn.dataset.scrollTo);
+        if (el) {
+          el.classList.add('preference-highlight');
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => el.classList.remove('preference-highlight'), 2200);
+        }
+        return;
+      }
+      const inContext = e.target.closest('[data-in-context-briefing]');
+      if (inContext) {
+        acceptAmbientSuggestion('briefing_time', inContext.dataset.inContextBriefing);
+        render();
+        return;
+      }
+      if (e.target.closest('[data-in-context-dismiss]')) {
+        dismissAmbientSuggestion('briefing_time');
+        render();
+        return;
+      }
       const filterBtn = e.target.closest('[data-product-filter]');
       if (filterBtn) {
         state.ui.productFilter = filterBtn.dataset.productFilter;
