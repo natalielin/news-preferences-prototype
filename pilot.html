@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your updates — Pilot</title>
+  <style>
+
+    /* Scoop / Ink tooling patterns (Publishing design system) */
+    :root {
+      --bg: #f0f0f0;
+      --surface: #ffffff;
+      --ink: #121212;
+      --muted: #666666;
+      --line: #dddddd;
+      --line-strong: #bbbbbb;
+      --accent: #326891;
+      --accent-hover: #285578;
+      --accent-soft: #e8f0f6;
+      --warm: #b85c00;
+      --warm-soft: #fff4e5;
+      --ok: #267c30;
+      --ok-soft: #e8f5e9;
+      --danger: #d0021b;
+      --danger-soft: #fde8ea;
+      --radius: 2px;
+      --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "SFMono-Regular", Menlo, Consolas, monospace;
+      --space: 8px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      font-size: 13px;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.4;
+      min-height: 100vh;
+    }
+    .chrome {
+      background: #2c2c2c;
+      color: #f0f0f0;
+      padding: 0 12px;
+      min-height: 44px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .chrome p {
+      margin: 0;
+      font-size: 12px;
+      color: #b0b0b0;
+      max-width: 40rem;
+      padding: 10px 0;
+    }
+    .chrome strong { color: #fff; font-weight: 600; }
+    .view-toggle {
+      display: inline-flex;
+      background: #1f1f1f;
+      border: 1px solid #444;
+      border-radius: var(--radius);
+      padding: 2px;
+      gap: 2px;
+    }
+    .view-toggle button {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: #b0b0b0;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+    .view-toggle button.is-on {
+      background: var(--accent);
+      color: #fff;
+    }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 72px; }
+    .wrap--internal { max-width: 880px; }
+    .view { display: none; }
+    .view.is-active { display: block; }
+
+    .brand {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 6px;
+    }
+    h1 {
+      font-family: var(--sans);
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 6px;
+      letter-spacing: -.01em;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    .lede { color: var(--muted); font-size: 13px; margin: 0 0 16px; max-width: 40rem; }
+
+    .snapshot {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .snapshot span {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .snapshot span em {
+      font-style: normal;
+      color: var(--ok);
+      font-weight: 700;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin: -.15rem 0 10px;
+    }
+    .section-note strong { color: var(--ink); font-weight: 600; }
+
+    .preview-stack { display: grid; gap: 8px; margin-bottom: 8px; }
+    .drawer {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .drawer-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      background: #fafafa;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: left;
+    }
+    .drawer-toggle:hover { background: #f3f3f3; }
+    .drawer-toggle strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .drawer-toggle span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .drawer-chevron {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 4px 8px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .drawer-body {
+      display: none;
+      border-top: 1px solid var(--line);
+    }
+    .drawer.is-open .drawer-body { display: block; }
+    .compact-row { border-bottom: 1px solid var(--line); }
+    .compact-row:last-child { border-bottom: none; }
+    .compact-main {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .compact-main:hover { background: #f7f7f7; }
+    .compact-row.is-expanded .compact-main { background: var(--accent-soft); }
+    .compact-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin: 0 0 2px;
+    }
+    .compact-meta { font-size: 11px; color: var(--muted); }
+    .compact-meta .is-on { color: var(--ok); font-weight: 700; }
+    .compact-meta .is-warn { color: var(--warm); font-weight: 700; }
+    .compact-cta {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .compact-panel {
+      display: none;
+      padding: 0 12px 10px;
+      background: #fafafa;
+      border-top: 1px solid var(--line);
+    }
+    .compact-row.is-expanded .compact-panel { display: block; }
+    .find-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .find-row input {
+      flex: 1;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 7px 10px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+    }
+    .find-row input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .sub-list { display: grid; gap: 8px; margin-bottom: 20px; }
+    .sub-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .sub-card:hover { border-color: var(--line-strong); }
+    .sub-card.is-expanded { border-color: var(--accent); }
+    .sub-card.is-pilot {
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      color: var(--ink);
+    }
+    .sub-card.is-pilot .sub-blurb,
+    .sub-card.is-pilot .sub-meta { color: var(--muted); }
+    .sub-card.is-push {
+      border-left: 3px solid #444;
+      background: var(--surface);
+      color: var(--ink);
+    }
+    .sub-card.is-push .sub-blurb,
+    .sub-card.is-push .sub-meta { color: var(--muted); }
+
+    .sub-main {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: start;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .sub-kicker {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 4px;
+    }
+    .sub-title {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0 0 4px;
+      letter-spacing: -.01em;
+    }
+    .sub-blurb { margin: 0 0 6px; font-size: 12px; color: var(--muted); }
+    .sub-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+    .sub-meta span {
+      padding: 2px 6px;
+      border-radius: var(--radius);
+      background: #f5f5f5;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .sub-card.is-pilot .sub-meta span,
+    .sub-card.is-push .sub-meta span {
+      background: #f5f5f5;
+      border-color: var(--line);
+    }
+    .sub-meta .is-on { color: var(--ok); border-color: #b7d7bb; background: var(--ok-soft); }
+    .sub-card.is-pilot .sub-meta .is-on,
+    .sub-card.is-push .sub-meta .is-on {
+      color: var(--ok);
+      background: var(--ok-soft);
+      border-color: #b7d7bb;
+    }
+    .sub-cta {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--accent);
+      background: #fff;
+      color: var(--accent);
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    .sub-card.is-pilot .sub-cta,
+    .sub-card.is-push .sub-cta {
+      background: #fff;
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .sub-panel {
+      display: none;
+      padding: 0 12px 12px;
+      border-top: 1px solid var(--line);
+      background: #fafafa;
+    }
+    .sub-card.is-expanded .sub-panel { display: block; }
+    .sub-card.is-pilot .sub-panel,
+    .sub-card.is-push .sub-panel { border-top-color: var(--line); }
+
+    .choice {
+      display: block;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      margin: 8px 0 0;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .choice:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .sub-card.is-pilot .choice,
+    .sub-card.is-push .choice {
+      background: #fff;
+      border-color: var(--line);
+      color: var(--ink);
+    }
+    .choice strong { display: block; font-size: 13px; margin-bottom: 2px; font-weight: 600; }
+    .choice span { font-size: 12px; color: var(--muted); }
+    .choice.is-current { border-color: var(--accent); background: var(--accent-soft); outline: none; }
+    .sub-card.is-pilot .choice.is-current,
+    .sub-card.is-push .choice.is-current {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      outline: none;
+    }
+    .choice.is-danger { color: var(--danger); }
+    .sub-card.is-pilot .choice.is-danger,
+    .sub-card.is-push .choice.is-danger { color: var(--danger); }
+    .choice:disabled { opacity: .45; cursor: not-allowed; }
+
+    .sheet {
+      display: none;
+      margin-top: 6px;
+      padding: 10px;
+      border-radius: var(--radius);
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .sheet.is-open { display: block; }
+    .field-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 6px;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+    .chip {
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      color: var(--ink);
+    }
+    .chip.is-on {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+    .hint { font-size: 12px; color: var(--muted); margin: 0 0 8px; }
+    .row { display: flex; flex-wrap: wrap; gap: 6px; }
+    button.primary, button.ghost, button.danger-btn {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: var(--radius);
+      border: 1px solid var(--line-strong);
+      padding: 6px 12px;
+      cursor: pointer;
+      background: #fff;
+      color: var(--ink);
+    }
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    button.ghost { background: #fff; }
+    button.danger-btn {
+      color: var(--danger);
+      border-color: #e8a0a8;
+      background: #fff;
+    }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+
+    .discover-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 8px 0 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+    .discover-head h2 {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0;
+    }
+    .discover-head p { margin: 0; font-size: 12px; color: var(--muted); }
+    .discover-grid { display: grid; gap: 6px; }
+    .discover-card {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 8px;
+      cursor: pointer;
+    }
+    .discover-card:hover { border-color: var(--line-strong); background: #fafafa; }
+    .discover-card.is-open { border-color: var(--accent); background: var(--accent-soft); }
+    .discover-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: flex-end;
+      padding: 4px;
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+    .discover-thumb--climate { background: #326891; }
+    .discover-thumb--local { background: #555555; }
+    .discover-copy strong { display: block; font-size: 13px; margin-bottom: 2px; font-weight: 600; }
+    .discover-copy span { font-size: 12px; color: var(--muted); }
+    .discover-cta {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .discover-panel {
+      display: none;
+      margin-top: -2px;
+      margin-bottom: 6px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    .discover-panel.is-open { display: block; }
+
+    .internal-note {
+      font-size: 12px;
+      color: var(--muted);
+      border-left: 3px solid var(--accent);
+      padding: 8px 10px;
+      margin: 0 0 12px;
+      background: var(--accent-soft);
+    }
+    .internal-note strong { color: var(--ink); }
+    .callout {
+      background: var(--warm-soft);
+      border: 1px solid #e8d0a8;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .callout strong { color: var(--ink); display: block; margin-bottom: 4px; }
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 2px 8px;
+      background: #fafafa;
+      font-size: 11px;
+    }
+    .code {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      margin: 0 0 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px solid #333;
+    }
+    .preview {
+      font-size: 12px;
+      background: #fafafa;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      margin: 8px 0;
+      color: var(--muted);
+    }
+    .preview strong { color: var(--ink); display: block; margin-bottom: 2px; font-weight: 600; }
+    .log {
+      font-size: 11px;
+      font-family: var(--mono);
+      max-height: 180px;
+      overflow: auto;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      margin: 0;
+      border: 1px solid #333;
+    }
+    .log div { margin-bottom: 3px; }
+    .log .ts { color: #888; }
+    .kpi {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .kpi div {
+      background: #fafafa;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .kpi strong {
+      display: block;
+      font-size: 16px;
+      color: var(--ink);
+      font-weight: 700;
+      font-family: var(--sans);
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .card h2 {
+      font-family: var(--sans);
+      font-size: 14px;
+      margin: 0 0 4px;
+      font-weight: 700;
+    }
+    .card > p.sub { margin: 0 0 8px; font-size: 12px; color: var(--muted); }
+    .channel-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+    .channel-tabs button {
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      padding: 5px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+    .channel-tabs button.is-on {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .lookup {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 560px) {
+      .lookup { grid-template-columns: 1fr; }
+    }
+    .lookup select, .lookup input {
+      font-family: inherit;
+      font-size: 13px;
+      padding: 7px 10px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+    }
+    .lookup select:focus, .lookup input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .key-grid {
+      display: grid;
+      gap: 4px;
+      margin: 6px 0 10px;
+    }
+    .key-row {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 8px;
+      background: #fafafa;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      font-size: 12px;
+    }
+    .key-row .kind {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .key-row code {
+      font-family: var(--mono);
+      font-size: 11px;
+      word-break: break-all;
+    }
+    .key-row .status {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--ok);
+    }
+    .key-row .status.is-stale { color: var(--warm); }
+    .key-row .status.is-off { color: var(--danger); }
+    .token-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin: 4px 0 8px;
+      border: 1px solid var(--line);
+    }
+    .token-table th {
+      text-align: left;
+      font-size: 10px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--line);
+      background: #fafafa;
+      font-weight: 700;
+    }
+    .token-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-family: var(--mono);
+      word-break: break-all;
+      background: #fff;
+    }
+    .token-table tr:last-child td { border-bottom: none; }
+    .token-table td.sans {
+      font-family: var(--sans);
+      font-size: 12px;
+    }
+    .feed {
+      max-height: 260px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+    .feed-item {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: 8px;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+    }
+    .feed-item:last-child { border-bottom: none; }
+    .feed-item .when {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 700;
+      font-family: var(--mono);
+    }
+    .feed-item strong { display: block; margin-bottom: 1px; font-weight: 600; }
+    .feed-item .meta { color: var(--muted); font-size: 11px; }
+    .feed-item .badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: 1px 5px;
+      border-radius: var(--radius);
+      margin-left: 6px;
+      vertical-align: middle;
+      border: 1px solid transparent;
+    }
+    .badge--ok { background: var(--ok-soft); color: var(--ok); border-color: #b7d7bb; }
+    .badge--block { background: var(--danger-soft); color: var(--danger); border-color: #e8a0a8; }
+    .badge--pref { background: var(--accent-soft); color: var(--accent); border-color: #b8c9db; }
+
+    .savebar {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      background: #2c2c2c;
+      color: #f0f0f0;
+      padding: 8px 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      z-index: 20;
+      border-top: 1px solid #1a1a1a;
+    }
+    .savebar.is-visible { display: flex; }
+    .savebar p { margin: 0; font-size: 12px; }
+    .savebar button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .savebar button.ghost {
+      color: #f0f0f0;
+      border-color: #666;
+      background: transparent;
+    }
+    .toast {
+      position: fixed;
+      bottom: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ink);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .15s;
+      z-index: 30;
+      max-width: 90vw;
+      text-align: center;
+    }
+    .toast.is-visible { opacity: 1; }
+    .beta-tag {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 1px 5px;
+      border-radius: var(--radius);
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .text-grid {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .text-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+    }
+    .text-row strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .text-row span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .text-row .door {
+      font-size: 11px;
+      color: var(--warm);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome">
+    <p><strong>Pilot</strong> · Scoop / Ink · Reader vs Internal · Text channels = Beta painted door</p>
+    <div class="view-toggle" role="tablist" aria-label="Prototype view">
+      <button type="button" class="is-on" data-view="reader" role="tab" aria-selected="true">Reader</button>
+      <button type="button" data-view="internal" role="tab" aria-selected="false">Internal</button>
+    </div>
+  </div>
+
+  <!-- ===================== READER ===================== -->
+  <div class="view is-active" id="view-reader">
+    <div class="wrap">
+      <p class="brand">The New York Times · Account</p>
+      <h1>Your updates</h1>
+      <p class="lede">When you have a long list, we keep a few front and center — and tuck the rest into a drawer so nothing feels like an endless stack.</p>
+
+      <div class="snapshot" id="snapshot"></div>
+
+      <p class="section-label">Push notifications</p>
+      <p class="section-note">One general opt-in. Not interest-based by topic.</p>
+      <div class="sub-list" id="pushList"></div>
+
+      <p class="section-label">Text messages <span class="beta-tag">Beta</span></p>
+      <p class="section-note">
+        SMS · MMS · WhatsApp · RCS — painted door. Opting in records interest only;
+        we are <strong>not</strong> sending texts at scale yet. Also checks how 3+ channels sit with email and push.
+      </p>
+      <div class="text-grid" id="textList"></div>
+
+      <p class="section-label">Email newsletters</p>
+      <p class="section-note"><strong>Pattern for 10+:</strong> 2–3 open for preview (pilot, recent, needs attention). Everything else nests in a closed drawer as compact rows — expand one at a time to manage.</p>
+
+      <div class="find-row">
+        <input type="search" id="emailSearch" placeholder="Find a newsletter" autocomplete="off">
+      </div>
+
+      <div class="preview-stack" id="previewStack"></div>
+      <div class="drawer" id="moreDrawer">
+        <button type="button" class="drawer-toggle" data-act="toggle-drawer" aria-expanded="false">
+          <div>
+            <strong id="drawerTitle">More email newsletters</strong>
+            <span id="drawerSub">Compact list — tap a row to manage</span>
+          </div>
+          <span class="drawer-chevron" id="drawerChevron">Show</span>
+        </button>
+        <div class="drawer-body" id="drawerBody"></div>
+      </div>
+
+      <div class="discover-head">
+        <h2>Discover more</h2>
+        <p>Email newsletters you can add</p>
+      </div>
+      <div class="discover-grid" id="discoverGrid"></div>
+    </div>
+  </div>
+
+  <!-- ===================== INTERNAL ===================== -->
+  <div class="view" id="view-internal">
+    <div class="wrap wrap--internal">
+      <p class="brand">Scoop · Ops / Support</p>
+      <h1>Identity, tokens &amp; send gate</h1>
+
+      <section class="card">
+        <h2>Lookup user by contact key</h2>
+        <p class="sub">Any of email · phone · push token resolves to the same reader graph.</p>
+        <div class="lookup">
+          <select id="lookupKind" aria-label="Contact key type">
+            <option value="email">Email</option>
+            <option value="phone">Phone</option>
+            <option value="push_token">Push token</option>
+          </select>
+          <input id="lookupValue" type="text" placeholder="jordan.lee@example.com" autocomplete="off">
+          <button type="button" class="primary" id="lookupBtn">Look up</button>
+        </div>
+        <p class="hint" id="lookupHint">Demo keys prefilled — try switching type or paste a token prefix.</p>
+        <div class="key-grid" id="contactKeys"></div>
+      </section>
+
+      <section class="card">
+        <h2>Push tokens</h2>
+        <p class="sub">General push permission is one preference; delivery still needs a valid device token. Interest-based push remains out of pilot.</p>
+        <div class="kpi" style="margin-bottom:.65rem">
+          <div><strong id="pushPrefStatus">—</strong>push_general pref</div>
+          <div><strong id="tokenActiveCount">—</strong>Active tokens</div>
+          <div><strong id="tokenStaleCount">—</strong>Stale / revoked</div>
+        </div>
+        <table class="token-table" id="tokenTable">
+          <thead>
+            <tr>
+              <th>Device</th>
+              <th>Platform</th>
+              <th>Token</th>
+              <th>Status</th>
+              <th>Last seen</th>
+            </tr>
+          </thead>
+          <tbody id="tokenBody"></tbody>
+        </table>
+        <div class="actions">
+          <button type="button" id="revokeTokenBtn">Revoke primary token</button>
+          <button type="button" id="rotateTokenBtn">Simulate token rotate</button>
+        </div>
+        <p class="hint">Send gate: push ALLOW only if <code>push_general</code> is on <em>and</em> at least one active token exists.</p>
+      </section>
+
+      <section class="card">
+        <h2>Touchpoint / messaging delivered feed</h2>
+        <p class="sub">Per unique reader — deliveries + suppressions + preference changes. Support uses this to verify control reliability.</p>
+        <div class="actions">
+          <button type="button" class="primary" id="trySend">Try send (selected record)</button>
+          <button type="button" id="markMeaningful">Toggle meaningful (Politics email)</button>
+          <button type="button" id="simulateDelivered">Simulate delivered</button>
+        </div>
+        <div class="preview" id="sendResult"><strong>Ready</strong>No send attempted yet.</div>
+        <div class="feed" id="touchFeed"></div>
+      </section>
+
+      <p class="internal-note">
+        <strong>10+ reader IA:</strong> Preview rail (~3) + nested drawer.
+        <strong>Text beta:</strong> SMS/MMS/WhatsApp/RCS opt-ins are painted door — send gate always BLOCKS.
+      </p>
+
+      <div class="channel-tabs" id="recordTabs"></div>
+
+      <section class="card">
+        <h2>Preference record</h2>
+        <p class="sub">Selected program / channel</p>
+        <div class="meta-row">
+          <span class="pill">reader: <strong id="readerIdPill">jordan-lee</strong></span>
+          <span class="pill" id="recordMeta">—</span>
+        </div>
+        <pre class="code" id="prefJson"></pre>
+        <div class="kpi">
+          <div><strong id="kpiState">—</strong>Status</div>
+          <div><strong id="kpiPermission">—</strong>Last send check</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Preference audit (Epic 7-shaped)</h2>
+        <p class="sub">Save / discard / control changes — distinct from the delivery feed above.</p>
+        <div class="log" id="auditLog"></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="savebar" id="saveBar">
+    <p>Unsaved preference change</p>
+    <button type="button" class="ghost" id="discardBtn">Discard</button>
+    <button type="button" class="primary" id="saveBtn">Save</button>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const EMAILS = [
+      {
+        id: 'politics_what_changed',
+        title: 'Politics: What changed',
+        blurb: 'Editor-selected updates when there’s a consequential development — not a daily drip.',
+        cadence: 'When it matters',
+        pilot: true,
+        preview: true,
+        kicker: 'Pilot · Test #1'
+      },
+      {
+        id: 'morning_briefing',
+        title: 'The Morning',
+        blurb: 'The day’s most important stories, curated for your inbox.',
+        cadence: 'Weekday mornings',
+        preview: true
+      },
+      {
+        id: 'cooking',
+        title: 'NYT Cooking',
+        blurb: 'Recipes and tips — you paused this last month.',
+        cadence: 'Few times a week',
+        preview: true,
+        startStatus: 'paused',
+        startPauseDays: 12
+      },
+      {
+        id: 'evening_digest',
+        title: 'Evening Briefing',
+        blurb: 'A short wrap of the day’s essential reporting.',
+        cadence: 'Daily · late afternoon'
+      },
+      {
+        id: 'athletic',
+        title: 'The Athletic',
+        blurb: 'Team coverage and analysis for fans who want depth.',
+        cadence: 'Daily'
+      },
+      {
+        id: 'wirecutter',
+        title: 'Wirecutter',
+        blurb: 'Product recommendations when something worth buying changes.',
+        cadence: 'Weekly'
+      },
+      {
+        id: 'games',
+        title: 'Wordle & Games',
+        blurb: 'Reminders and streaks for your daily puzzles.',
+        cadence: 'Daily'
+      },
+      {
+        id: 'books',
+        title: 'Books',
+        blurb: 'Reviews, author news, and what to read next.',
+        cadence: 'Weekly'
+      },
+      {
+        id: 'well',
+        title: 'Well',
+        blurb: 'Health and fitness reporting you can use.',
+        cadence: 'Weekdays'
+      },
+      {
+        id: 'markets',
+        title: 'DealBook',
+        blurb: 'Business and policy moves that shape the day.',
+        cadence: 'Weekday mornings',
+        startStatus: 'reduced',
+        startCadence: 'weekly'
+      },
+      {
+        id: 'magazine',
+        title: 'The Magazine',
+        blurb: 'Longform highlights from the Sunday Magazine.',
+        cadence: 'Weekly'
+      }
+    ];
+
+    const DISCOVER = [
+      {
+        id: 'climate_newsletter',
+        title: 'Climate Forward',
+        blurb: 'The week’s consequential climate developments.',
+        thumbClass: 'discover-thumb--climate',
+        thumbLabel: 'Climate'
+      },
+      {
+        id: 'local_newsletter',
+        title: 'New York Today',
+        blurb: 'What matters in the city before you head out.',
+        thumbClass: 'discover-thumb--local',
+        thumbLabel: 'Local'
+      }
+    ];
+
+    function blankPref(status) {
+      return { status, reducedCadence: null, pausedUntil: null, optInExpires: null };
+    }
+
+    const DEMO_USER = {
+      readerId: 'jordan-lee',
+      displayName: 'Jordan Lee',
+      contacts: {
+        email: 'jordan.lee@example.com',
+        phone: '+1 (917) 555-0142',
+        // Opaque demo tokens (not real APNs/FCM values)
+        pushTokens: [
+          {
+            id: 'tok_ios_1',
+            device: 'iPhone 15 Pro',
+            platform: 'apns',
+            token: 'apns:f8c3a91b2e7d4c0f…91e2',
+            fullPrefix: 'apns:f8c3a91b2e7d4c0f',
+            status: 'active',
+            lastSeen: '2026-10-13T18:12:00Z'
+          },
+          {
+            id: 'tok_ios_2',
+            device: 'iPad Air',
+            platform: 'apns',
+            token: 'apns:22bb90e1aa…c4d1',
+            fullPrefix: 'apns:22bb90e1aa',
+            status: 'stale',
+            lastSeen: '2026-08-02T09:40:00Z'
+          },
+          {
+            id: 'tok_and_1',
+            device: 'Pixel 8',
+            platform: 'fcm',
+            token: 'fcm:d9e1c0…7a3f',
+            fullPrefix: 'fcm:d9e1c0',
+            status: 'revoked',
+            lastSeen: '2026-06-11T14:05:00Z'
+          }
+        ]
+      }
+    };
+
+    function createState() {
+      const emails = {};
+      EMAILS.forEach(e => {
+        const pref = blankPref(e.startStatus || 'active');
+        if (e.startCadence) pref.reducedCadence = e.startCadence;
+        if (e.startStatus === 'paused' && e.startPauseDays) {
+          const d = new Date();
+          d.setDate(d.getDate() + e.startPauseDays);
+          pref.pausedUntil = d.toISOString();
+        }
+        emails[e.id] = pref;
+      });
+      return {
+        readerId: DEMO_USER.readerId,
+        contacts: structuredClone(DEMO_USER.contacts),
+        emails,
+        pushGeneral: blankPref('active'),
+        // Beta painted door — intent only; no scaled sends
+        textChannels: {
+          sms: blankPref('stopped'),
+          mms: blankPref('stopped'),
+          whatsapp: blankPref('stopped'),
+          rcs: blankPref('stopped')
+        },
+        discover: {},
+        meaningfulUpdateReady: true,
+        dirty: false,
+        lookedUp: true
+      };
+    }
+
+    const TEXT_CHANNELS = [
+      { id: 'sms', title: 'SMS', blurb: 'Short text messages to your phone number on file.' },
+      { id: 'mms', title: 'MMS', blurb: 'Texts that can include images or richer media.' },
+      { id: 'whatsapp', title: 'WhatsApp', blurb: 'Messages via WhatsApp on your verified number.' },
+      { id: 'rcs', title: 'RCS', blurb: 'Richer chat-style messages where your carrier supports them.' }
+    ];
+
+    let state = createState();
+    let saved = structuredClone(state);
+    let expandedId = 'politics_what_changed';
+    let drawerOpen = false;
+    let emailQuery = '';
+    let openDiscover = null;
+    let selectedRecord = 'email:politics_what_changed';
+    let draftDays = 7;
+    let draftCadence = 'major_only';
+    let draftPauseDays = 7;
+    const audit = [];
+    /** Touchpoint feed: deliveries, suppressions, pref events — Support/ops */
+    let touchpoints = [
+      { ts: 'Oct 13, 2:10 PM', kind: 'delivered', title: 'The Morning', meta: 'email · jordan.lee@example.com', badge: 'ok' },
+      { ts: 'Oct 13, 11:02 AM', kind: 'delivered', title: 'Breaking alert', meta: 'push · apns:f8c3…91e2 · iPhone 15 Pro', badge: 'ok' },
+      { ts: 'Oct 12, 6:40 PM', kind: 'suppressed', title: 'Politics: What changed', meta: 'email · no meaningful development', badge: 'block' },
+      { ts: 'Oct 12, 9:15 AM', kind: 'delivered', title: 'Evening Briefing', meta: 'email · jordan.lee@example.com', badge: 'ok' },
+      { ts: 'Oct 11, 4:22 PM', kind: 'pref', title: 'Paused NYT Cooking', meta: 'preference change · email', badge: 'pref' },
+      { ts: 'Oct 10, 8:01 AM', kind: 'delivered', title: 'DealBook', meta: 'email · reduced weekly max', badge: 'ok' },
+      { ts: 'Oct 9, 7:55 AM', kind: 'suppressed', title: 'Push promo burst', meta: 'push · push_general active but token stale on iPad', badge: 'block' }
+    ];
+
+    function nowLabel() {
+      return new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+
+    function log(msg) {
+      const ts = nowLabel();
+      audit.unshift({ ts, msg });
+      renderLog();
+    }
+
+    function addTouchpoint(item) {
+      touchpoints.unshift({ ts: nowLabel(), ...item });
+      renderTouchFeed();
+    }
+
+    function activePushTokens() {
+      return state.contacts.pushTokens.filter(t => t.status === 'active');
+    }
+
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('is-visible');
+      setTimeout(() => el.classList.remove('is-visible'), 2800);
+    }
+
+    function addDays(n) {
+      const d = new Date();
+      d.setDate(d.getDate() + n);
+      d.setHours(23, 59, 59, 0);
+      return d;
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function effectiveStatus(pref) {
+      if (!pref) return 'stopped';
+      const now = Date.now();
+      if (pref.status === 'stopped') return 'stopped';
+      if (pref.status === 'paused' && pref.pausedUntil) {
+        if (now < new Date(pref.pausedUntil).getTime()) return 'paused';
+        pref.status = pref.reducedCadence ? 'reduced' : 'active';
+        pref.pausedUntil = null;
+      }
+      if (pref.status === 'timelimited' && pref.optInExpires) {
+        if (now > new Date(pref.optInExpires).getTime()) {
+          pref.status = 'stopped';
+          return 'stopped';
+        }
+        return 'timelimited';
+      }
+      if (pref.status === 'reduced') return 'reduced';
+      return pref.status;
+    }
+
+    function statusLabel(s) {
+      return ({ active: 'On', reduced: 'Fewer', paused: 'Paused', timelimited: 'Limited', stopped: 'Off' })[s] || s;
+    }
+
+    function getPref(kind, id) {
+      if (kind === 'push') return state.pushGeneral;
+      if (kind === 'text') return state.textChannels[id];
+      if (kind === 'discover') return state.discover[id];
+      return state.emails[id];
+    }
+
+    function countTextOptIns() {
+      return TEXT_CHANNELS.filter(t => effectiveStatus(state.textChannels[t.id]) !== 'stopped').length;
+    }
+
+    function markDirty(msg) {
+      state.dirty = true;
+      document.getElementById('saveBar').classList.add('is-visible');
+      if (msg) log(msg);
+      renderAll();
+    }
+
+    function countActiveEmails() {
+      return Object.values(state.emails).filter(p => effectiveStatus(p) !== 'stopped').length
+        + Object.values(state.discover).filter(p => effectiveStatus(p) !== 'stopped').length;
+    }
+
+    function renderSnapshot() {
+      const emails = countActiveEmails();
+      const push = effectiveStatus(state.pushGeneral);
+      const textN = countTextOptIns();
+      document.getElementById('snapshot').innerHTML = `
+        <span><em>${emails}</em> email newsletter${emails === 1 ? '' : 's'}</span>
+        <span>${push === 'stopped' ? 'Push off' : push === 'paused' ? 'Push paused' : '<em>Push</em> on'}</span>
+        <span>${textN ? `<em>${textN}</em> text channel${textN === 1 ? '' : 's'} (beta)` : 'Text · beta · none yet'}</span>
+      `;
+    }
+
+    function renderTextChannels() {
+      document.getElementById('textList').innerHTML = TEXT_CHANNELS.map(ch => {
+        const pref = state.textChannels[ch.id];
+        const on = effectiveStatus(pref) !== 'stopped';
+        return `
+          <div class="text-row">
+            <div>
+              <strong>${ch.title}<span class="beta-tag">Beta</span></strong>
+              <span>${ch.blurb}</span>
+              <p class="door">${on ? 'Interest recorded — no texts sending yet (painted door).' : 'Off · tap to register interest'}</p>
+            </div>
+            <button type="button" class="${on ? 'ghost' : 'primary'}" data-act="text-toggle" data-id="${ch.id}">
+              ${on ? 'Turn off' : 'Opt in'}
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function controlsHtml(kind, id, pref) {
+      const status = effectiveStatus(pref);
+      const isPush = kind === 'push';
+      const showPilotExtras = kind === 'email' && id === 'politics_what_changed';
+      return `
+        <button type="button" class="choice ${status === 'reduced' ? 'is-current' : ''}" data-act="sheet" data-sheet="fewer" data-kind="${kind}" data-id="${id}">
+          <strong>Get fewer</strong>
+          <span>${isPush ? 'Major alerts only' : 'Major developments only, or weekly max'}</span>
+        </button>
+        <div class="sheet" data-sheet-panel="fewer" data-kind="${kind}" data-id="${id}">
+          <p class="field-label">How often</p>
+          <div class="chips">
+            <button type="button" class="chip is-on" data-set-cadence="major_only">Major only</button>
+            ${isPush ? '' : '<button type="button" class="chip" data-set-cadence="weekly">Weekly max</button>'}
+          </div>
+          <div class="row">
+            <button type="button" class="primary" data-act="apply-fewer" data-kind="${kind}" data-id="${id}">Save</button>
+            <button type="button" class="ghost" data-act="close-sheet">Cancel</button>
+          </div>
+        </div>
+
+        <button type="button" class="choice ${status === 'paused' ? 'is-current' : ''}" data-act="sheet" data-sheet="pause" data-kind="${kind}" data-id="${id}">
+          <strong>Pause</strong>
+          <span>Take a break. Resume anytime.</span>
+        </button>
+        <div class="sheet" data-sheet-panel="pause" data-kind="${kind}" data-id="${id}">
+          <div class="chips">
+            <button type="button" class="chip is-on" data-set-pause="7">1 week</button>
+            <button type="button" class="chip" data-set-pause="30">30 days</button>
+          </div>
+          <div class="row">
+            <button type="button" class="primary" data-act="apply-pause" data-kind="${kind}" data-id="${id}">Pause</button>
+            <button type="button" class="ghost" data-act="close-sheet">Cancel</button>
+          </div>
+        </div>
+
+        ${showPilotExtras ? `
+        <button type="button" class="choice ${status === 'timelimited' ? 'is-current' : ''}" data-act="sheet" data-sheet="temp" data-kind="${kind}" data-id="${id}">
+          <strong>Limited-time opt-in</strong>
+          <span>Keep this for 7–30 days, then auto-stop</span>
+        </button>
+        <div class="sheet" data-sheet-panel="temp" data-kind="${kind}" data-id="${id}">
+          <div class="chips">
+            <button type="button" class="chip is-on" data-set-days="7">7 days</button>
+            <button type="button" class="chip" data-set-days="14">14 days</button>
+            <button type="button" class="chip" data-set-days="30">30 days</button>
+          </div>
+          <div class="row">
+            <button type="button" class="primary" data-act="apply-temp" data-kind="${kind}" data-id="${id}">Confirm</button>
+            <button type="button" class="ghost" data-act="close-sheet">Cancel</button>
+          </div>
+        </div>` : ''}
+
+        <button type="button" class="choice" data-act="resume" data-kind="${kind}" data-id="${id}" ${status !== 'paused' ? 'disabled' : ''}>
+          <strong>Resume</strong>
+          <span>Turn this back on now</span>
+        </button>
+
+        <button type="button" class="choice is-danger ${status === 'stopped' ? 'is-current' : ''}" data-act="sheet" data-sheet="stop" data-kind="${kind}" data-id="${id}">
+          <strong>${isPush ? 'Turn off push' : 'Stop this newsletter'}</strong>
+          <span>${isPush ? 'Stops general app alerts. Email newsletters are unchanged.' : 'Doesn’t affect your other emails or push.'}</span>
+        </button>
+        <div class="sheet" data-sheet-panel="stop" data-kind="${kind}" data-id="${id}">
+          <p class="hint">${isPush
+            ? 'This is general push only — not topic-by-topic. Interest-based push is not part of this pilot.'
+            : 'You can re-subscribe later from Discover or Account.'}</p>
+          <div class="row">
+            <button type="button" class="danger-btn" data-act="apply-stop" data-kind="${kind}" data-id="${id}">Confirm stop</button>
+            <button type="button" class="ghost" data-act="close-sheet">Cancel</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function matchesQuery(item) {
+      if (!emailQuery) return true;
+      const q = emailQuery.toLowerCase();
+      return item.title.toLowerCase().includes(q) || item.blurb.toLowerCase().includes(q);
+    }
+
+    function previewItems() {
+      // Preview rail: pilot + attention states + flagged preview — cap at 3
+      const withStatus = EMAILS.map(e => ({ ...e, status: effectiveStatus(state.emails[e.id]) }));
+      const attention = withStatus.filter(e => e.status === 'paused' || e.status === 'reduced');
+      const pilot = withStatus.filter(e => e.pilot);
+      const flagged = withStatus.filter(e => e.preview && !e.pilot && e.status === 'active');
+      const picked = [];
+      const seen = new Set();
+      [...pilot, ...attention, ...flagged, ...withStatus].forEach(e => {
+        if (picked.length >= 3 || seen.has(e.id) || !matchesQuery(e)) return;
+        // When searching, don't force preview rail — search shows all in drawer-like list
+        if (emailQuery && !e.pilot && e.status === 'active' && !e.preview) return;
+        picked.push(e);
+        seen.add(e.id);
+      });
+      if (emailQuery) {
+        return withStatus.filter(matchesQuery).slice(0, 3);
+      }
+      return picked;
+    }
+
+    function drawerItems(previewIds) {
+      return EMAILS.filter(e => !previewIds.has(e.id) && matchesQuery(e));
+    }
+
+    function richCardHtml(item) {
+      const pref = state.emails[item.id];
+      const status = effectiveStatus(pref);
+      const expanded = expandedId === item.id;
+      return `
+        <article class="sub-card ${item.pilot ? 'is-pilot' : ''} ${expanded ? 'is-expanded' : ''}">
+          <button type="button" class="sub-main" data-act="expand" data-id="${item.id}">
+            <div>
+              ${item.kicker ? `<p class="sub-kicker">${item.kicker}</p>` : ''}
+              <h2 class="sub-title">${item.title}</h2>
+              <p class="sub-blurb">${item.blurb}</p>
+              <div class="sub-meta">
+                <span>Email</span>
+                <span>${item.cadence}</span>
+                <span class="${status !== 'stopped' ? 'is-on' : ''}">${statusLabel(status)}</span>
+              </div>
+            </div>
+            <span class="sub-cta">${expanded ? 'Close' : 'Manage'}</span>
+          </button>
+          <div class="sub-panel">${controlsHtml('email', item.id, pref)}</div>
+        </article>
+      `;
+    }
+
+    function compactRowHtml(item) {
+      const pref = state.emails[item.id];
+      const status = effectiveStatus(pref);
+      const expanded = expandedId === item.id;
+      const statusClass = status === 'paused' || status === 'reduced' ? 'is-warn' : status !== 'stopped' ? 'is-on' : '';
+      return `
+        <div class="compact-row ${expanded ? 'is-expanded' : ''}">
+          <button type="button" class="compact-main" data-act="expand" data-id="${item.id}">
+            <div>
+              <p class="compact-title">${item.title}</p>
+              <p class="compact-meta">${item.cadence} · <span class="${statusClass}">${statusLabel(status)}</span></p>
+            </div>
+            <span class="compact-cta">${expanded ? 'Close' : 'Manage'}</span>
+          </button>
+          <div class="compact-panel">${controlsHtml('email', item.id, pref)}</div>
+        </div>
+      `;
+    }
+
+    function renderEmails() {
+      const preview = previewItems();
+      const previewIds = new Set(preview.map(e => e.id));
+      let nested = drawerItems(previewIds);
+
+      // If searching, show matches as rich preview + rest compact; open drawer when needed
+      if (emailQuery) {
+        document.getElementById('previewStack').innerHTML = preview.map(richCardHtml).join('')
+          || '<p class="section-note">No newsletters match that search.</p>';
+        nested = EMAILS.filter(e => !previewIds.has(e.id) && matchesQuery(e));
+        if (nested.length) drawerOpen = true;
+      } else {
+        document.getElementById('previewStack').innerHTML = preview.map(richCardHtml).join('');
+      }
+
+      const drawer = document.getElementById('moreDrawer');
+      const count = nested.length;
+      drawer.style.display = count ? 'block' : 'none';
+      drawer.classList.toggle('is-open', drawerOpen);
+      document.getElementById('drawerTitle').textContent =
+        emailQuery ? `${count} more match${count === 1 ? '' : 'es'}` : `${count} more email newsletter${count === 1 ? '' : 's'}`;
+      document.getElementById('drawerSub').textContent =
+        'Nested compact rows — open one to manage without scrolling a wall of cards.';
+      document.getElementById('drawerChevron').textContent = drawerOpen ? 'Hide' : 'Show';
+      document.querySelector('.drawer-toggle').setAttribute('aria-expanded', drawerOpen ? 'true' : 'false');
+      document.getElementById('drawerBody').innerHTML = nested.map(compactRowHtml).join('');
+    }
+
+    function renderPush() {
+      const pref = state.pushGeneral;
+      const status = effectiveStatus(pref);
+      const expanded = expandedId === 'push_general';
+      document.getElementById('pushList').innerHTML = `
+        <article class="sub-card is-push ${expanded ? 'is-expanded' : ''}">
+          <button type="button" class="sub-main" data-act="expand" data-id="push_general">
+            <div>
+              <p class="sub-kicker">App · general</p>
+              <h2 class="sub-title">Push notifications</h2>
+              <p class="sub-blurb">Alerts from The Times app — breaking news and time-sensitive notices. Not tailored by interest or newsletter.</p>
+              <div class="sub-meta">
+                <span>Push</span>
+                <span>iPhone · NYT app</span>
+                <span class="${status !== 'stopped' ? 'is-on' : ''}">${statusLabel(status)}</span>
+              </div>
+            </div>
+            <span class="sub-cta">${expanded ? 'Close' : 'Manage'}</span>
+          </button>
+          <div class="sub-panel">
+            ${controlsHtml('push', 'push_general', pref)}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderDiscover() {
+      document.getElementById('discoverGrid').innerHTML = DISCOVER.map(item => {
+        const on = state.discover[item.id] && effectiveStatus(state.discover[item.id]) !== 'stopped';
+        const open = openDiscover === item.id;
+        return `
+          <div>
+            <button type="button" class="discover-card ${open ? 'is-open' : ''}" data-act="discover-toggle" data-id="${item.id}">
+              <div class="discover-thumb ${item.thumbClass}">${item.thumbLabel}</div>
+              <div class="discover-copy">
+                <strong>${item.title}</strong>
+                <span>${item.blurb}</span>
+              </div>
+              <span class="discover-cta">${on ? 'Joined' : open ? 'Close' : 'See more'}</span>
+            </button>
+            <div class="discover-panel ${open ? 'is-open' : ''}">
+              ${on ? `
+                <p class="hint">You’re subscribed by email.</p>
+                <div class="row">
+                  <button type="button" class="danger-btn" data-act="discover-stop" data-id="${item.id}">Stop newsletter</button>
+                </div>
+              ` : `
+                <p class="hint">Adds an email newsletter only. Push stays general — not interest-based.</p>
+                <div class="row">
+                  <button type="button" class="primary" data-act="discover-join" data-id="${item.id}">Get by email</button>
+                  <button type="button" class="ghost" data-act="discover-close">Not now</button>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function recordList() {
+      return [
+        ...EMAILS.map(e => ({ key: `email:${e.id}`, label: `Email · ${e.title}` })),
+        { key: 'push:general', label: 'Push · general' },
+        ...TEXT_CHANNELS.map(t => ({ key: `text:${t.id}`, label: `Text · ${t.title} (beta)` })),
+        ...DISCOVER.filter(d => state.discover[d.id]).map(d => ({
+          key: `discover:${d.id}`,
+          label: `Email · ${d.title}`
+        }))
+      ];
+    }
+
+    function resolveRecord(key) {
+      const [kind, id] = key.split(':');
+      if (kind === 'push') return { kind: 'push', id: 'general', pref: state.pushGeneral, topic: 'push_general', channel: 'push' };
+      if (kind === 'text') return { kind: 'text', id, pref: state.textChannels[id], topic: 'text_' + id, channel: id, paintedDoor: true };
+      if (kind === 'discover') return { kind: 'discover', id, pref: state.discover[id], topic: id, channel: 'email' };
+      return { kind: 'email', id, pref: state.emails[id], topic: id, channel: 'email' };
+    }
+
+    function renderContactKeys() {
+      const c = state.contacts;
+      const tokens = activePushTokens();
+      const emailOn = Object.values(state.emails).some(p => effectiveStatus(p) !== 'stopped');
+      const pushOn = effectiveStatus(state.pushGeneral) !== 'stopped' && tokens.length > 0;
+      document.getElementById('contactKeys').innerHTML = `
+        <div class="key-row">
+          <span class="kind">Email</span>
+          <code>${c.email}</code>
+          <span class="status ${emailOn ? '' : 'is-off'}">${emailOn ? 'Reachable' : 'No active email prefs'}</span>
+        </div>
+        <div class="key-row">
+          <span class="kind">Phone</span>
+          <code>${c.phone}</code>
+          <span class="status ${countTextOptIns() ? '' : 'is-stale'}">${countTextOptIns() ? `${countTextOptIns()} text opt-in(s) · no scaled sends` : 'On file · text beta available'}</span>
+        </div>
+        <div class="key-row">
+          <span class="kind">Push</span>
+          <code>${tokens[0] ? tokens[0].token : '— no active token —'}</code>
+          <span class="status ${pushOn ? '' : 'is-off'}">${pushOn ? `${tokens.length} active token(s)` : 'Not deliverable'}</span>
+        </div>
+      `;
+      document.getElementById('readerIdPill').textContent = state.readerId;
+    }
+
+    function renderTokens() {
+      const pushStatus = effectiveStatus(state.pushGeneral);
+      document.getElementById('pushPrefStatus').textContent = pushStatus;
+      const active = state.contacts.pushTokens.filter(t => t.status === 'active').length;
+      const stale = state.contacts.pushTokens.filter(t => t.status !== 'active').length;
+      document.getElementById('tokenActiveCount').textContent = String(active);
+      document.getElementById('tokenStaleCount').textContent = String(stale);
+      document.getElementById('tokenBody').innerHTML = state.contacts.pushTokens.map(t => `
+        <tr>
+          <td class="sans">${t.device}</td>
+          <td>${t.platform}</td>
+          <td>${t.token}</td>
+          <td class="sans">${t.status}</td>
+          <td class="sans">${new Date(t.lastSeen).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderTouchFeed() {
+      const badgeClass = { ok: 'badge--ok', block: 'badge--block', pref: 'badge--pref' };
+      document.getElementById('touchFeed').innerHTML = touchpoints.length
+        ? touchpoints.map(t => `
+          <div class="feed-item">
+            <div class="when">${t.ts}</div>
+            <div>
+              <strong>${t.title}<span class="badge ${badgeClass[t.badge] || ''}">${t.kind}</span></strong>
+              <div class="meta">${t.meta}</div>
+            </div>
+          </div>
+        `).join('')
+        : '<div class="feed-item"><div class="when">—</div><div>No touchpoints yet</div></div>';
+    }
+
+    function renderInternal() {
+      const tabs = document.getElementById('recordTabs');
+      const records = recordList();
+      if (!records.find(r => r.key === selectedRecord)) selectedRecord = records[0].key;
+      tabs.innerHTML = records.map(r =>
+        `<button type="button" class="${r.key === selectedRecord ? 'is-on' : ''}" data-record="${r.key}">${r.label}</button>`
+      ).join('');
+
+      const rec = resolveRecord(selectedRecord);
+      const status = effectiveStatus(rec.pref);
+      document.getElementById('recordMeta').innerHTML =
+        `topic: <strong>${rec.topic}</strong> · channel: <strong>${rec.channel}</strong>`;
+      document.getElementById('prefJson').textContent = JSON.stringify({
+        readerId: state.readerId,
+        contactKeys: {
+          email: state.contacts.email,
+          phone: state.contacts.phone,
+          activePushTokens: activePushTokens().map(t => t.token)
+        },
+        topicService: rec.topic,
+        channel: rec.channel,
+        status,
+        reducedCadence: rec.pref?.reducedCadence ?? null,
+        pausedUntil: rec.pref?.pausedUntil ?? null,
+        optInExpires: rec.pref?.optInExpires ?? null,
+        note: rec.channel === 'push'
+          ? 'general push — requires active token to deliver'
+          : 'email newsletter'
+      }, null, 2);
+      document.getElementById('kpiState').textContent = status;
+      renderContactKeys();
+      renderTokens();
+      renderTouchFeed();
+    }
+
+    function renderLog() {
+      document.getElementById('auditLog').innerHTML = audit.length
+        ? audit.map(a => `<div><span class="ts">${a.ts}</span> · ${a.msg}</div>`).join('')
+        : '<div class="ts">No events yet</div>';
+    }
+
+    function renderAll() {
+      renderSnapshot();
+      renderPush();
+      renderTextChannels();
+      renderEmails();
+      renderDiscover();
+      renderInternal();
+    }
+
+    function syncLookupPlaceholder() {
+      const kind = document.getElementById('lookupKind').value;
+      const input = document.getElementById('lookupValue');
+      if (kind === 'email') input.placeholder = state.contacts.email;
+      else if (kind === 'phone') input.placeholder = state.contacts.phone;
+      else input.placeholder = state.contacts.pushTokens[0]?.fullPrefix || 'apns:…';
+    }
+
+    function closeSheets(root = document) {
+      root.querySelectorAll('.sheet').forEach(s => s.classList.remove('is-open'));
+    }
+
+    document.querySelectorAll('[data-view]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-view]').forEach(b => {
+          b.classList.toggle('is-on', b === btn);
+          b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+        });
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
+        document.getElementById('view-' + btn.dataset.view).classList.add('is-active');
+      });
+    });
+
+    document.getElementById('view-reader').addEventListener('click', e => {
+      const actEl = e.target.closest('[data-act]');
+      if (!actEl) {
+        const cadence = e.target.closest('[data-set-cadence]');
+        const pause = e.target.closest('[data-set-pause]');
+        const days = e.target.closest('[data-set-days]');
+        if (cadence) {
+          draftCadence = cadence.dataset.setCadence;
+          cadence.parentElement.querySelectorAll('.chip').forEach(c => c.classList.toggle('is-on', c === cadence));
+        }
+        if (pause) {
+          draftPauseDays = parseInt(pause.dataset.setPause, 10);
+          pause.parentElement.querySelectorAll('.chip').forEach(c => c.classList.toggle('is-on', c === pause));
+        }
+        if (days) {
+          draftDays = parseInt(days.dataset.setDays, 10);
+          days.parentElement.querySelectorAll('.chip').forEach(c => c.classList.toggle('is-on', c === days));
+        }
+        return;
+      }
+
+      const act = actEl.dataset.act;
+      const kind = actEl.dataset.kind;
+      const id = actEl.dataset.id;
+
+      if (act === 'text-toggle') {
+        const pref = state.textChannels[id];
+        const on = effectiveStatus(pref) !== 'stopped';
+        if (on) {
+          pref.status = 'stopped';
+          markDirty(`Text beta opt-out: ${id}`);
+          addTouchpoint({ kind: 'pref', title: `Text opt-out · ${id.toUpperCase()}`, meta: 'painted door · no sends were active', badge: 'pref' });
+          toast('Text interest removed');
+        } else {
+          pref.status = 'active';
+          markDirty(`Text beta opt-in: ${id} (painted door — no send)`);
+          addTouchpoint({ kind: 'pref', title: `Text opt-in · ${id.toUpperCase()}`, meta: 'painted door · intent only · send path blocked', badge: 'pref' });
+          toast('Interest recorded — no texts yet');
+        }
+        return;
+      }
+      if (act === 'toggle-drawer') {
+        drawerOpen = !drawerOpen;
+        renderEmails();
+        return;
+      }
+      if (act === 'expand') {
+        expandedId = expandedId === id ? null : id;
+        // Opening something in the nested list should reveal the drawer
+        if (expandedId && !EMAILS.find(e => e.id === expandedId)?.preview && !EMAILS.find(e => e.id === expandedId)?.pilot) {
+          const inDrawer = !previewItems().some(e => e.id === expandedId);
+          if (inDrawer) drawerOpen = true;
+        }
+        renderAll();
+        return;
+      }
+      if (act === 'close-sheet') {
+        closeSheets();
+        return;
+      }
+      if (act === 'sheet') {
+        const panel = document.querySelector(`[data-sheet-panel="${actEl.dataset.sheet}"][data-kind="${kind}"][data-id="${id}"]`);
+        const open = panel.classList.contains('is-open');
+        closeSheets(actEl.closest('.sub-panel'));
+        if (!open) panel.classList.add('is-open');
+        return;
+      }
+
+      const pref = getPref(kind, id);
+      if (!pref && kind !== 'discover') return;
+
+      if (act === 'resume') {
+        pref.status = pref.reducedCadence ? 'reduced' : 'active';
+        pref.pausedUntil = null;
+        markDirty(`Resumed ${kind}:${id}`);
+        toast('Resumed');
+        return;
+      }
+      if (act === 'apply-fewer') {
+        if (effectiveStatus(pref) === 'stopped') { toast('Turn it on first'); return; }
+        pref.status = 'reduced';
+        pref.reducedCadence = draftCadence;
+        markDirty(`Opt-down ${kind}:${id} → ${draftCadence}`);
+        toast('Fewer updates');
+        return;
+      }
+      if (act === 'apply-pause') {
+        if (effectiveStatus(pref) === 'stopped') { toast('Already stopped'); return; }
+        pref.status = 'paused';
+        pref.pausedUntil = addDays(draftPauseDays).toISOString();
+        markDirty(`Paused ${kind}:${id} until ${fmtDate(pref.pausedUntil)}`);
+        toast('Paused');
+        return;
+      }
+      if (act === 'apply-temp') {
+        pref.status = 'timelimited';
+        pref.optInExpires = addDays(draftDays).toISOString();
+        pref.pausedUntil = null;
+        markDirty(`Time-limited ${kind}:${id} ${draftDays}d`);
+        toast(`On for ${draftDays} days`);
+        return;
+      }
+      if (act === 'apply-stop') {
+        pref.status = 'stopped';
+        pref.optInExpires = null;
+        pref.pausedUntil = null;
+        markDirty(`Stopped ${kind}:${id}`);
+        toast('Stopped');
+        return;
+      }
+      if (act === 'discover-toggle') {
+        openDiscover = openDiscover === id ? null : id;
+        renderDiscover();
+        return;
+      }
+      if (act === 'discover-close') {
+        openDiscover = null;
+        renderDiscover();
+        return;
+      }
+      if (act === 'discover-join') {
+        state.discover[id] = blankPref('active');
+        markDirty(`Joined email newsletter ${id}`);
+        toast('Subscribed by email');
+        return;
+      }
+      if (act === 'discover-stop') {
+        delete state.discover[id];
+        markDirty(`Stopped discover ${id}`);
+        toast('Stopped');
+      }
+    });
+
+    document.getElementById('recordTabs').addEventListener('click', e => {
+      const btn = e.target.closest('[data-record]');
+      if (!btn) return;
+      selectedRecord = btn.dataset.record;
+      document.getElementById('sendResult').innerHTML = '<strong>Ready</strong>No send attempted yet.';
+      document.getElementById('kpiPermission').textContent = '—';
+      renderInternal();
+    });
+
+    document.getElementById('lookupKind').addEventListener('change', () => {
+      syncLookupPlaceholder();
+      document.getElementById('lookupValue').value = '';
+    });
+
+    document.getElementById('lookupBtn').addEventListener('click', () => {
+      const kind = document.getElementById('lookupKind').value;
+      const raw = (document.getElementById('lookupValue').value || document.getElementById('lookupValue').placeholder).trim().toLowerCase();
+      const c = state.contacts;
+      let hit = false;
+      if (kind === 'email') hit = raw === c.email.toLowerCase() || raw.includes('jordan.lee');
+      if (kind === 'phone') hit = raw.replace(/\D/g, '').includes('9175550142') || raw.includes('555-0142');
+      if (kind === 'push_token') {
+        hit = c.pushTokens.some(t =>
+          raw && (t.token.toLowerCase().includes(raw) || t.fullPrefix.toLowerCase().includes(raw) || raw.includes(t.fullPrefix.toLowerCase()))
+        );
+      }
+      if (hit) {
+        state.lookedUp = true;
+        document.getElementById('lookupHint').textContent =
+          `Resolved → ${state.readerId} (${DEMO_USER.displayName}) via ${kind.replace('_', ' ')}.`;
+        log(`Lookup hit via ${kind}: ${raw.slice(0, 48)}`);
+        toast('User found');
+        renderInternal();
+      } else {
+        document.getElementById('lookupHint').textContent =
+          'No reader for that contact key (demo only knows Jordan’s email / phone / token prefixes).';
+        toast('No match');
+      }
+    });
+
+    document.getElementById('revokeTokenBtn').addEventListener('click', () => {
+      const primary = state.contacts.pushTokens.find(t => t.status === 'active');
+      if (!primary) { toast('No active token'); return; }
+      primary.status = 'revoked';
+      markDirty(`Revoked push token ${primary.id} (${primary.device})`);
+      addTouchpoint({
+        kind: 'pref',
+        title: `Revoked token · ${primary.device}`,
+        meta: `push · ${primary.token}`,
+        badge: 'pref'
+      });
+      toast('Token revoked');
+    });
+
+    document.getElementById('rotateTokenBtn').addEventListener('click', () => {
+      const primary = state.contacts.pushTokens.find(t => t.status === 'active') || state.contacts.pushTokens[0];
+      if (primary.status === 'active') primary.status = 'stale';
+      const neu = {
+        id: 'tok_ios_' + Date.now().toString(36),
+        device: 'iPhone 15 Pro',
+        platform: 'apns',
+        token: 'apns:' + Math.random().toString(16).slice(2, 10) + '…' + Math.random().toString(16).slice(2, 6),
+        fullPrefix: 'apns:rotated',
+        status: 'active',
+        lastSeen: new Date().toISOString()
+      };
+      state.contacts.pushTokens.unshift(neu);
+      markDirty(`Rotated push token → ${neu.token}`);
+      addTouchpoint({
+        kind: 'pref',
+        title: 'Push token rotated',
+        meta: `push · new ${neu.token}`,
+        badge: 'pref'
+      });
+      toast('Token rotated');
+    });
+
+    document.getElementById('markMeaningful').addEventListener('click', () => {
+      state.meaningfulUpdateReady = !state.meaningfulUpdateReady;
+      log(state.meaningfulUpdateReady ? 'Editors: meaningful ON' : 'Editors: meaningful OFF');
+      toast(state.meaningfulUpdateReady ? 'Meaningful ON' : 'Meaningful OFF');
+    });
+
+    document.getElementById('simulateDelivered').addEventListener('click', () => {
+      const rec = resolveRecord(selectedRecord);
+      const tokens = activePushTokens();
+      if (rec.kind === 'text' || rec.paintedDoor) {
+        addTouchpoint({
+          kind: 'suppressed',
+          title: `${rec.channel.toUpperCase()} blocked`,
+          meta: 'painted door — no scaled text sends',
+          badge: 'block'
+        });
+        toast('Text send blocked (beta painted door)');
+        return;
+      }
+      if (rec.channel === 'push') {
+        if (effectiveStatus(state.pushGeneral) === 'stopped' || !tokens.length) {
+          toast('Cannot deliver — pref off or no active token');
+          addTouchpoint({
+            kind: 'suppressed',
+            title: 'Push delivery blocked',
+            meta: !tokens.length ? 'no active push token' : 'push_general stopped',
+            badge: 'block'
+          });
+          return;
+        }
+        addTouchpoint({
+          kind: 'delivered',
+          title: 'Push alert',
+          meta: `push · ${tokens[0].token} · ${tokens[0].device}`,
+          badge: 'ok'
+        });
+      } else {
+        if (effectiveStatus(rec.pref) === 'stopped') {
+          addTouchpoint({
+            kind: 'suppressed',
+            title: rec.topic,
+            meta: 'email · preference stopped',
+            badge: 'block'
+          });
+          toast('Suppressed — stopped');
+          return;
+        }
+        addTouchpoint({
+          kind: 'delivered',
+          title: EMAILS.find(e => e.id === rec.topic)?.title || rec.topic,
+          meta: `email · ${state.contacts.email}`,
+          badge: 'ok'
+        });
+      }
+      log(`Simulated delivered [${selectedRecord}]`);
+      toast('Delivered event added');
+    });
+
+    document.getElementById('trySend').addEventListener('click', () => {
+      const rec = resolveRecord(selectedRecord);
+      const status = effectiveStatus(rec.pref);
+      const tokens = activePushTokens();
+      let result;
+      if (rec.paintedDoor || rec.kind === 'text') {
+        result = {
+          ok: false,
+          reason: status === 'stopped'
+            ? 'No permission: text channel off'
+            : `Blocked: ${rec.channel.toUpperCase()} painted door — intent stored, no scaled sends`
+        };
+      } else if (status === 'stopped') result = { ok: false, reason: 'No permission: stopped' };
+      else if (status === 'paused') result = { ok: false, reason: `Suppressed: paused until ${fmtDate(rec.pref.pausedUntil)}` };
+      else if (rec.channel === 'push' && !tokens.length) {
+        result = { ok: false, reason: 'Suppressed: push_general on but no active push token' };
+      } else if (rec.topic === 'politics_what_changed' && !state.meaningfulUpdateReady) {
+        result = { ok: false, reason: 'Suppressed: no meaningful development (pilot email gate)' };
+      } else if (status === 'reduced' && rec.pref.reducedCadence === 'major_only') {
+        result = { ok: true, reason: 'Allowed: reduced major_only (demo assumes major)' };
+      } else if (rec.channel === 'push') {
+        result = { ok: true, reason: `Allowed: push via ${tokens[0].token}` };
+      } else {
+        result = { ok: true, reason: `Allowed: ${rec.channel} ${status} → ${state.contacts.email}` };
+      }
+      document.getElementById('kpiPermission').textContent = result.ok ? 'ALLOW' : 'BLOCK';
+      document.getElementById('sendResult').innerHTML =
+        `<strong>${result.ok ? 'Would send' : 'Would not send'}</strong>${result.reason}`;
+      log(`Send [${selectedRecord}] → ${result.ok ? 'ALLOW' : 'BLOCK'}`);
+      addTouchpoint({
+        kind: 'gate',
+        title: `Permission ${result.ok ? 'ALLOW' : 'BLOCK'} · ${rec.topic}`,
+        meta: result.reason,
+        badge: result.ok ? 'ok' : 'block'
+      });
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      saved = structuredClone(state);
+      state.dirty = false;
+      document.getElementById('saveBar').classList.remove('is-visible');
+      log('Saved preference records');
+      toast('Saved');
+      renderAll();
+    });
+    document.getElementById('discardBtn').addEventListener('click', () => {
+      state = structuredClone(saved);
+      state.dirty = false;
+      document.getElementById('saveBar').classList.remove('is-visible');
+      log('Discarded unsaved changes');
+      renderAll();
+    });
+
+    document.getElementById('emailSearch').addEventListener('input', e => {
+      emailQuery = e.target.value.trim();
+      renderEmails();
+    });
+
+    syncLookupPlaceholder();
+    document.getElementById('lookupValue').value = state.contacts.email;
+    log('Pilot loaded · contact keys + push tokens + touchpoint feed on Internal');
+    renderAll();
+  </script>
+</body>
+</html>
