@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animals · Weekly picks · Audiences · Message Hub · Scoop</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f0f0f0;
+    --surface: #ffffff;
+    --surface-alt: #fafafa;
+    --ink: #121212;
+    --muted: #666666;
+    --line: #dddddd;
+    --line-strong: #bbbbbb;
+    --accent: #326891;
+    --accent-hover: #285578;
+    --accent-soft: #e8f0f6;
+    --accent-line: #b8c9db;
+    --ok: #267c30;
+    --ok-soft: #e8f5e9;
+    --ok-line: #b7d7bb;
+    --warm: #b85c00;
+    --warm-soft: #fff4e5;
+    --warm-line: #e8d0a8;
+    --danger: #d0021b;
+    --danger-soft: #fde8ea;
+    --danger-line: #e8a0a8;
+    --ml: #534AB7;
+    --ml-ink: #3C3489;
+    --ml-soft: rgba(83, 74, 183, 0.12);
+    --chrome: #2c2c2c;
+    --chrome-ink: #f0f0f0;
+    --chrome-muted: #b0b0b0;
+    --chrome-line: #1a1a1a;
+    --radius: 2px;
+    --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #161616;
+      --surface: #1f1f1f;
+      --surface-alt: #262626;
+      --ink: #eeeeee;
+      --muted: #a3a3a3;
+      --line: #3a3a3a;
+      --line-strong: #555555;
+      --accent: #6aa3cf;
+      --accent-hover: #8bb8db;
+      --accent-soft: rgba(50, 104, 145, 0.28);
+      --accent-line: #3f6a8c;
+      --ok: #7cc386;
+      --ok-soft: rgba(38, 124, 48, 0.22);
+      --ok-line: #2f5f35;
+      --warm: #e8a35a;
+      --warm-soft: rgba(184, 92, 0, 0.2);
+      --warm-line: #6b4a22;
+      --danger: #f2808e;
+      --danger-soft: rgba(208, 2, 27, 0.2);
+      --danger-line: #7a2a33;
+      --ml-ink: #d9d5ff;
+      --ml-soft: rgba(83, 74, 183, 0.3);
+      --chrome: #0f0f0f;
+      --chrome-line: #000000;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 13px/1.4 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: default; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .topbar {
+    flex: none;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 12px;
+    background: var(--chrome);
+    color: var(--chrome-ink);
+    border-bottom: 1px solid var(--chrome-line);
+  }
+  .wordmark { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  .topbar .sep { width: 1px; height: 18px; background: #555; }
+  .app-name { font-size: 13px; font-weight: 600; }
+  .topbar .search {
+    margin-left: 16px;
+    width: 280px;
+    height: 28px;
+    padding: 0 10px;
+    border: 1px solid #444;
+    border-radius: var(--radius);
+    background: #1f1f1f;
+    color: var(--chrome-muted);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+  }
+  .topbar .spacer { flex: 1; }
+  .topbar .top-link { color: var(--chrome-muted); font-size: 12px; }
+  .avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #555;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+
+  .shell { flex: 1; min-height: 0; display: flex; }
+  .sidenav {
+    flex: none;
+    width: 200px;
+    background: var(--surface);
+    border-right: 1px solid var(--line);
+    padding: 12px 0;
+    overflow: auto;
+  }
+  .nav-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 16px 6px;
+  }
+  .nav-item {
+    display: block;
+    padding: 7px 16px;
+    color: var(--ink);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover { background: var(--surface-alt); }
+  .nav-item.is-active {
+    border-left-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .nav-group { margin-top: 16px; }
+
+  .main { flex: 1; min-width: 0; overflow: auto; }
+  .page { max-width: 880px; padding: 16px 24px 48px; }
+  .crumbs { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .crumbs a { color: var(--accent); text-decoration: none; }
+  .crumbs a:hover { text-decoration: underline; }
+  .crumbs .div { margin: 0 6px; color: var(--line-strong); }
+
+  .app { }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+    padding-bottom: 12px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .updated { margin-top: 4px; font-size: 12px; color: var(--muted); }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+
+  .pill {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.3;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 5px 8px;
+    white-space: nowrap;
+  }
+  .pill.safe { color: var(--ok); background: var(--ok-soft); border-color: var(--ok-line); }
+  .pill.high { color: var(--warm); background: var(--warm-soft); border-color: var(--warm-line); }
+  .pill.over { color: var(--danger); background: var(--danger-soft); border-color: var(--danger-line); }
+  .pill.empty { color: var(--muted); background: var(--surface-alt); }
+
+  .btn, .save {
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .btn:hover:not(:disabled), .save.saved:hover:not(:disabled) { border-color: var(--muted); }
+  .btn.primary, .save {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn.primary:hover:not(:disabled), .save:not(.saved):hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+  .save.saved, .btn.applied {
+    background: var(--surface);
+    color: var(--ink);
+    border-color: var(--line-strong);
+  }
+  .btn:disabled, .save:disabled { opacity: 0.45; }
+  .link {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .link:hover { text-decoration: underline; }
+
+  .progress {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+  }
+  .progress button {
+    background: none;
+    border: 0;
+    border-right: 1px solid var(--line);
+    padding: 9px 2px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .progress button:last-child { border-right: 0; }
+  .progress button:hover { background: var(--surface-alt); }
+  .mark.done { color: var(--ok); }
+  .mark.sugg { color: var(--ml); }
+
+  .steps { }
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+  }
+  .step:last-child { margin-bottom: 0; }
+  .step-h {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--line);
+  }
+  .step.shut .step-h { border-bottom: 0; }
+  .step-toggle {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    min-width: 0;
+    background: none;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    color: inherit;
+  }
+  .step-toggle::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--muted);
+    transform: translateY(-2px);
+    flex: none;
+  }
+  .step.shut .step-toggle::before { transform: rotate(-90deg); }
+  .step-name { font-size: 15px; font-weight: 700; }
+  .step-sum { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .step-b { padding: 12px; }
+
+  .h {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 16px 0 6px;
+  }
+  .h:first-child { margin-top: 0; }
+
+  .opt {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 8px 10px;
+    margin-bottom: 6px;
+  }
+  .opt:hover { border-color: var(--muted); }
+  .opt:last-child { margin-bottom: 0; }
+  .opt-title { display: block; font-weight: 600; }
+  .opt-detail { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); }
+  .opt-meta { display: flex; align-items: center; gap: 8px; flex: none; }
+  .opt.on, .chip.on, .card.using, .btn.using {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+    background: var(--accent-soft);
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  .chip:hover { border-color: var(--muted); }
+  .chip.partial {
+    border-style: dashed;
+    border-color: var(--accent);
+    background: var(--surface);
+    box-shadow: none;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 1px; flex: none; }
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.3;
+    color: var(--ml-ink);
+    background: var(--ml-soft);
+    border-radius: var(--radius);
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+  .tag.ok { color: var(--ok); background: var(--ok-soft); }
+  .count { font-variant-numeric: tabular-nums; }
+  .count.over, .over { color: var(--danger); }
+  .note { margin-top: 6px; font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .note.warn { color: var(--warm); }
+  .check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    cursor: pointer;
+  }
+  .check input { accent-color: var(--accent); margin: 0; }
+  .stage-link { margin-top: 6px; }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 10px 12px;
+    margin-top: 8px;
+  }
+  .card-h { display: flex; align-items: center; gap: 8px; }
+  .grow { flex: 1; }
+  .subject { margin-top: 6px; }
+  .push-title { margin-top: 6px; font-weight: 600; }
+  .push-body { color: var(--muted); }
+  .field { margin-top: 8px; }
+  .field span {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 7px 10px;
+    resize: vertical;
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  textarea { margin-top: 8px; }
+  .bar {
+    display: flex;
+    height: 8px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface-alt);
+    margin-top: 10px;
+  }
+  .bar span { display: block; height: 100%; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 6px; font-size: 12px; color: var(--muted); }
+  .legend i { font-style: normal; display: inline-flex; align-items: center; gap: 4px; }
+  table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); }
+  th {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    background: var(--surface-alt);
+  }
+  td, th { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .band {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    padding: 2px 6px;
+  }
+  .band.safe { color: var(--ok); background: var(--ok-soft); border-color: var(--ok-line); }
+  .band.high { color: var(--warm); background: var(--warm-soft); border-color: var(--warm-line); }
+  .band.over { color: var(--danger); background: var(--danger-soft); border-color: var(--danger-line); }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .stat { padding: 10px 12px; border-right: 1px solid var(--line); }
+  .stat:last-child { border-right: 0; }
+  .stat b { display: block; font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 11px; color: var(--muted); }
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 16px -12px -12px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--line);
+    background: var(--surface-alt);
+  }
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .dialog {
+    width: 440px;
+    max-width: 100%;
+    max-height: calc(100vh - 32px);
+    overflow: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+  .dialog h2 { margin: 0; font-size: 15px; font-weight: 700; }
+  @media (max-width: 900px) {
+    .sidenav, .topbar .search { display: none; }
+    .page { padding: 12px; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stat:nth-child(2) { border-right: 0; }
+    .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <span class="wordmark">Scoop</span>
+  <span class="sep"></span>
+  <span class="app-name">Message Hub</span>
+  <div class="search">Search messages, audiences, journeys</div>
+  <span class="spacer"></span>
+  <span class="top-link">Help</span>
+  <span class="avatar">NA</span>
+</header>
+<div class="shell">
+  <nav class="sidenav" aria-label="Message Hub">
+    <div class="nav-label">Message Hub</div>
+    <a class="nav-item" href="#">Overview</a>
+    <a class="nav-item" href="#">Messages</a>
+    <a class="nav-item is-active" href="#" aria-current="page">Audiences</a>
+    <a class="nav-item" href="#">Journeys</a>
+    <a class="nav-item" href="#">Templates</a>
+    <a class="nav-item" href="#">Calendar</a>
+    <div class="nav-group">
+      <div class="nav-label">Health</div>
+      <a class="nav-item" href="#">Deliverability</a>
+      <a class="nav-item" href="#">Reports</a>
+    </div>
+    <div class="nav-group">
+      <a class="nav-item" href="#">Settings</a>
+    </div>
+  </nav>
+  <main class="main" id="scroller">
+    <div class="page">
+      <div class="crumbs"><a href="#">Message Hub</a><span class="div">/</span><a href="#">Audiences</a><span class="div">/</span>Animals · Weekly picks</div>
+      <div class="app" id="app"></div>
+    </div>
+  </main>
+</div>
+<script>
+const STAGES = [
+  { id: "standard", group: "registered", label: "Standard", k: 120, risk: 1.1 },
+  { id: "trial", group: "registered", label: "Trial", k: 9, risk: 0.8 },
+  { id: "freeMonth", group: "registered", label: "Free month", k: 6, risk: 0.8 },
+  { id: "allAccess", group: "subscribers", label: "All access", k: 95, risk: 0.7 },
+  { id: "family", group: "subscribers", label: "Family", k: 18, risk: 0.7 },
+  { id: "singleBrand", group: "subscribers", label: "Single brand", k: 22, risk: 0.8 },
+  { id: "former", group: "former", label: "Former subscribers", k: 30, risk: 1.3 },
+  { id: "active", group: "churned", label: "Active", k: 15, risk: 1.2 },
+  { id: "dormant", group: "churned", label: "Dormant", k: 25, risk: 2.5 },
+  { id: "anonymous", group: "anonymous", label: "Anonymous", k: 60, risk: 1 }
+];
+
+const GROUPS = [
+  { id: "registered", label: "Registered", ids: ["standard", "trial", "freeMonth"] },
+  { id: "subscribers", label: "Subscribers", ids: ["allAccess", "family", "singleBrand"] },
+  { id: "former", label: "Former subscribers", ids: ["former"] },
+  { id: "churned", label: "Churned", ids: ["active", "dormant"] },
+  { id: "anonymous", label: "Anonymous", ids: ["anonymous"] }
+];
+
+const PERM = {
+  optin: { label: "Newsletter opt-in", detail: "Subscribed to Animals", mult: 0.62, risk: 0.75 },
+  declared: { label: "Declared interest", detail: "Chose the topic", mult: 0.85, risk: 0.9 },
+  inferred: { label: "Interest incl. inferred", detail: "Model-detected", mult: 1, risk: 1 }
+};
+
+const REACH = {
+  focused: { label: "Focused", share: 0.45, risk: 0.8 },
+  balanced: { label: "Balanced", share: 0.55, risk: 1 },
+  broad: { label: "Broad", share: 0.78, risk: 1.45 },
+  full: { label: "Full reach", share: 1, risk: 1.9 }
+};
+
+const CH = {
+  email: { label: "Email", reach: 0.92, read: 0.10, color: "#534AB7" },
+  push: { label: "Push", reach: 0.41, read: 0.14, color: "#1D9E75" },
+  inapp: { label: "In-app", reach: 0.35, read: 0.18, color: "#D97706" },
+  sms: { label: "SMS", reach: 0.06, read: 0.12, color: "#993C1D" }
+};
+const CH_ORDER = ["email", "push", "inapp", "sms"];
+
+const EMAIL_BASE = [
+  { key: "Gmail", base: 0.04 },
+  { key: "Yahoo/AOL", base: 0.05 },
+  { key: "Microsoft", base: 0.09 },
+  { key: "Apple", base: 0.03 }
+];
+
+const W_PRED = { email: 0.55, push: 0.27, inapp: 0.14, sms: 0.04 };
+const W_DECL = { email: 0.8, push: 0.12, inapp: 0.06, sms: 0.02 };
+
+const GOAL = {
+  inform: { label: "Inform", detail: "Regular coverage" },
+  breaking: { label: "Breaking", detail: "Speed and reach" },
+  deepen: { label: "Deepen interest", detail: "Topic fans" },
+  grow: { label: "Grow subscriptions", detail: "Convert and retain" }
+};
+
+const EMPH = {
+  standard: { label: "Standard", detail: "Normal cadence" },
+  priority: { label: "Priority", detail: "Top placement" },
+  urgent: { label: "Urgent", detail: "Skips frequency limits" }
+};
+
+const MODE = {
+  single: { label: "Single channel", detail: "Same channel for everyone" },
+  multiple: { label: "Multiple channels", detail: "Every selected channel" },
+  dynamic: { label: "Dynamic", detail: "Each reader's preferred channel" }
+};
+
+const TIME = {
+  fixed: { label: "Fixed", detail: "Same moment for everyone" },
+  geo: { label: "Geo-based", detail: "Set time in each time zone" },
+  reader: { label: "Reader-based", detail: "Each reader's usual time" }
+};
+
+const STEP_ORDER = ["goal", "audience", "emphasis", "message", "timing", "review"];
+const STEP_LABEL = {
+  goal: "Goal",
+  audience: "Audience",
+  emphasis: "Emphasis",
+  message: "Message",
+  timing: "Timing",
+  review: "Review"
+};
+
+const state = {
+  suggestionsApplied: false,
+  sent: null,
+  preview: false,
+  open: { goal: true, audience: true, emphasis: true, message: true, timing: true, review: true },
+  goal: { value: null, saved: false, touched: false },
+  audience: {
+    permission: "optin",
+    reach: "balanced",
+    lookalike: true,
+    stagesOpen: false,
+    stages: {
+      standard: true, trial: true, freeMonth: true,
+      allAccess: true, family: true, singleBrand: true,
+      former: true, active: true, dormant: false, anonymous: false
+    },
+    saved: false,
+    touched: false
+  },
+  emphasis: { value: null, saved: false, touched: false },
+  message: {
+    mode: "dynamic",
+    single: null,
+    multi: ["email", "push"],
+    preference: "predicted",
+    allowed: ["email", "push", "inapp"],
+    preview: false,
+    lead: true,
+    pushTitle: "Otters are back on the Hudson",
+    pushBody: "Plus owls and a very patient tortoise in this week's picks",
+    pushEditing: false,
+    usingDraft: false,
+    sms: "",
+    saved: false,
+    touched: false
+  },
+  timing: { mode: "reader", fixedWhen: null, saved: false, touched: false }
+};
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+function fmtMult(n) {
+  return n >= 1 ? n.toFixed(1) : n.toFixed(2);
+}
+
+function fmtCount(n) {
+  if (!isFinite(n) || n <= 0) return "0";
+  if (n >= 100000) return Math.round(n / 1000).toLocaleString("en-US") + "k";
+  if (n >= 1000) {
+    const k = Math.round(n / 100) / 10;
+    return (Number.isInteger(k) ? String(k) : k.toFixed(1)) + "k";
+  }
+  return Math.round(n).toLocaleString("en-US");
+}
+
+function fmtRange(n) {
+  return fmtCount(n * 0.85) + "–" + fmtCount(n * 1.15);
+}
+
+function fmtRate(p) {
+  if (p >= 10) return p.toFixed(1) + "%";
+  if (p >= 1) return p.toFixed(2) + "%";
+  const text = p.toFixed(3);
+  if (Number(text) >= 0.1 && p < 0.1) return p.toFixed(4) + "%";
+  return text + "%";
+}
+
+function fmtLimit(n) {
+  if (n >= 10) return n.toFixed(0) + "%";
+  if (n >= 1) return n.toFixed(1).replace(/\.0$/, "") + "%";
+  if (Math.abs(n - 0.1) < 1e-9) return "0.10%";
+  return n.toFixed(1) + "%";
+}
+
+function fmtLift(pct) {
+  const n = Math.round(pct);
+  if (n > 0) return "+" + n + "%";
+  if (n < 0) return "−" + Math.abs(n) + "%";
+  return "0%";
+}
+
+function suggestedReach() {
+  if (state.goal.value === "breaking") return "full";
+  if (state.goal.value === "grow") return "focused";
+  return "balanced";
+}
+
+function suggestedTiming() {
+  return state.goal.value === "breaking" ? "fixed" : "reader";
+}
+
+function selectedStageList() {
+  return STAGES.filter((s) => state.audience.stages[s.id]);
+}
+
+function rawK() {
+  return selectedStageList().reduce((sum, s) => sum + s.k, 0);
+}
+
+function channelSet() {
+  let ids = [];
+  if (state.message.mode === "single") ids = state.message.single ? [state.message.single] : [];
+  else if (state.message.mode === "multiple") ids = state.message.multi;
+  else ids = state.message.allowed;
+  return CH_ORDER.filter((id) => ids.includes(id));
+}
+
+function coverage(ids) {
+  return 1 - ids.reduce((p, id) => p * (1 - CH[id].reach), 1);
+}
+
+function multiStats(base, ids) {
+  const p0 = ids.reduce((p, id) => p * (1 - CH[id].reach), 1);
+  const p1 = ids.reduce((sum, id) => {
+    const others = ids.filter((x) => x !== id).reduce((p, x) => p * (1 - CH[x].reach), 1);
+    return sum + CH[id].reach * others;
+  }, 0);
+  return {
+    unique: base * (1 - p0),
+    messages: ids.reduce((sum, id) => sum + base * CH[id].reach, 0),
+    dupPeople: base * Math.max(0, 1 - p0 - p1)
+  };
+}
+
+function compute() {
+  const raw = rawK();
+  const pool = state.audience.lookalike ? raw * 1.1 : raw;
+  const perm = PERM[state.audience.permission];
+  const reach = state.audience.reach ? REACH[state.audience.reach] : null;
+  const base = reach && raw ? pool * 1000 * reach.share * perm.mult : 0;
+  const ids = channelSet();
+  const vol = {};
+  let unique = 0;
+  let messages = 0;
+  let dupPeople = 0;
+  let reached = 0;
+  if (base && ids.length) {
+    if (state.message.mode === "dynamic") {
+      const weights = state.message.preference === "declared" ? W_DECL : W_PRED;
+      const sumW = ids.reduce((sum, id) => sum + weights[id], 0);
+      reached = base * coverage(ids);
+      ids.forEach((id) => { vol[id] = reached * (weights[id] / sumW); });
+      unique = reached;
+      messages = reached;
+    } else if (state.message.mode === "multiple") {
+      const stats = multiStats(base, ids);
+      unique = stats.unique;
+      messages = stats.messages;
+      dupPeople = stats.dupPeople;
+      ids.forEach((id) => { vol[id] = base * CH[id].reach; });
+    } else {
+      ids.forEach((id) => { vol[id] = base * CH[id].reach; });
+      unique = vol[ids[0]] || 0;
+      messages = unique;
+    }
+  }
+  const sel = selectedStageList();
+  const stageRisk = raw ? sel.reduce((sum, s) => sum + s.k * s.risk, 0) / raw : 0;
+  let factor = 0;
+  if (reach && raw) {
+    factor = reach.risk * (stageRisk / 0.97) * perm.risk;
+    if (state.emphasis.value === "urgent") factor *= 1.15;
+    if (state.message.mode === "multiple" && unique > 0) {
+      factor *= Math.max(1, (messages / unique) * 0.85);
+    }
+  }
+  const emailFactor = state.message.mode === "dynamic" && ids.includes("email") && ids.length > 1
+    ? factor * 0.8
+    : factor;
+  const rows = [];
+  if (ids.includes("email")) {
+    EMAIL_BASE.forEach((p) => {
+      rows.push({ key: p.key, name: "Email · " + p.key, rate: p.base * emailFactor, high: 0.08, limit: 0.10 });
+    });
+  }
+  if (ids.includes("push")) rows.push({ key: "Push", name: "Push", rate: 0.3 * factor, high: 0.5, limit: 0.8 });
+  if (ids.includes("sms")) rows.push({ key: "SMS", name: "SMS", rate: 0.9 * factor, high: 1, limit: 1.5 });
+  if (ids.includes("inapp")) rows.push({ key: "In-app", name: "In-app", rate: 4 * factor, high: 8, limit: 12 });
+  rows.forEach((row) => {
+    row.band = row.rate >= row.limit ? "over" : row.rate >= row.high ? "high" : "safe";
+  });
+  let reads = 0;
+  Object.keys(vol).forEach((id) => { reads += vol[id] * CH[id].read; });
+  const startRate = { inform: 0.004, breaking: 0.003, deepen: 0.008, grow: 0.015 }[state.goal.value] || 0.004;
+  const starts = reads * startRate;
+  const unsubs = (vol.email || 0) * 0.0018 * emailFactor + (vol.sms || 0) * ((0.9 * factor) / 100);
+  const disables = (vol.push || 0) * ((0.3 * factor) / 100);
+  const emailOnlyReads = base * CH.email.reach * CH.email.read;
+  const lift = emailOnlyReads ? (reads / emailOnlyReads - 1) * 100 : 0;
+  const reachCounts = {};
+  Object.keys(REACH).forEach((id) => {
+    reachCounts[id] = raw ? pool * 1000 * REACH[id].share * perm.mult : 0;
+  });
+  const singleCounts = {};
+  CH_ORDER.forEach((id) => { singleCounts[id] = base * CH[id].reach; });
+  return {
+    raw, pool, base, ids, vol, unique, messages, dupPeople, reached, factor, emailFactor,
+    rows, reads, starts, unsubs, disables, lift, reachCounts, singleCounts,
+    lookalikeAdd: raw * 0.1 * 1000
+  };
+}
+
+function goalValid() { return !!state.goal.value; }
+function audienceValid() { return rawK() > 0 && !!state.audience.reach; }
+function emphasisValid() { return !!state.emphasis.value; }
+function messageValid() {
+  const ids = channelSet();
+  if (!ids.length) return false;
+  if (ids.includes("email") && !(state.message.preview && state.message.lead)) return false;
+  if (ids.includes("push") && !state.message.usingDraft) return false;
+  if (ids.includes("sms") && !state.message.sms.trim()) return false;
+  return true;
+}
+function timingValid() {
+  if (!state.timing.mode) return false;
+  if (state.timing.mode === "fixed" && !state.timing.fixedWhen) return false;
+  return true;
+}
+function valid(step) {
+  if (step === "goal") return goalValid();
+  if (step === "audience") return audienceValid();
+  if (step === "emphasis") return emphasisValid();
+  if (step === "message") return messageValid();
+  if (step === "timing") return timingValid();
+  return false;
+}
+
+function openSteps() {
+  return ["goal", "audience", "emphasis", "message", "timing"].filter((step) => !state[step].saved).map((step) => STEP_LABEL[step]);
+}
+function allSaved() { return openSteps().length === 0; }
+
+function mark(step) {
+  if (step === "review") return allSaved() ? "done" : "";
+  if (state[step].saved) return "done";
+  if ((step === "audience" || step === "message" || step === "timing") && !state[step].touched) return "sugg";
+  return "";
+}
+
+function status(m) {
+  if (m.raw === 0 || !state.audience.reach) return { kind: "empty", text: "No audience selected" };
+  if (!m.ids.length) return { kind: "empty", text: "No channel selected" };
+  const over = m.rows.filter((row) => row.band === "over");
+  const high = m.rows.filter((row) => row.band === "high");
+  if (over.length) return { kind: "over", text: "Over limit · " + over.map((row) => row.key).join(", ") };
+  if (high.length) return { kind: "high", text: "Risk high · " + high.map((row) => row.key).join(", ") };
+  return { kind: "safe", text: "Safe · all channels" };
+}
+
+function summary(step, m) {
+  if (step === "goal") return state.goal.value ? GOAL[state.goal.value].label : "Not set";
+  if (step === "audience") {
+    if (!state.audience.reach || m.raw === 0) return "No audience";
+    return fmtCount(m.base) + " · " + REACH[state.audience.reach].label;
+  }
+  if (step === "emphasis") return state.emphasis.value ? EMPH[state.emphasis.value].label : "Not set";
+  if (step === "message") return m.ids.length ? MODE[state.message.mode].label : "No channel";
+  if (step === "timing") return state.timing.mode ? TIME[state.timing.mode].label : "Not set";
+  return status(m).text;
+}
+
+function touch(step) {
+  state[step].touched = true;
+  state[step].saved = false;
+  state.sent = null;
+}
+
+function toggleList(list, id) {
+  const index = list.indexOf(id);
+  if (index >= 0) list.splice(index, 1);
+  else list.push(id);
+}
+
+function applySuggestions() {
+  const reach = suggestedReach();
+  const timing = suggestedTiming();
+  if (state.audience.permission !== "optin" || state.audience.reach !== reach || !state.audience.lookalike) {
+    state.audience.saved = false;
+  }
+  state.audience.permission = "optin";
+  state.audience.reach = reach;
+  state.audience.lookalike = true;
+  state.audience.touched = true;
+
+  if (state.message.mode !== "dynamic") state.message.saved = false;
+  state.message.mode = "dynamic";
+  state.message.touched = true;
+
+  if (state.timing.mode !== timing) state.timing.saved = false;
+  state.timing.mode = timing;
+  if (timing === "fixed") state.timing.fixedWhen = state.timing.fixedWhen || "tomorrow";
+  state.timing.touched = true;
+  state.suggestionsApplied = true;
+  state.sent = null;
+}
+
+function bandLabel(band) {
+  if (band === "over") return "Over limit";
+  if (band === "high") return "High";
+  return "Safe";
+}
+
+function optButton(action, id, on, title, detail, extra) {
+  return `<button type="button" class="opt${on ? " on" : ""}" data-action="${action}" data-id="${id}" aria-pressed="${on}">
+    <span><span class="opt-title">${title}</span>${detail ? `<span class="opt-detail">${detail}</span>` : ""}</span>
+    ${extra ? `<span class="opt-meta">${extra}</span>` : ""}
+  </button>`;
+}
+
+function tag(text, ok) {
+  return `<span class="tag${ok ? " ok" : ""}">${text}</span>`;
+}
+
+function channelChip(action, id, on, extra) {
+  const ch = CH[id];
+  const partial = on === "partial";
+  const selected = on === true;
+  return `<button type="button" class="chip${selected ? " on" : ""}${partial ? " partial" : ""}" data-action="${action}" data-id="${id}" aria-pressed="${selected}">
+    <i class="dot" style="background:${ch.color}"></i>${ch.label} ${Math.round(ch.reach * 100)}%${extra ? " " + extra : ""}
+  </button>`;
+}
+
+function viewGoal() {
+  return Object.keys(GOAL).map((id) => {
+    const item = GOAL[id];
+    return optButton("goal", id, state.goal.value === id, item.label, item.detail);
+  }).join("");
+}
+
+function viewAudience(m) {
+  const perm = Object.keys(PERM).map((id) => {
+    const item = PERM[id];
+    const suggested = id === "optin" ? tag("Suggested") : "";
+    return optButton("permission", id, state.audience.permission === id, item.label, `${item.detail} · ×${fmtMult(item.mult)}`, suggested);
+  }).join("");
+
+  let chips = "";
+  if (state.audience.stagesOpen) {
+    chips = STAGES.map((s) => {
+      const on = !!state.audience.stages[s.id];
+      return `<button type="button" class="chip${on ? " on" : ""}" data-action="stage" data-id="${s.id}" aria-pressed="${on}">${s.label} ${s.k}k</button>`;
+    }).join("");
+  } else {
+    chips = GROUPS.map((g) => {
+      const stages = STAGES.filter((s) => g.ids.includes(s.id));
+      const onCount = stages.filter((s) => state.audience.stages[s.id]).length;
+      const k = stages.reduce((sum, s) => sum + s.k, 0);
+      const cls = onCount === stages.length ? " on" : onCount > 0 ? " partial" : "";
+      const pressed = onCount === stages.length ? "true" : onCount > 0 ? "mixed" : "false";
+      return `<button type="button" class="chip${cls}" data-action="group" data-id="${g.id}" aria-pressed="${pressed}">${g.label} ${k}k</button>`;
+    }).join("");
+  }
+
+  const reach = Object.keys(REACH).map((id) => {
+    const item = REACH[id];
+    const suggested = id === suggestedReach() ? tag("Suggested") : "";
+    const count = `<span class="count">${fmtCount(m.reachCounts[id])}</span>`;
+    return optButton("reach", id, state.audience.reach === id, `${item.label} ×${fmtMult(item.share)}`, "", suggested + count);
+  }).join("");
+
+  const notes = [];
+  if (state.audience.stages.dormant) notes.push(`<div class="note warn">Dormant churned: 2.5x complaint risk · sent last in waves</div>`);
+  if (state.audience.stages.anonymous) notes.push(`<div class="note">Anonymous readers reachable by push and in-app only</div>`);
+
+  return `
+    <div class="h">Permission</div>
+    ${perm}
+    <div class="h">Lifecycle</div>
+    <div class="chips">${chips}</div>
+    <div class="stage-link"><button type="button" class="link" data-action="stages">${state.audience.stagesOpen ? "Fewer" : "All 10 stages"}</button></div>
+    ${notes.join("")}
+    <div class="h">Reach</div>
+    ${reach}
+    <label class="check">
+      <input type="checkbox" data-action="lookalike" ${state.audience.lookalike ? "checked" : ""}>
+      <span>+${fmtCount(m.lookalikeAdd)} readers similar to Animals fans · within their permissions</span>
+      ${tag("Suggested")}
+    </label>
+    <div class="note">Next 20k: mostly Soft-lapse · 1.1% click rate · 3x complaint risk</div>
+  `;
+}
+
+function viewEmphasis() {
+  const options = Object.keys(EMPH).map((id) => {
+    const item = EMPH[id];
+    return optButton("emphasis", id, state.emphasis.value === id, item.label, item.detail);
+  }).join("");
+  return options + `<div class="note">Urgent sends this week: 1 of 2</div>`;
+}
+
+function contentCards(m) {
+  const ids = m.ids;
+  const cards = [];
+  if (ids.includes("email")) {
+    cards.push(`<div class="card">
+      <div class="card-h"><i class="dot" style="background:${CH.email.color}"></i><strong>Email</strong></div>
+      <div class="subject">Otters, owls and one very patient tortoise</div>
+      <label class="check"><input type="checkbox" data-action="preview-text" ${state.message.preview ? "checked" : ""}> Preview text</label>
+      <label class="check"><input type="checkbox" data-action="lead" ${state.message.lead ? "checked" : ""}> Lead story under 24h old</label>
+    </div>`);
+  }
+  if (ids.includes("push")) {
+    const title = state.message.pushTitle;
+    const over = title.length > 50;
+    const body = state.message.pushEditing
+      ? `<div class="field"><span>Title</span><input id="push-title" type="text" value="${esc(title)}" aria-label="Title" autocomplete="off"></div>
+         <div class="field"><span>Body</span><input id="push-body" type="text" aria-label="Body" value="${esc(state.message.pushBody)}" autocomplete="off"></div>`
+      : `<div class="push-title">${esc(title)}</div><div class="push-body">${esc(state.message.pushBody)}</div>`;
+    cards.push(`<div class="card${state.message.usingDraft ? " using" : ""}">
+      <div class="card-h">
+        <i class="dot" style="background:${CH.push.color}"></i><strong>Push</strong>
+        ${tag("Suggested from email")}
+        <span class="grow"></span>
+        <button type="button" class="btn" data-action="push-edit">${state.message.pushEditing ? "Done" : "Edit"}</button>
+        <button type="button" class="btn${state.message.usingDraft ? " using" : ""}" data-action="push-draft">${state.message.usingDraft ? "Using draft" : "Use draft"}</button>
+      </div>
+      ${body}
+      <div class="note count${over ? " over" : ""}" id="push-count">${title.length}/50</div>
+    </div>`);
+  }
+  if (ids.includes("inapp")) {
+    cards.push(`<div class="card">
+      <div class="card-h"><i class="dot" style="background:${CH.inapp.color}"></i><strong>In-app</strong> ${tag("From email", true)}</div>
+      <div class="note">Lead story card · uses the email headline and image</div>
+    </div>`);
+  }
+  if (ids.includes("sms")) {
+    const len = state.message.sms.length;
+    cards.push(`<div class="card">
+      <div class="card-h"><i class="dot" style="background:${CH.sms.color}"></i><strong>SMS</strong><span class="grow"></span><span class="count${len > 160 ? " over" : ""}" id="sms-count">${len}/160</span></div>
+      <textarea id="sms-body" rows="3" aria-label="SMS" autocomplete="off">${esc(state.message.sms)}</textarea>
+    </div>`);
+  }
+  return cards.join("");
+}
+
+function viewMessage(m) {
+  const modes = Object.keys(MODE).map((id) => {
+    const item = MODE[id];
+    const suggested = id === "dynamic" ? tag("Suggested") : "";
+    return optButton("mode", id, state.message.mode === id, item.label, item.detail, suggested);
+  }).join("");
+
+  let detail = "";
+  if (state.message.mode === "single") {
+    const chips = CH_ORDER.map((id) => channelChip("single", id, state.message.single === id, fmtCount(m.singleCounts[id]))).join("");
+    detail = `<div class="chips" style="margin-top:8px">${chips}</div>`;
+  } else if (state.message.mode === "multiple") {
+    const chips = CH_ORDER.map((id) => channelChip("multi", id, state.message.multi.includes(id))).join("");
+    const warn = m.dupPeople > 30000;
+    detail = `<div class="chips" style="margin-top:8px">${chips}</div>
+      <div class="note${warn ? " warn" : ""}">${fmtCount(m.unique)} readers · ${fmtCount(m.messages)} messages · ${fmtCount(m.dupPeople)} readers get more than one</div>`;
+  } else {
+    const pref = [
+      optButton("pref", "declared", state.message.preference === "declared", "Declared only", "22% have one · rest get email"),
+      optButton("pref", "predicted", state.message.preference === "predicted", "Declared, then predicted", "Model fills in the rest", tag("Suggested"))
+    ].join("");
+    const chips = CH_ORDER.map((id) => channelChip("allow", id, state.message.allowed.includes(id))).join("");
+    const total = m.reached || 0;
+    const bar = CH_ORDER.filter((id) => m.vol[id]).map((id) => {
+      const width = total ? (m.vol[id] / total) * 100 : 0;
+      return `<span style="width:${width}%;background:${CH[id].color}"></span>`;
+    }).join("");
+    const legend = CH_ORDER.filter((id) => m.vol[id]).map((id) => {
+      return `<i><b class="dot" style="background:${CH[id].color}"></b>${CH[id].label} ${fmtCount(m.vol[id])}</i>`;
+    }).join("");
+    detail = `
+      <div class="h">Preference</div>
+      ${pref}
+      <div class="h">Allowed channels</div>
+      <div class="chips">${chips}</div>
+      <div class="bar">${bar}</div>
+      <div class="legend">${legend}</div>
+      <div class="note">${fmtCount(m.reached)} readers · one message each · est. reads ${fmtLift(m.lift)} vs email only · declared preference always wins</div>
+    `;
+  }
+  return modes + detail + contentCards(m);
+}
+
+function timingNote(m) {
+  const quiet = m.ids.includes("push") || m.ids.includes("sms") ? " · quiet hours 9 PM–8 AM" : "";
+    if (state.timing.mode === "fixed") {
+    if (state.timing.fixedWhen === "now") return { text: "Sends within minutes" + quiet, warn: false };
+    if (state.timing.fixedWhen === "tomorrow") {
+      return { text: "Morning Briefing reaches 61% of this audience at 7:00 AM · 9:30 AM is open" + quiet, warn: true };
+    }
+    return quiet ? { text: "Quiet hours 9 PM–8 AM", warn: false } : null;
+  }
+  if (state.timing.mode === "geo") {
+    return { text: "7:00 AM in each reader's time zone · 8% unknown, sent at 7:00 AM ET" + quiet, warn: false };
+  }
+  if (state.timing.mode === "reader") {
+    return { text: "Each reader's usual reading time within 6 hours · 7:00 AM local when unknown" + quiet, warn: false };
+  }
+  return null;
+}
+
+function viewTiming(m) {
+  const options = Object.keys(TIME).map((id) => {
+    const item = TIME[id];
+    const suggested = id === suggestedTiming() ? tag("Suggested") : "";
+    return optButton("timing", id, state.timing.mode === id, item.label, item.detail, suggested);
+  }).join("");
+  let chips = "";
+  if (state.timing.mode === "fixed") {
+    chips = `<div class="chips" style="margin-top:8px">
+      <button type="button" class="chip${state.timing.fixedWhen === "now" ? " on" : ""}" data-action="when" data-id="now">Now</button>
+      <button type="button" class="chip${state.timing.fixedWhen === "tomorrow" ? " on" : ""}" data-action="when" data-id="tomorrow">7:00 AM ET tomorrow</button>
+    </div>`;
+  }
+  const note = timingNote(m);
+  return options + chips + (note ? `<div class="note${note.warn ? " warn" : ""}">${note.text}</div>` : "");
+}
+
+function preSend(m) {
+  const bits = [];
+  let warn = false;
+  if (state.timing.mode === "fixed" && state.timing.fixedWhen === "tomorrow") {
+    bits.push("Overlaps Morning Briefing");
+    warn = true;
+  } else bits.push("No overlap with other sends");
+  if (state.emphasis.value === "urgent") {
+    bits.push("skips frequency limits");
+    warn = true;
+  } else bits.push("within frequency");
+  if (state.message.mode === "multiple" && m.dupPeople > 0) {
+    bits.push(fmtCount(m.dupPeople) + " get more than one");
+    if (m.dupPeople > 30000) warn = true;
+  }
+  bits.push("permissions verified");
+  bits.push("no spam triggers in subject");
+  return { text: bits.join(" · "), warn };
+}
+
+function viewReview(m) {
+  const st = status(m);
+  const rows = m.rows.map((row) => `<tr data-risk="${esc(row.key)}">
+    <td>${row.name}</td>
+    <td class="num">${fmtRate(row.rate)}</td>
+    <td class="num">${fmtLimit(row.limit)}</td>
+    <td class="num"><span class="band ${row.band}">${bandLabel(row.band)}</span></td>
+  </tr>`).join("");
+  const table = m.rows.length ? `<div class="h">Predicted risk by channel</div>
+    <table>
+      <thead><tr><th>Channel</th><th class="num">Predicted</th><th class="num">Limit</th><th class="num">Status</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>` : "";
+  const check = preSend(m);
+  const open = openSteps();
+  const sendLabel = state.sent === "signoff"
+    ? "Sign-off requested"
+    : state.sent === "send"
+      ? "Sent"
+      : st.kind === "over" ? "Request sign-off" : "Send";
+  return `
+    ${table}
+    <div class="h">Expected results · range</div>
+    <div class="stats">
+      <div class="stat"><b>${fmtRange(m.reads)}</b><span>Reads</span></div>
+      <div class="stat"><b>${fmtRange(m.starts)}</b><span>Subscription starts</span></div>
+      <div class="stat"><b>${fmtRange(m.unsubs)}</b><span>Unsubscribes</span></div>
+      <div class="stat"><b>${fmtRange(m.disables)}</b><span>Disables</span></div>
+    </div>
+    <div class="h">Pre-send check</div>
+    <div class="note${check.warn ? " warn" : ""}" id="presend">${check.text}</div>
+    <div class="note warn" id="open-line" ${open.length ? "" : "hidden"}>Open: ${open.join(", ")}</div>
+    ${state.sent ? `<div class="note" id="sent-note">${state.sent === "signoff" ? "Sign-off requested" : "Send requested"}</div>` : ""}
+    <div class="actions">
+      <button type="button" class="btn" data-action="preview">Preview</button>
+      <button type="button" class="btn primary" id="send-btn" data-action="send" ${state.sent || !allSaved() ? "disabled" : ""}>${sendLabel}</button>
+    </div>
+  `;
+}
+
+function viewBody(step, m) {
+  if (step === "goal") return viewGoal();
+  if (step === "audience") return viewAudience(m);
+  if (step === "emphasis") return viewEmphasis();
+  if (step === "message") return viewMessage(m);
+  if (step === "timing") return viewTiming(m);
+  return viewReview(m);
+}
+
+function view() {
+  const m = compute();
+  const st = status(m);
+  const allOpen = STEP_ORDER.every((step) => state.open[step]);
+  const tabs = STEP_ORDER.map((step) => {
+    const kind = mark(step);
+    const glyph = kind === "done" ? "✓ " : kind === "sugg" ? "◦ " : "";
+    return `<button type="button" data-action="goto" data-step="${step}"><span class="mark ${kind}" id="mark-${step}">${glyph}</span>${STEP_LABEL[step]}</button>`;
+  }).join("");
+  const steps = STEP_ORDER.map((step) => {
+    const open = state.open[step];
+    const save = step === "review" ? "" : `<button type="button" class="save${state[step].saved ? " saved" : ""}" id="save-${step}" data-action="save" data-step="${step}" ${valid(step) ? "" : "disabled"}>${state[step].saved ? "Saved" : "Save"}</button>`;
+    return `<section class="step${open ? "" : " shut"}" id="step-${step}">
+      <div class="step-h">
+        <button type="button" class="step-toggle" data-action="toggle" data-step="${step}">
+          <span class="step-name">${STEP_LABEL[step]}</span>
+          ${open ? "" : `<span class="step-sum">${esc(summary(step, m))}</span>`}
+        </button>
+        ${save}
+      </div>
+      ${open ? `<div class="step-b">${viewBody(step, m)}</div>` : ""}
+    </section>`;
+  }).join("");
+  const preview = state.preview ? viewPreview(m) : "";
+  return `
+    <header class="head">
+      <div>
+        <h1>Animals · Weekly picks</h1>
+        <div class="updated">Updated 3h ago</div>
+      </div>
+      <div class="tools">
+        <div class="pill ${st.kind}" id="pill">${st.text}</div>
+        <button type="button" class="btn primary${state.suggestionsApplied ? " applied" : ""}" id="use-suggestions" data-action="use-suggestions" ${state.suggestionsApplied ? "disabled" : ""}>${state.suggestionsApplied ? "Suggestions applied" : "Use suggestions"}</button>
+        <button type="button" class="link" id="collapse-link" data-action="toggle-all">${allOpen ? "Collapse" : "Expand all"}</button>
+      </div>
+    </header>
+    <nav class="progress">${tabs}</nav>
+    <div class="steps" id="steps">${steps}</div>
+    ${preview}
+  `;
+}
+
+function viewPreview(m) {
+  const blocks = [];
+  if (m.ids.includes("email")) {
+    blocks.push(`<div class="card"><div class="card-h"><i class="dot" style="background:${CH.email.color}"></i><strong>Email</strong></div><div class="subject">Otters, owls and one very patient tortoise</div></div>`);
+  }
+  if (m.ids.includes("push")) {
+    blocks.push(`<div class="card"><div class="card-h"><i class="dot" style="background:${CH.push.color}"></i><strong>Push</strong></div><div class="push-title">${esc(state.message.pushTitle)}</div><div class="push-body">${esc(state.message.pushBody)}</div></div>`);
+  }
+  if (m.ids.includes("inapp")) {
+    blocks.push(`<div class="card"><div class="card-h"><i class="dot" style="background:${CH.inapp.color}"></i><strong>In-app</strong></div><div class="note">Lead story card · Otters, owls and one very patient tortoise</div></div>`);
+  }
+  if (m.ids.includes("sms") && state.message.sms.trim()) {
+    blocks.push(`<div class="card"><div class="card-h"><i class="dot" style="background:${CH.sms.color}"></i><strong>SMS</strong></div><div class="subject">${esc(state.message.sms)}</div></div>`);
+  }
+  return `<div class="modal" id="modal">
+    <div class="dialog" role="dialog" aria-label="Preview">
+      <div class="card-h"><h2>Preview</h2><span class="grow"></span><button type="button" class="btn" data-action="close-preview">Close</button></div>
+      ${blocks.join("") || `<div class="note">No channel selected</div>`}
+    </div>
+  </div>`;
+}
+
+function render() {
+  const scroller = document.getElementById("scroller");
+  const top = scroller.scrollTop;
+  document.getElementById("app").innerHTML = view();
+  scroller.scrollTop = top;
+}
+
+function syncAfterTextInput() {
+  state.message.touched = true;
+  state.message.saved = false;
+  state.sent = null;
+  const btn = document.getElementById("save-message");
+  if (btn) {
+    btn.disabled = !messageValid();
+    btn.textContent = "Save";
+    btn.classList.remove("saved");
+  }
+  const markEl = document.getElementById("mark-message");
+  if (markEl) {
+    markEl.textContent = "";
+    markEl.className = "mark";
+  }
+  const open = openSteps();
+  const line = document.getElementById("open-line");
+  if (line) {
+    line.hidden = open.length === 0;
+    line.textContent = open.length ? "Open: " + open.join(", ") : "";
+  }
+  const send = document.getElementById("send-btn");
+  if (send) {
+    const st = status(compute());
+    send.textContent = st.kind === "over" ? "Request sign-off" : "Send";
+    send.disabled = !allSaved();
+  }
+  const sent = document.getElementById("sent-note");
+  if (sent) sent.remove();
+}
+
+function onClick(e) {
+  if (e.target.id === "modal") {
+    state.preview = false;
+    render();
+    return;
+  }
+  const t = e.target.closest("[data-action]");
+  if (!t) return;
+  const action = t.dataset.action;
+  const id = t.dataset.id;
+  const step = t.dataset.step;
+
+  if (action === "toggle-all") {
+    const all = STEP_ORDER.every((key) => state.open[key]);
+    STEP_ORDER.forEach((key) => { state.open[key] = !all; });
+    render();
+    return;
+  }
+  if (action === "toggle") {
+    state.open[step] = !state.open[step];
+    render();
+    return;
+  }
+  if (action === "goto") {
+    state.open[step] = true;
+    render();
+    const sc = document.getElementById("scroller");
+    const el = document.getElementById("step-" + step);
+    const strip = document.querySelector(".progress");
+    if (sc && el) {
+      const offset = (strip ? strip.offsetHeight : 0) + 12;
+      const top = el.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
+      sc.scrollTop = Math.max(0, top - offset);
+    }
+    return;
+  }
+  if (action === "save") {
+    if (!valid(step)) return;
+    state[step].saved = true;
+    state[step].touched = true;
+    render();
+    return;
+  }
+  if (action === "use-suggestions") {
+    if (state.suggestionsApplied) return;
+    applySuggestions();
+    render();
+    return;
+  }
+  if (action === "goal") {
+    state.goal.value = id;
+    touch("goal");
+    if (!state.audience.touched) state.audience.reach = suggestedReach();
+    if (!state.timing.touched) {
+      state.timing.mode = suggestedTiming();
+      if (state.timing.mode === "fixed") state.timing.fixedWhen = "tomorrow";
+    }
+    render();
+    return;
+  }
+  if (action === "permission") {
+    state.audience.permission = id;
+    touch("audience");
+    render();
+    return;
+  }
+  if (action === "group") {
+    const group = GROUPS.find((item) => item.id === id);
+    const allOn = group.ids.every((sid) => state.audience.stages[sid]);
+    group.ids.forEach((sid) => { state.audience.stages[sid] = !allOn; });
+    touch("audience");
+    render();
+    return;
+  }
+  if (action === "stage") {
+    state.audience.stages[id] = !state.audience.stages[id];
+    touch("audience");
+    render();
+    return;
+  }
+  if (action === "stages") {
+    state.audience.stagesOpen = !state.audience.stagesOpen;
+    render();
+    return;
+  }
+  if (action === "reach") {
+    state.audience.reach = id;
+    touch("audience");
+    render();
+    return;
+  }
+  if (action === "emphasis") {
+    state.emphasis.value = id;
+    touch("emphasis");
+    render();
+    return;
+  }
+  if (action === "mode") {
+    state.message.mode = id;
+    touch("message");
+    render();
+    return;
+  }
+  if (action === "single") {
+    state.message.single = id;
+    touch("message");
+    render();
+    return;
+  }
+  if (action === "multi" || action === "allow") {
+    toggleList(action === "multi" ? state.message.multi : state.message.allowed, id);
+    touch("message");
+    render();
+    return;
+  }
+  if (action === "pref") {
+    state.message.preference = id;
+    touch("message");
+    render();
+    return;
+  }
+  if (action === "push-edit") {
+    state.message.pushEditing = !state.message.pushEditing;
+    touch("message");
+    render();
+    if (state.message.pushEditing) {
+      const field = document.getElementById("push-title");
+      if (field) field.focus();
+    }
+    return;
+  }
+  if (action === "push-draft") {
+    state.message.usingDraft = !state.message.usingDraft;
+    touch("message");
+    render();
+    return;
+  }
+  if (action === "timing") {
+    state.timing.mode = id;
+    touch("timing");
+    render();
+    return;
+  }
+  if (action === "when") {
+    state.timing.fixedWhen = id;
+    touch("timing");
+    render();
+    return;
+  }
+  if (action === "preview") {
+    state.preview = true;
+    render();
+    return;
+  }
+  if (action === "close-preview") {
+    state.preview = false;
+    render();
+    return;
+  }
+  if (action === "send") {
+    if (state.sent || !allSaved()) return;
+    state.sent = status(compute()).kind === "over" ? "signoff" : "send";
+    render();
+  }
+}
+
+function onChange(e) {
+  const action = e.target.dataset.action;
+  if (action === "lookalike") {
+    state.audience.lookalike = e.target.checked;
+    touch("audience");
+    render();
+    return;
+  }
+  if (action === "preview-text") {
+    state.message.preview = e.target.checked;
+    touch("message");
+    render();
+    return;
+  }
+  if (action === "lead") {
+    state.message.lead = e.target.checked;
+    touch("message");
+    render();
+  }
+}
+
+function onInput(e) {
+  if (e.target.id === "push-title") {
+    state.message.pushTitle = e.target.value;
+    const count = document.getElementById("push-count");
+    if (count) {
+      count.textContent = e.target.value.length + "/50";
+      count.classList.toggle("over", e.target.value.length > 50);
+    }
+    syncAfterTextInput();
+    return;
+  }
+  if (e.target.id === "push-body") {
+    state.message.pushBody = e.target.value;
+    syncAfterTextInput();
+    return;
+  }
+  if (e.target.id === "sms-body") {
+    state.message.sms = e.target.value;
+    const count = document.getElementById("sms-count");
+    if (count) {
+      count.textContent = e.target.value.length + "/160";
+      count.classList.toggle("over", e.target.value.length > 160);
+    }
+    syncAfterTextInput();
+  }
+}
+
+const app = document.getElementById("app");
+app.addEventListener("click", onClick);
+app.addEventListener("change", onChange);
+app.addEventListener("input", onInput);
+document.querySelectorAll('a[href="#"]').forEach((a) => {
+  a.addEventListener("click", (e) => e.preventDefault());
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && state.preview) {
+    state.preview = false;
+    render();
+  }
+});
+render();
+</script>
+</body>
+</html>
