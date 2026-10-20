@@ -29,7 +29,9 @@
     --danger-line: #e8a0a8;
     --ml: #534AB7;
     --ml-ink: #3C3489;
-    --ml-soft: rgba(83, 74, 183, 0.12);
+    --ml-soft: rgba(127, 119, 221, 0.15);
+    --from-ink: #0F6E56;
+    --from-soft: rgba(29, 158, 117, 0.12);
     --chrome: #2c2c2c;
     --chrome-ink: #f0f0f0;
     --chrome-muted: #b0b0b0;
@@ -61,7 +63,9 @@
       --danger-soft: rgba(208, 2, 27, 0.2);
       --danger-line: #7a2a33;
       --ml-ink: #d9d5ff;
-      --ml-soft: rgba(83, 74, 183, 0.3);
+      --ml-soft: rgba(127, 119, 221, 0.28);
+      --from-ink: #8fd4c2;
+      --from-soft: rgba(29, 158, 117, 0.22);
       --chrome: #0f0f0f;
       --chrome-line: #000000;
     }
@@ -310,6 +314,7 @@
     margin: 16px 0 6px;
   }
   .h:first-child { margin-top: 0; }
+  label.h { text-transform: none; letter-spacing: 0; font-size: 12px; color: var(--ink); }
 
   .opt {
     width: 100%;
@@ -326,6 +331,11 @@
   }
   .opt:hover { border-color: var(--muted); }
   .opt:last-child { margin-bottom: 0; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tiles.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .tiles .opt, .tiles .card { width: auto; margin: 0; height: 100%; }
+  .tiles .opt { align-items: flex-start; flex-direction: column; justify-content: space-between; }
+  .tiles .opt-meta { flex-wrap: wrap; }
   .opt-title { display: block; font-weight: 600; }
   .opt-detail { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); }
   .opt-meta { display: flex; align-items: center; gap: 8px; flex: none; }
@@ -367,6 +377,65 @@
     white-space: nowrap;
   }
   .tag.ok { color: var(--ok); background: var(--ok-soft); }
+  .tag.from { color: var(--from-ink); background: var(--from-soft); text-transform: none; letter-spacing: 0; font-size: 10px; }
+  .topic-field {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 4px 8px;
+  }
+  .topic-field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .topic-field input[type="text"] {
+    width: auto;
+    flex: 1;
+    min-width: 10em;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+    padding: 4px 2px;
+  }
+  .topic-field input[type="text"]:focus { border: 0; box-shadow: none; }
+  .topic-drop {
+    position: absolute;
+    z-index: 6;
+    left: 0;
+    right: 0;
+    top: calc(100% + 4px);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+  }
+  .topic-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+    padding: 7px 10px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+  }
+  .topic-row:last-child { border-bottom: 0; }
+  .topic-row.active, .topic-row:hover { background: var(--accent-soft); }
+  .topic-row .path { color: var(--muted); }
+  .topic-row .path b { color: var(--ink); font-weight: 700; }
+  .topic-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .topic-row .chip { pointer-events: none; }
+  .refine { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 8px; }
+  .refine-label { font-size: 12px; color: var(--muted); margin-right: 2px; }
+  .browse { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .browse .col { border: 1px solid var(--line); border-radius: var(--radius); padding: 6px; min-width: 0; }
+  .browse .chip { display: flex; width: 100%; margin-top: 4px; }
   .count { font-variant-numeric: tabular-nums; }
   .count.over, .over { color: var(--danger); }
   .note { margin-top: 6px; font-size: 12px; color: var(--muted); line-height: 1.4; }
@@ -499,6 +568,10 @@
     .stats { grid-template-columns: 1fr 1fr; }
     .stat:nth-child(2) { border-right: 0; }
     .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .tiles.cols-3 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .tiles, .tiles.cols-3 { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -532,7 +605,7 @@
   </nav>
   <main class="main" id="scroller">
     <div class="page">
-      <div class="crumbs"><a href="#">Message Hub</a><span class="div">/</span><a href="#">Audiences</a><span class="div">/</span>Animals · Weekly picks</div>
+      <div class="crumbs"><a href="#">Message Hub</a><span class="div">/</span><a href="#">Audiences</a><span class="div">/</span><span id="crumb-current">Animals · Weekly picks</span></div>
       <div class="app" id="app"></div>
     </div>
   </main>
@@ -615,6 +688,58 @@ const TIME = {
   reader: { label: "Reader-based", detail: "Each reader's usual time" }
 };
 
+const TAXONOMY = [
+  { id: "news", label: "News", topics: [
+    { id: "us", label: "U.S.", k: 380, subs: [] },
+    { id: "world", label: "World", k: 290, subs: [] },
+    { id: "politics", label: "Politics", k: 340, subs: [] },
+    { id: "local", label: "Local", k: 210, subs: [
+      { id: "ny", label: "New York", share: 0.45, synonyms: [] },
+      { id: "co", label: "Colorado", share: 0.20, synonyms: [] },
+      { id: "tx", label: "Texas", share: 0.25, synonyms: [] }
+    ] }
+  ] },
+  { id: "science", label: "Science & Nature", topics: [
+    { id: "animals", label: "Animals", k: 400, subs: [
+      { id: "wildlife", label: "Wildlife", share: 0.55, synonyms: ["otters", "owls", "birds", "bears", "whales"] },
+      { id: "pets", label: "Pets", share: 0.48, synonyms: ["dogs", "cats", "puppies"] },
+      { id: "zoos", label: "Zoos & aquariums", share: 0.22, synonyms: ["zoo", "aquarium"] },
+      { id: "conservation", label: "Conservation", share: 0.30, synonyms: ["endangered", "habitat"] }
+    ] },
+    { id: "climate", label: "Climate", k: 310, subs: [
+      { id: "extreme", label: "Extreme weather", share: 0.50, synonyms: ["weather", "storms", "hurricanes"] },
+      { id: "policy", label: "Climate policy", share: 0.35, synonyms: [] }
+    ] },
+    { id: "space", label: "Space", k: 220, subs: [] },
+    { id: "health", label: "Health", k: 270, subs: [] }
+  ] },
+  { id: "culture", label: "Culture", topics: [
+    { id: "books", label: "Books", k: 180, subs: [] },
+    { id: "food", label: "Food", k: 350, subs: [
+      { id: "recipes", label: "Recipes", share: 0.60, synonyms: ["cooking"] },
+      { id: "restaurants", label: "Restaurants", share: 0.40, synonyms: ["dining"] }
+    ] },
+    { id: "movies", label: "Movies & TV", k: 300, subs: [] },
+    { id: "music", label: "Music", k: 150, subs: [] }
+  ] },
+  { id: "lifestyle", label: "Lifestyle", topics: [
+    { id: "travel", label: "Travel", k: 240, subs: [] },
+    { id: "parenting", label: "Parenting", k: 160, subs: [] },
+    { id: "style", label: "Style", k: 130, subs: [] }
+  ] },
+  { id: "sports", label: "Sports", topics: [
+    { id: "football", label: "Football", k: 260, subs: [] },
+    { id: "basketball", label: "Basketball", k: 190, subs: [] },
+    { id: "soccer", label: "Soccer", k: 120, subs: [] }
+  ] }
+];
+
+const LOCATIONS = [
+  { id: "colorado", label: "Colorado", share: 0.04, phrase: "in colorado" },
+  { id: "newyork", label: "New York", share: 0.12, phrase: "in new york" },
+  { id: "texas", label: "Texas", share: 0.07, phrase: "in texas" }
+];
+
 const STEP_ORDER = ["goal", "audience", "emphasis", "message", "timing", "review"];
 const STEP_LABEL = {
   goal: "Goal",
@@ -629,7 +754,7 @@ const state = {
   suggestionsApplied: false,
   sent: null,
   preview: false,
-  open: { goal: true, audience: true, emphasis: true, message: true, timing: true, review: true },
+  open: { goal: false, audience: true, emphasis: false, message: true, timing: true, review: false },
   goal: { value: null, saved: false, touched: false },
   audience: {
     permission: "optin",
@@ -643,6 +768,18 @@ const state = {
     },
     saved: false,
     touched: false
+  },
+  topic: {
+    sectionId: "science",
+    topicId: "animals",
+    subIds: [],
+    location: null,
+    browse: false,
+    browseSection: "science",
+    browseTopic: "animals",
+    fromSearch: { location: false, lifecycle: false, permission: false },
+    unused: [],
+    userChanged: false
   },
   emphasis: { value: null, saved: false, touched: false },
   message: {
@@ -728,6 +865,315 @@ function rawK() {
   return selectedStageList().reduce((sum, s) => sum + s.k, 0);
 }
 
+function currentTopic() {
+  if (!state.topic.topicId) return null;
+  for (const section of TAXONOMY) {
+    const topic = section.topics.find((item) => item.id === state.topic.topicId);
+    if (topic) return { section, topic };
+  }
+  return null;
+}
+
+function orderedSubIds() {
+  const cur = currentTopic();
+  if (!cur) return [];
+  return cur.topic.subs.map((sub) => sub.id).filter((id) => state.topic.subIds.includes(id));
+}
+
+function subShare() {
+  const cur = currentTopic();
+  const ids = orderedSubIds();
+  if (!cur || !ids.length) return 1;
+  const shares = ids.map((id) => cur.topic.subs.find((sub) => sub.id === id).share);
+  return 1 - shares.reduce((product, share) => product * (1 - share), 1);
+}
+
+function locationShare() {
+  if (!state.topic.location) return 1;
+  const loc = LOCATIONS.find((item) => item.id === state.topic.location);
+  return loc ? loc.share : 1;
+}
+
+function topicFactor() {
+  const cur = currentTopic();
+  if (!cur) return 1;
+  return (cur.topic.k / 400) * subShare() * locationShare();
+}
+
+function interestedCount() {
+  const cur = currentTopic();
+  const k = cur ? cur.topic.k : 400;
+  return k * 1000 * (cur ? subShare() : 1) * locationShare();
+}
+
+function isLeadTopic() {
+  return state.topic.topicId === "animals" && state.topic.subIds.length === 0 && !state.topic.location;
+}
+
+function tokenLabel() {
+  const cur = currentTopic();
+  if (!cur) return "";
+  const ids = orderedSubIds();
+  if (!ids.length) return cur.topic.label;
+  const names = ids.map((id) => cur.topic.subs.find((sub) => sub.id === id).label);
+  return cur.topic.label + " › " + names.join(", ");
+}
+
+function topicLeaf() {
+  const cur = currentTopic();
+  if (!cur) return "all readers";
+  const ids = orderedSubIds();
+  if (ids.length === 1) return cur.topic.subs.find((sub) => sub.id === ids[0]).label;
+  return cur.topic.label;
+}
+
+function pageTitle() {
+  return (tokenLabel() || "All readers") + " · Weekly picks";
+}
+
+function catalog() {
+  const rows = [];
+  TAXONOMY.forEach((section) => {
+    section.topics.forEach((topic) => {
+      rows.push({
+        sectionId: section.id,
+        topicId: topic.id,
+        subId: null,
+        path: [section.label, topic.label],
+        k: topic.k,
+        names: [topic.label.toLowerCase()]
+      });
+      topic.subs.forEach((sub) => {
+        rows.push({
+          sectionId: section.id,
+          topicId: topic.id,
+          subId: sub.id,
+          path: [section.label, topic.label, sub.label],
+          k: topic.k * sub.share,
+          names: [sub.label.toLowerCase()].concat(sub.synonyms || [])
+        });
+      });
+    });
+  });
+  return rows;
+}
+
+function findTopic(topicId) {
+  for (const section of TAXONOMY) {
+    const topic = section.topics.find((item) => item.id === topicId);
+    if (topic) return topic;
+  }
+  return null;
+}
+
+function normPhrase(value) {
+  return String(value).toLowerCase().replace(/&/g, " & ").replace(/[^a-z0-9&]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function parseQuery(raw) {
+  let text = " " + normPhrase(raw) + " ";
+  let location = null;
+  LOCATIONS.forEach((loc) => {
+    const phrase = " " + loc.phrase + " ";
+    if (text.includes(phrase)) {
+      location = loc.id;
+      text = text.replace(phrase, " ");
+    }
+  });
+  let permission = null;
+  ["opted in", "newsletter readers"].forEach((phrase) => {
+    const wrapped = " " + phrase + " ";
+    if (text.includes(wrapped)) {
+      permission = "optin";
+      text = text.replace(wrapped, " ");
+    }
+  });
+  let stageIds = null;
+  if (/\b(lapsed|former)\b/.test(text)) {
+    stageIds = ["former"];
+    text = text.replace(/\b(lapsed|former)\b/g, " ").replace(/\b(subscribers|paying)\b/g, " ");
+  } else if (/\bnew readers\b/.test(text) || /\btrial\b/.test(text)) {
+    stageIds = ["trial", "freeMonth"];
+    text = text.replace(/\bnew readers\b/g, " ").replace(/\btrial\b/g, " ");
+  } else if (/\b(subscribers|paying)\b/.test(text)) {
+    stageIds = ["allAccess", "family", "singleBrand"];
+    text = text.replace(/\b(subscribers|paying)\b/g, " ");
+  }
+  const beforeFiller = text;
+  text = text.replace(/\binterested in\b/g, " ");
+  ["fans", "fan", "readers", "reader", "who", "like", "likes", "the", "a", "an", "and", "of", "to"].forEach((word) => {
+    text = text.replace(new RegExp("\\b" + word + "\\b", "g"), " ");
+  });
+  const fillerUsed = normPhrase(beforeFiller) !== normPhrase(text);
+  text = text.replace(/\s+/g, " ").trim();
+  const aliases = [];
+  catalog().forEach((row) => {
+    row.names.forEach((name) => aliases.push({ name: normPhrase(name), row }));
+  });
+  aliases.sort((a, b) => b.name.length - a.name.length);
+  const matches = [];
+  let guard = 0;
+  while (text && guard < 8) {
+    guard += 1;
+    const hit = aliases.find((alias) => (" " + text + " ").includes(" " + alias.name + " "));
+    if (!hit) break;
+    if (!matches.some((row) => row.topicId === hit.row.topicId && row.subId === hit.row.subId)) matches.push(hit.row);
+    text = (" " + text + " ").replace(" " + hit.name + " ", " ").replace(/\s+/g, " ").trim();
+  }
+  const unused = text ? text.split(" ").filter(Boolean) : [];
+  const interpret = !!(location || permission || stageIds || unused.length || matches.length > 1 || fillerUsed);
+  return { location, permission, stageIds, matches, unused, interpret };
+}
+
+function selectionFrom(parsed) {
+  if (!parsed.matches.length) return null;
+  const first = parsed.matches[0];
+  const same = parsed.matches.filter((row) => row.topicId === first.topicId);
+  const subIds = same.map((row) => row.subId).filter(Boolean);
+  return { sectionId: first.sectionId, topicId: first.topicId, subIds };
+}
+
+function fmtAbout(n) {
+  if (n >= 1000) {
+    const rounded = Math.round(n / 1000);
+    if (Math.abs(n / 1000 - rounded) > 0.05) return "about " + rounded + "k";
+  }
+  return fmtCount(n);
+}
+
+function interpretCount(sel, parsed) {
+  const topic = findTopic(sel.topicId);
+  const shares = sel.subIds.map((id) => topic.subs.find((sub) => sub.id === id).share);
+  const share = shares.length ? 1 - shares.reduce((product, item) => product * (1 - item), 1) : 1;
+  const loc = parsed.location ? LOCATIONS.find((item) => item.id === parsed.location).share : 1;
+  return topic.k * 1000 * share * loc;
+}
+
+function buildTopicRows(query) {
+  const parsed = parseQuery(query);
+  if (!String(query).trim()) return [];
+  const rows = [];
+  if (parsed.interpret && parsed.matches.length) {
+    const sel = selectionFrom(parsed);
+    rows.push({ type: "interpret", parsed, sel });
+  }
+  const seen = new Set();
+  parsed.matches.forEach((item) => {
+    const key = item.topicId + ":" + item.subId;
+    if (seen.has(key)) return;
+    seen.add(key);
+    rows.push({ type: "match", item });
+  });
+  if (parsed.matches.length === 1 && !parsed.matches[0].subId && !parsed.interpret) {
+    const topic = findTopic(parsed.matches[0].topicId);
+    topic.subs.forEach((sub) => {
+      const item = catalog().find((row) => row.topicId === topic.id && row.subId === sub.id);
+      if (item) rows.push({ type: "match", item });
+    });
+  }
+  if (!rows.length) rows.push({ type: "none" });
+  return rows.slice(0, 6);
+}
+
+const topicUi = { query: "", open: false, active: 0, rows: [] };
+
+function markTopicEdited() {
+  state.topic.userChanged = !isLeadTopic();
+  state.audience.saved = false;
+  state.audience.touched = true;
+  state.sent = null;
+}
+
+function applyTopicRow(row) {
+  if (!row || row.type === "none") {
+    state.topic.browse = true;
+    if (state.topic.topicId) {
+      state.topic.browseSection = state.topic.sectionId;
+      state.topic.browseTopic = state.topic.topicId;
+    }
+    topicUi.query = "";
+    topicUi.open = false;
+    topicUi.rows = [];
+    render();
+    return;
+  }
+  if (row.type === "interpret") {
+    state.topic.sectionId = row.sel.sectionId;
+    state.topic.topicId = row.sel.topicId;
+    state.topic.subIds = row.sel.subIds.slice();
+    state.topic.browseSection = row.sel.sectionId;
+    state.topic.browseTopic = row.sel.topicId;
+    if (row.parsed.location) {
+      state.topic.location = row.parsed.location;
+      state.topic.fromSearch.location = true;
+    }
+    if (row.parsed.stageIds) {
+      STAGES.forEach((stage) => { state.audience.stages[stage.id] = row.parsed.stageIds.includes(stage.id); });
+      state.topic.fromSearch.lifecycle = true;
+    }
+    if (row.parsed.permission) {
+      state.audience.permission = row.parsed.permission;
+      state.topic.fromSearch.permission = true;
+    }
+    state.topic.unused = row.parsed.unused.slice();
+  } else {
+    state.topic.sectionId = row.item.sectionId;
+    state.topic.topicId = row.item.topicId;
+    state.topic.subIds = row.item.subId ? [row.item.subId] : [];
+    state.topic.browseSection = row.item.sectionId;
+    state.topic.browseTopic = row.item.topicId;
+    state.topic.unused = [];
+  }
+  markTopicEdited();
+  topicUi.query = "";
+  topicUi.open = false;
+  topicUi.rows = [];
+  render();
+}
+
+function paintTopicDrop() {
+  const field = document.getElementById("topic-field");
+  const input = document.getElementById("topic-search");
+  if (!field || !input) return;
+  let drop = document.getElementById("topic-drop");
+  if (!topicUi.open || !topicUi.rows.length) {
+    if (drop) drop.remove();
+    input.setAttribute("aria-expanded", "false");
+    return;
+  }
+  if (!drop) {
+    drop = document.createElement("div");
+    drop.id = "topic-drop";
+    drop.className = "topic-drop";
+    drop.setAttribute("role", "listbox");
+    field.appendChild(drop);
+  }
+  input.setAttribute("aria-expanded", "true");
+  drop.innerHTML = topicUi.rows.map((row, index) => {
+    const active = index === topicUi.active ? " active" : "";
+    if (row.type === "none") {
+      return `<div class="topic-row${active}" role="option" data-action="topic-apply" data-index="${index}"><span>No matching topic · try a broader word</span><button type="button" class="link" data-action="browse-topics">Browse all topics</button></div>`;
+    }
+    if (row.type === "interpret") {
+      const topic = findTopic(row.sel.topicId);
+      const labels = row.sel.subIds.length
+        ? row.sel.subIds.map((id) => topic.subs.find((sub) => sub.id === id).label)
+        : [topic.label];
+      if (row.parsed.location) labels.push(LOCATIONS.find((item) => item.id === row.parsed.location).label);
+      if (row.parsed.stageIds) {
+        if (row.parsed.stageIds.includes("former")) labels.push("Former subscribers");
+        else if (row.parsed.stageIds.includes("trial")) labels.push("Trial");
+        else labels.push("Subscribers");
+      }
+      if (row.parsed.permission) labels.push("Newsletter opt-in");
+      const chips = labels.map((label) => `<span class="chip">${esc(label)}</span>`).join("");
+      return `<button type="button" class="topic-row${active}" role="option" data-action="topic-apply" data-index="${index}"><span class="topic-chips">${chips}</span><span>→ ${fmtAbout(interpretCount(row.sel, row.parsed))} interested</span>${tag("Interpreted")}</button>`;
+    }
+    const path = row.item.path.map((part, idx) => idx === row.item.path.length - 1 ? `<b>${esc(part)}</b>` : esc(part)).join(" › ");
+    return `<button type="button" class="topic-row${active}" role="option" data-action="topic-apply" data-index="${index}"><span class="path">${path}</span><span class="count">${fmtCount(row.item.k * 1000)}</span></button>`;
+  }).join("");
+}
+
 function channelSet() {
   let ids = [];
   if (state.message.mode === "single") ids = state.message.single ? [state.message.single] : [];
@@ -758,7 +1204,8 @@ function compute() {
   const pool = state.audience.lookalike ? raw * 1.1 : raw;
   const perm = PERM[state.audience.permission];
   const reach = state.audience.reach ? REACH[state.audience.reach] : null;
-  const base = reach && raw ? pool * 1000 * reach.share * perm.mult : 0;
+  const tf = topicFactor();
+  const base = reach && raw ? pool * 1000 * reach.share * perm.mult * tf : 0;
   const ids = channelSet();
   const vol = {};
   let unique = 0;
@@ -820,14 +1267,14 @@ function compute() {
   const lift = emailOnlyReads ? (reads / emailOnlyReads - 1) * 100 : 0;
   const reachCounts = {};
   Object.keys(REACH).forEach((id) => {
-    reachCounts[id] = raw ? pool * 1000 * REACH[id].share * perm.mult : 0;
+    reachCounts[id] = raw ? pool * 1000 * REACH[id].share * perm.mult * tf : 0;
   });
   const singleCounts = {};
   CH_ORDER.forEach((id) => { singleCounts[id] = base * CH[id].reach; });
   return {
     raw, pool, base, ids, vol, unique, messages, dupPeople, reached, factor, emailFactor,
     rows, reads, starts, unsubs, disables, lift, reachCounts, singleCounts,
-    lookalikeAdd: raw * 0.1 * 1000
+    lookalikeAdd: raw * 0.1 * 1000 * tf
   };
 }
 
@@ -864,7 +1311,8 @@ function allSaved() { return openSteps().length === 0; }
 function mark(step) {
   if (step === "review") return allSaved() ? "done" : "";
   if (state[step].saved) return "done";
-  if ((step === "audience" || step === "message" || step === "timing") && !state[step].touched) return "sugg";
+  if (step === "audience" && !state.suggestionsApplied && !state.topic.userChanged) return "sugg";
+  if ((step === "message" || step === "timing") && !state[step].touched) return "sugg";
   return "";
 }
 
@@ -912,6 +1360,16 @@ function applySuggestions() {
   state.audience.reach = reach;
   state.audience.lookalike = true;
   state.audience.touched = true;
+  if (!state.topic.userChanged) {
+    state.topic.sectionId = "science";
+    state.topic.topicId = "animals";
+    state.topic.subIds = [];
+    state.topic.location = null;
+    state.topic.unused = [];
+    state.topic.fromSearch = { location: false, lifecycle: false, permission: false };
+    state.topic.browseSection = "science";
+    state.topic.browseTopic = "animals";
+  }
 
   if (state.message.mode !== "dynamic") state.message.saved = false;
   state.message.mode = "dynamic";
@@ -931,6 +1389,10 @@ function bandLabel(band) {
   return "Safe";
 }
 
+function tiles(inner, cols) {
+  return `<div class="tiles${cols === 3 ? " cols-3" : ""}">${inner}</div>`;
+}
+
 function optButton(action, id, on, title, detail, extra) {
   return `<button type="button" class="opt${on ? " on" : ""}" data-action="${action}" data-id="${id}" aria-pressed="${on}">
     <span><span class="opt-title">${title}</span>${detail ? `<span class="opt-detail">${detail}</span>` : ""}</span>
@@ -938,8 +1400,9 @@ function optButton(action, id, on, title, detail, extra) {
   </button>`;
 }
 
-function tag(text, ok) {
-  return `<span class="tag${ok ? " ok" : ""}">${text}</span>`;
+function tag(text, kind) {
+  const cls = kind === true || kind === "ok" ? " ok" : kind === "from" ? " from" : "";
+  return `<span class="tag${cls}">${text}</span>`;
 }
 
 function channelChip(action, id, on, extra) {
@@ -952,24 +1415,97 @@ function channelChip(action, id, on, extra) {
 }
 
 function viewGoal() {
-  return Object.keys(GOAL).map((id) => {
+  return tiles(Object.keys(GOAL).map((id) => {
     const item = GOAL[id];
     return optButton("goal", id, state.goal.value === id, item.label, item.detail);
+  }).join(""));
+}
+
+function viewTopicSearch(m) {
+  const label = tokenLabel();
+  const suggested = isLeadTopic() ? tag("Suggested · lead story") : "";
+  const token = label
+    ? `<button type="button" class="chip on" data-action="topic-clear">${esc(label)} ×</button>${suggested}`
+    : "";
+  const placeholder = label ? "" : "Search topics or describe readers, e.g. wildlife fans in Colorado";
+  const cur = currentTopic();
+  const narrow = cur ? cur.topic.subs.map((sub) => {
+    const on = state.topic.subIds.includes(sub.id);
+    return `<button type="button" class="chip${on ? " on" : ""}" data-action="narrow" data-id="${sub.id}" aria-pressed="${on}">${esc(sub.label)} ${fmtCount(cur.topic.k * sub.share * 1000)}</button>`;
+  }).join("") : "";
+  let location = "";
+  if (state.topic.location) {
+    const loc = LOCATIONS.find((item) => item.id === state.topic.location);
+    const parentK = cur ? cur.topic.k : 400;
+    const count = fmtCount(parentK * subShare() * loc.share * 1000);
+    location = `<button type="button" class="chip on" data-action="location-clear">${esc(loc.label)} ${count} ×</button>${state.topic.fromSearch.location ? tag("From search", "from") : ""}`;
+  }
+  const browse = state.topic.browse ? viewBrowse() : "";
+  const summary = `${esc(label || "All readers")} · ${fmtCount(interestedCount())} interested · ${fmtCount(m.base)} newsletter opt-ins · 3.4% click rate · updated 3h ago`;
+  const lead = state.topic.topicId !== "animals" ? `<div class="note warn">Lead story is tagged Animals</div>` : "";
+  const unused = state.topic.unused.length
+    ? `<div class="note warn">Not used: ${state.topic.unused.map((word) => `'${esc(word)}'`).join(", ")}</div>`
+    : "";
+  return `
+    <label class="h" for="topic-search">Topic</label>
+    <div class="topic-field" id="topic-field">
+      ${token}
+      <input id="topic-search" type="text" placeholder="${esc(placeholder)}" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="topic-drop" aria-label="Topic">
+    </div>
+    <div class="refine">
+      <span class="refine-label">Narrow:</span>
+      ${narrow}
+      ${location}
+      <button type="button" class="link" data-action="browse-topics">Browse all topics</button>
+    </div>
+    ${browse}
+    <div class="note">${summary}</div>
+    <div class="note">Source: Segment topic scores · as of 3h ago · daily refresh</div>
+    <div class="note">Fallback: newsletter opt-in if a score is missing or older than 36h · Excluded: suppressed, messaged in 24h</div>
+    ${lead}
+    ${unused}
+  `;
+}
+
+function viewBrowse() {
+  const section = TAXONOMY.find((item) => item.id === state.topic.browseSection) || TAXONOMY[0];
+  const topic = section.topics.find((item) => item.id === state.topic.browseTopic) || section.topics[0];
+  const sectionBtns = TAXONOMY.map((item) => {
+    const on = item.id === section.id;
+    return `<button type="button" class="chip${on ? " on" : ""}" data-action="browse-section" data-id="${item.id}" aria-pressed="${on}">${esc(item.label)}</button>`;
   }).join("");
+  const topicBtns = section.topics.map((item) => {
+    const on = item.id === topic.id;
+    return `<button type="button" class="chip${on ? " on" : ""}" data-action="browse-topic" data-id="${item.id}" aria-pressed="${on}">${esc(item.label)} ${fmtCount(item.k * 1000)}</button>`;
+  }).join("");
+  const subBtns = topic.subs.length
+    ? topic.subs.map((sub) => {
+      const on = state.topic.topicId === topic.id && state.topic.subIds.length === 1 && state.topic.subIds[0] === sub.id;
+      return `<button type="button" class="chip${on ? " on" : ""}" data-action="browse-sub" data-id="${sub.id}" aria-pressed="${on}">${esc(sub.label)} ${fmtCount(topic.k * sub.share * 1000)}</button>`;
+    }).join("")
+    : `<div class="note">No subtopics</div>`;
+  return `<div class="browse">
+    <div class="col"><div class="refine-label">Section</div>${sectionBtns}</div>
+    <div class="col"><div class="refine-label">Topic</div>${topicBtns}</div>
+    <div class="col"><div class="refine-label">Subtopic</div>${subBtns}</div>
+  </div>`;
 }
 
 function viewAudience(m) {
+  const leaf = topicLeaf();
   const perm = Object.keys(PERM).map((id) => {
     const item = PERM[id];
+    const detail = id === "optin" ? `Subscribed to ${currentTopic() ? leaf : "any topic"}` : item.detail;
     const suggested = id === "optin" ? tag("Suggested") : "";
-    return optButton("permission", id, state.audience.permission === id, item.label, `${item.detail} · ×${fmtMult(item.mult)}`, suggested);
+    return optButton("permission", id, state.audience.permission === id, item.label, `${detail} · ×${fmtMult(item.mult)}`, suggested);
   }).join("");
+  const scale = topicFactor();
 
   let chips = "";
   if (state.audience.stagesOpen) {
     chips = STAGES.map((s) => {
       const on = !!state.audience.stages[s.id];
-      return `<button type="button" class="chip${on ? " on" : ""}" data-action="stage" data-id="${s.id}" aria-pressed="${on}">${s.label} ${s.k}k</button>`;
+      return `<button type="button" class="chip${on ? " on" : ""}" data-action="stage" data-id="${s.id}" aria-pressed="${on}">${s.label} ${fmtCount(s.k * scale * 1000)}</button>`;
     }).join("");
   } else {
     chips = GROUPS.map((g) => {
@@ -978,7 +1514,7 @@ function viewAudience(m) {
       const k = stages.reduce((sum, s) => sum + s.k, 0);
       const cls = onCount === stages.length ? " on" : onCount > 0 ? " partial" : "";
       const pressed = onCount === stages.length ? "true" : onCount > 0 ? "mixed" : "false";
-      return `<button type="button" class="chip${cls}" data-action="group" data-id="${g.id}" aria-pressed="${pressed}">${g.label} ${k}k</button>`;
+      return `<button type="button" class="chip${cls}" data-action="group" data-id="${g.id}" aria-pressed="${pressed}">${g.label} ${fmtCount(k * scale * 1000)}</button>`;
     }).join("");
   }
 
@@ -994,17 +1530,18 @@ function viewAudience(m) {
   if (state.audience.stages.anonymous) notes.push(`<div class="note">Anonymous readers reachable by push and in-app only</div>`);
 
   return `
-    <div class="h">Permission</div>
-    ${perm}
-    <div class="h">Lifecycle</div>
+    ${viewTopicSearch(m)}
+    <div class="h">Permission ${state.topic.fromSearch.permission ? tag("From search", "from") : ""}</div>
+    ${tiles(perm, 3)}
+    <div class="h">Lifecycle ${state.topic.fromSearch.lifecycle ? tag("From search", "from") : ""}</div>
     <div class="chips">${chips}</div>
     <div class="stage-link"><button type="button" class="link" data-action="stages">${state.audience.stagesOpen ? "Fewer" : "All 10 stages"}</button></div>
     ${notes.join("")}
     <div class="h">Reach</div>
-    ${reach}
+    ${tiles(reach)}
     <label class="check">
       <input type="checkbox" data-action="lookalike" ${state.audience.lookalike ? "checked" : ""}>
-      <span>+${fmtCount(m.lookalikeAdd)} readers similar to Animals fans · within their permissions</span>
+      <span>+${fmtCount(m.lookalikeAdd)} readers similar to ${esc(currentTopic() ? topicLeaf() + " fans" : "all readers")} · within their permissions</span>
       ${tag("Suggested")}
     </label>
     <div class="note">Next 20k: mostly Soft-lapse · 1.1% click rate · 3x complaint risk</div>
@@ -1016,7 +1553,7 @@ function viewEmphasis() {
     const item = EMPH[id];
     return optButton("emphasis", id, state.emphasis.value === id, item.label, item.detail);
   }).join("");
-  return options + `<div class="note">Urgent sends this week: 1 of 2</div>`;
+  return tiles(options, 3) + `<div class="note">Urgent sends this week: 1 of 2</div>`;
 }
 
 function contentCards(m) {
@@ -1097,7 +1634,7 @@ function viewMessage(m) {
     }).join("");
     detail = `
       <div class="h">Preference</div>
-      ${pref}
+      ${tiles(pref)}
       <div class="h">Allowed channels</div>
       <div class="chips">${chips}</div>
       <div class="bar">${bar}</div>
@@ -1105,7 +1642,8 @@ function viewMessage(m) {
       <div class="note">${fmtCount(m.reached)} readers · one message each · est. reads ${fmtLift(m.lift)} vs email only · declared preference always wins</div>
     `;
   }
-  return modes + detail + contentCards(m);
+  const cards = contentCards(m);
+  return tiles(modes, 3) + detail + (cards ? `<div class="tiles">${cards}</div>` : "");
 }
 
 function timingNote(m) {
@@ -1140,7 +1678,7 @@ function viewTiming(m) {
     </div>`;
   }
   const note = timingNote(m);
-  return options + chips + (note ? `<div class="note${note.warn ? " warn" : ""}">${note.text}</div>` : "");
+  return tiles(options, 3) + chips + (note ? `<div class="note${note.warn ? " warn" : ""}">${note.text}</div>` : "");
 }
 
 function preSend(m) {
@@ -1179,10 +1717,13 @@ function viewReview(m) {
   const check = preSend(m);
   const open = openSteps();
   const sendLabel = state.sent === "signoff"
-    ? "Sign-off requested"
-    : state.sent === "send"
-      ? "Sent"
-      : st.kind === "over" ? "Request sign-off" : "Send";
+    ? "Activation sign-off requested"
+    : state.sent === "activate"
+      ? "Activated"
+      : st.kind === "over" ? "Request activation sign-off" : "Activate audience";
+  const receipt = !state.sent ? "" : state.sent === "signoff"
+    ? `<div class="note" id="sent-note">Activation sign-off requested · ${esc(pageTitle())} · ${fmtCount(m.base)} eligible</div>`
+    : `<div class="note" id="sent-note">Activated · ${esc(pageTitle())} · A-1842 · ${fmtCount(m.base)} eligible · fallback opt-in rules · measure 7 days</div>`;
   return `
     ${table}
     <div class="h">Expected results · range</div>
@@ -1192,10 +1733,10 @@ function viewReview(m) {
       <div class="stat"><b>${fmtRange(m.unsubs)}</b><span>Unsubscribes</span></div>
       <div class="stat"><b>${fmtRange(m.disables)}</b><span>Disables</span></div>
     </div>
-    <div class="h">Pre-send check</div>
+    <div class="h">Before activation</div>
     <div class="note${check.warn ? " warn" : ""}" id="presend">${check.text}</div>
     <div class="note warn" id="open-line" ${open.length ? "" : "hidden"}>Open: ${open.join(", ")}</div>
-    ${state.sent ? `<div class="note" id="sent-note">${state.sent === "signoff" ? "Sign-off requested" : "Send requested"}</div>` : ""}
+    ${receipt}
     <div class="actions">
       <button type="button" class="btn" data-action="preview">Preview</button>
       <button type="button" class="btn primary" id="send-btn" data-action="send" ${state.sent || !allSaved() ? "disabled" : ""}>${sendLabel}</button>
@@ -1239,7 +1780,7 @@ function view() {
   return `
     <header class="head">
       <div>
-        <h1>Animals · Weekly picks</h1>
+        <h1>${esc(pageTitle())}</h1>
         <div class="updated">Updated 3h ago</div>
       </div>
       <div class="tools">
@@ -1279,6 +1820,10 @@ function viewPreview(m) {
 function render() {
   const scroller = document.getElementById("scroller");
   const top = scroller.scrollTop;
+  const title = pageTitle();
+  document.title = title + " · Audiences · Message Hub · Scoop";
+  const crumb = document.getElementById("crumb-current");
+  if (crumb) crumb.textContent = title;
   document.getElementById("app").innerHTML = view();
   scroller.scrollTop = top;
 }
@@ -1307,7 +1852,7 @@ function syncAfterTextInput() {
   const send = document.getElementById("send-btn");
   if (send) {
     const st = status(compute());
-    send.textContent = st.kind === "over" ? "Request sign-off" : "Send";
+    send.textContent = st.kind === "over" ? "Request activation sign-off" : "Activate audience";
     send.disabled = !allSaved();
   }
   const sent = document.getElementById("sent-note");
@@ -1376,6 +1921,7 @@ function onClick(e) {
   }
   if (action === "permission") {
     state.audience.permission = id;
+    state.topic.fromSearch.permission = false;
     touch("audience");
     render();
     return;
@@ -1384,14 +1930,81 @@ function onClick(e) {
     const group = GROUPS.find((item) => item.id === id);
     const allOn = group.ids.every((sid) => state.audience.stages[sid]);
     group.ids.forEach((sid) => { state.audience.stages[sid] = !allOn; });
+    state.topic.fromSearch.lifecycle = false;
     touch("audience");
     render();
     return;
   }
   if (action === "stage") {
     state.audience.stages[id] = !state.audience.stages[id];
+    state.topic.fromSearch.lifecycle = false;
     touch("audience");
     render();
+    return;
+  }
+  if (action === "topic-clear") {
+    state.topic.topicId = null;
+    state.topic.subIds = [];
+    state.topic.unused = [];
+    markTopicEdited();
+    render();
+    return;
+  }
+  if (action === "narrow") {
+    const index = state.topic.subIds.indexOf(id);
+    if (index >= 0) state.topic.subIds.splice(index, 1);
+    else state.topic.subIds.push(id);
+    markTopicEdited();
+    render();
+    return;
+  }
+  if (action === "location-clear") {
+    state.topic.location = null;
+    state.topic.fromSearch.location = false;
+    markTopicEdited();
+    render();
+    return;
+  }
+  if (action === "browse-topics") {
+    state.topic.browse = !state.topic.browse;
+    if (state.topic.browse && state.topic.topicId) {
+      state.topic.browseSection = state.topic.sectionId;
+      state.topic.browseTopic = state.topic.topicId;
+    }
+    topicUi.open = false;
+    render();
+    return;
+  }
+  if (action === "browse-section") {
+    if (state.topic.browseSection !== id) {
+      state.topic.browseSection = id;
+      const section = TAXONOMY.find((item) => item.id === id);
+      state.topic.browseTopic = section.topics[0].id;
+    }
+    render();
+    return;
+  }
+  if (action === "browse-topic") {
+    state.topic.browseTopic = id;
+    state.topic.sectionId = state.topic.browseSection;
+    state.topic.topicId = id;
+    state.topic.subIds = [];
+    state.topic.unused = [];
+    markTopicEdited();
+    render();
+    return;
+  }
+  if (action === "browse-sub") {
+    state.topic.sectionId = state.topic.browseSection;
+    state.topic.topicId = state.topic.browseTopic;
+    state.topic.subIds = [id];
+    state.topic.unused = [];
+    markTopicEdited();
+    render();
+    return;
+  }
+  if (action === "topic-apply") {
+    applyTopicRow(topicUi.rows[Number(t.dataset.index)]);
     return;
   }
   if (action === "stages") {
@@ -1475,7 +2088,7 @@ function onClick(e) {
   }
   if (action === "send") {
     if (state.sent || !allSaved()) return;
-    state.sent = status(compute()).kind === "over" ? "signoff" : "send";
+    state.sent = status(compute()).kind === "over" ? "signoff" : "activate";
     render();
   }
 }
@@ -1502,6 +2115,14 @@ function onChange(e) {
 }
 
 function onInput(e) {
+  if (e.target.id === "topic-search") {
+    topicUi.query = e.target.value;
+    topicUi.open = !!topicUi.query.trim();
+    topicUi.active = 0;
+    topicUi.rows = buildTopicRows(topicUi.query);
+    paintTopicDrop();
+    return;
+  }
   if (e.target.id === "push-title") {
     state.message.pushTitle = e.target.value;
     const count = document.getElementById("push-count");
@@ -1532,10 +2153,34 @@ const app = document.getElementById("app");
 app.addEventListener("click", onClick);
 app.addEventListener("change", onChange);
 app.addEventListener("input", onInput);
+app.addEventListener("mousedown", (e) => {
+  if (e.target.closest("#topic-drop")) e.preventDefault();
+});
 document.querySelectorAll('a[href="#"]').forEach((a) => {
   a.addEventListener("click", (e) => e.preventDefault());
 });
 document.addEventListener("keydown", (e) => {
+  if (e.target && e.target.id === "topic-search" && topicUi.open) {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const delta = e.key === "ArrowDown" ? 1 : -1;
+      const last = topicUi.rows.length - 1;
+      topicUi.active = Math.max(0, Math.min(last, topicUi.active + delta));
+      paintTopicDrop();
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      applyTopicRow(topicUi.rows[topicUi.active]);
+      return;
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      topicUi.open = false;
+      paintTopicDrop();
+      return;
+    }
+  }
   if (e.key === "Escape" && state.preview) {
     state.preview = false;
     render();
